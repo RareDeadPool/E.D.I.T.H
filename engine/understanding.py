@@ -178,6 +178,15 @@ class UnderstandingNormalizer:
         ("context_control", "exec_context_action"): "context_control",
         ("chitchat", "respond_dialogue"): "dialogue",
         ("unsupported_ood", "request_clarification"): "unsupported",
+        ("communication", "send_whatsapp"): "whatsapp_send",
+        ("communication", "draft_whatsapp"): "whatsapp_draft",
+        ("communication", "edit_whatsapp_draft"): "whatsapp_revise",
+        ("communication", "preview_whatsapp_draft"): "whatsapp_preview",
+        ("communication_drafting", "exec_draft_content"): "draft_content",
+        ("communication", "send_email"): "email_send",
+        ("communication", "draft_email"): "email_draft",
+        ("file_operation", "summarize_document"): "file_summarize",
+        ("file_operation", "organize_folder"): "file_organize",
     }
 
     @classmethod
@@ -220,6 +229,22 @@ class UnderstandingNormalizer:
             goal = "draft_content"
             intent = "communication_drafting"
             action = "exec_draft_content"
+            confidence = 0.98
+
+        # 00a. WhatsApp / Direct Messaging Normalization
+        elif "whatsapp" in q_lower or any(q_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "draft a message", "draft a whatsapp", "draft a polite message", "draft a quick message", "draft a short message"]):
+            if not ("email" in q_lower or "mail" in q_lower or "@" in q_lower):
+                is_draft = any(w in q_lower for w in ["draft", "compose", "write a message", "write a draft"])
+                goal = "whatsapp_draft" if is_draft else "whatsapp_send"
+                intent = "communication"
+                action = "draft_whatsapp" if is_draft else "send_whatsapp"
+                confidence = 0.98
+
+        elif any(p in q_lower for p in ["send the revised message", "send it to", "use the group chat", "not that rahul", "the other rahul"]):
+            goal = "whatsapp_send"
+            intent = "communication"
+            action = "send_whatsapp"
+            confidence = 0.98
 
         # 0. Out-of-Distribution / General Knowledge / Philosophical queries
         elif any(re.search(pat, q_lower) for pat in [

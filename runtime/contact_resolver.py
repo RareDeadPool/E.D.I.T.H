@@ -1,0 +1,490 @@
+"""Intelligent Contact and Group Resolution Subsystem for E.D.I.T.H. V4.
+
+Extracts recipient names, groups, roles, and message content from natural language.
+Handles partial matching, typos, alias mapping, role resolution (e.g. Mom, Professor),
+group vs direct chat discrimination, multi-turn follow-ups, and unambiguous clarification.
+"""
+
+import os
+import re
+import json
+import difflib
+from dataclasses import dataclass, field, asdict
+from typing import Dict, Any, List, Optional, Tuple
+
+
+@dataclass
+class Contact:
+    """Represents a direct contact or group."""
+    name: str
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[str] = None           # e.g., "mom", "dad", "professor", "recruiter", "manager"
+    is_group: bool = False
+    aliases: List[str] = field(default_factory=list)
+    platform: str = "all"                # whatsapp, email, all
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Contact":
+        return cls(**data)
+
+
+@dataclass
+class ContactResolutionResult:
+    """Outcome of resolving a contact reference from natural language."""
+    status: str                         # "resolved", "needs_clarification", "not_found", "empty"
+    resolved_contact: Optional[Contact] = None
+    recipient_name: Optional[str] = None
+    is_group: bool = False
+    is_ambiguous: bool = False
+    candidates: List[Contact] = field(default_factory=list)
+    clarification_prompt: Optional[str] = None
+    extracted_text: Optional[str] = None
+    action_type: str = "send"           # "send", "draft", "edit", "preview"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "status": self.status,
+            "resolved_contact": self.resolved_contact.to_dict() if self.resolved_contact else None,
+            "recipient_name": self.recipient_name,
+            "is_group": self.is_group,
+            "is_ambiguous": self.is_ambiguous,
+            "candidates": [c.to_dict() for c in self.candidates],
+            "clarification_prompt": self.clarification_prompt,
+            "extracted_text": self.extracted_text,
+            "action_type": self.action_type,
+        }
+
+
+class ContactResolver:
+    """Production contact repository, extraction engine, and disambiguator."""
+
+    DEFAULT_CONTACTS = [
+        Contact(name="Test Recipient", phone="+918591211342", role="test", aliases=["test", "test recipient", "8591211342", "+918591211342", "tester"]),
+        Contact(name="Rahul Sharma", phone="+919876543210", role="colleague", aliases=["rahul", "rahul sharma"]),
+        Contact(name="Rahul Verma", phone="+919811223344", role="college friend", aliases=["rahul verma"]),
+        Contact(name="Mom", phone="+919822334455", role="mom", aliases=["mother", "mummy", "maa"]),
+        Contact(name="Dad", phone="+919833445566", role="dad", aliases=["father", "papa"]),
+        Contact(name="Professor Smith", email="smith@university.edu", role="professor", aliases=["prof", "professor", "prof smith"]),
+        Contact(name="Recruiter Jane", email="jane.recruiter@techcorp.com", role="recruiter", aliases=["recruiter", "jane"]),
+        Contact(name="Project Core Group", is_group=True, aliases=["project group", "the project group", "project team", "core team"]),
+        Contact(name="College Study Group", is_group=True, aliases=["study group", "college group", "class group"]),
+        Contact(name="Family Group", is_group=True, aliases=["family", "home group"]),
+    ]
+
+    def __init__(self, storage_path: Optional[str] = None):
+        self.storage_path = storage_path or os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "data", "contacts.json"
+        )
+        self.contacts: List[Contact] = []
+        self._load_contacts()
+
+    def _load_contacts(self):
+        """Load contacts from local storage or initialize with defaults."""
+        if os.path.isfile(self.storage_path):
+            try:
+                with open(self.storage_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.contacts = [Contact.from_dict(d) for d in data]
+                    return
+            except Exception:
+                pass
+        
+        # Initialize default contacts
+        self.contacts = list(self.DEFAULT_CONTACTS)
+        self.save_contacts()
+
+    def save_contacts(self):
+        """Save contact repository to disk."""
+        try:
+            os.makedirs(os.path.dirname(os.path.abspath(self.storage_path)), exist_ok=True)
+            with open(self.storage_path, "w", encoding="utf-8") as f:
+                json.dump([c.to_dict() for c in self.contacts], f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+
+    def add_contact(self, contact: Contact):
+        """Add or update a contact in the repository."""
+        for i, c in enumerate(self.contacts):
+            if c.name.lower() == contact.name.lower():
+                self.contacts[i] = contact
+                self.save_contacts()
+                return
+        self.contacts.append(contact)
+        self.save_contacts()
+
+    def extract_intent_and_entities(self, query: str) -> Dict[str, Any]:
+        """
+        Parses casual natural language into action mode (draft vs send vs edit vs preview),
+        recipient name/group, and intended message content.
+        """
+        q = query.strip()
+        q_low = q.lower()
+
+        # 1. Determine Action Type
+        action_type = "send"
+        if any(w in q_low for w in ["draft", "compose", "write a draft", "prepare a message"]):
+            action_type = "draft"
+        elif any(w in q_low for w in ["show me the message", "preview", "show draft", "show the message"]):
+            action_type = "preview"
+        elif any(w in q_low for w in ["make that message shorter", "make it shorter", "add that", "correct the message", "revise"]):
+            action_type = "edit"
+        elif any(w in q_low for w in ["send", "tell", "message", "text"]):
+            action_type = "send"
+
+        recipient_candidate = None
+        extracted_text = None
+
+        # 2. Extract Exact Dictation
+        # e.g., "Send Rahul this exact message: I will be late" or "Send this exact message to Rahul: I will be late"
+        m_exact = re.search(
+            r"^(?:send|text|message)\s+(?:(?:to\s+)?([a-zA-Z0-9_\-\s]+?)\s+)?(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)(?:\s+to\s+([a-zA-Z0-9_\-\s]+?))?\s*:\s*(.+)$",
+            q,
+            re.IGNORECASE
+        )
+        if m_exact:
+            recipient_candidate = (m_exact.group(1) or m_exact.group(2) or "").strip() or None
+            extracted_text = m_exact.group(3).strip()
+        else:
+            m_exact2 = re.search(r"(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)\s*(?:to\s+(.+?))?\s*:\s*(.+)$", q, re.IGNORECASE)
+            if m_exact2:
+                if m_exact2.group(1):
+                    recipient_candidate = m_exact2.group(1).strip()
+                extracted_text = m_exact2.group(2).strip()
+                m_exact = m_exact2
+
+        # 3. Pattern: "Draft/Write a (polite) message to <RECIPIENT> saying/asking/about <TEXT>"
+        if not extracted_text:
+            m_draft = re.search(
+                r"^(?:draft|write|compose)\s+(?:a\s+)?(?:polite\s+|formal\s+|quick\s+|short\s+)?(?:whatsapp\s+)?(?:message|text|email|note)\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+(?:saying|asking|about|that)\s+(.+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_draft:
+                recipient_candidate = m_draft.group(1).strip()
+                extracted_text = m_draft.group(2).strip()
+
+        # 4. Pattern: "Send <RECIPIENT> a message saying <TEXT>"
+        if not extracted_text:
+            m_send_a = re.search(
+                r"^(?:send|text)\s+([a-zA-Z0-9_\-\s]+?)\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text)?\s*(?:saying|that)\s+(.+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_send_a:
+                recipient_candidate = m_send_a.group(1).strip()
+                extracted_text = m_send_a.group(2).strip()
+
+        # 5. Pattern: "Tell <RECIPIENT> that/saying <TEXT>"
+        if not extracted_text:
+            m_tell = re.search(
+                r"^(?:tell|notify|inform)\s+([a-zA-Z0-9_\-\s]+?)\s+(?:that|saying)\s+(.+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_tell:
+                recipient_candidate = m_tell.group(1).strip()
+                extracted_text = m_tell.group(2).strip()
+
+        # 6. Pattern: "Message <RECIPIENT> that/saying <TEXT>"
+        if not extracted_text:
+            m_msg = re.search(
+                r"^message\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)\s+(?:that|saying)\s+(.+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_msg:
+                recipient_candidate = m_msg.group(1).strip()
+                extracted_text = m_msg.group(2).strip()
+
+        # 7. Pattern: "Send <TEXT> to <RECIPIENT>"
+        if not extracted_text:
+            m_send_to = re.search(
+                r"^send\s+(?:the\s+)?(?:revised\s+|active\s+)?(?:message|draft|text)?\s*(.+?)\s+to\s+([a-zA-Z0-9_\-\s]+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_send_to:
+                cand_text = m_send_to.group(1).strip()
+                recipient_candidate = m_send_to.group(2).strip()
+                # If cand_text is empty or just generic reference, it refers to active draft
+                if not cand_text or cand_text.lower() in ["message", "draft", "revised message", "that"]:
+                    extracted_text = None
+                else:
+                    extracted_text = cand_text
+
+        # 8. Clean up recipient candidate
+        if recipient_candidate:
+            recipient_candidate = re.sub(r"^(?:the\s+)?(?:contact\s+|person\s+|group\s+)?", "", recipient_candidate, flags=re.IGNORECASE).strip()
+            # Remove trailing words like 'on whatsapp', 'via whatsapp'
+            recipient_candidate = re.sub(r"\s+(?:on|via|through)\s+whatsapp.*$", "", recipient_candidate, flags=re.IGNORECASE).strip()
+
+        # 9. Clean up extracted text
+        if extracted_text:
+            # Strip outer quotes if present
+            extracted_text = re.sub(r'^["\']|["\']$', '', extracted_text).strip()
+
+        return {
+            "action_type": action_type,
+            "recipient_raw": recipient_candidate,
+            "message_text": extracted_text,
+            "is_exact": bool(m_exact),
+        }
+
+    def resolve(
+        self,
+        recipient_query: Optional[str] = None,
+        context: Optional[Any] = None,
+        raw_query: Optional[str] = None
+    ) -> ContactResolutionResult:
+        """
+        Unambiguously resolve a recipient query against contacts, context, and follow-ups.
+        """
+        recip_term = (recipient_query or "").strip()
+        q_text = (raw_query or "").strip().lower()
+
+        # 1. Check for Contextual References / Pronouns
+        # e.g., "send it to the same person", "send to him", "send to her", "the selected contact"
+        is_same_person = any(phrase in (recip_term.lower() or q_text) for phrase in [
+            "same person", "same contact", "selected contact", "same recipient", "him", "her", "them"
+        ])
+
+        if (not recip_term or is_same_person) and context and hasattr(context, "last_person") and context.last_person:
+            # Resolve from current task context
+            prior_name = context.last_person
+            c = self.get_exact_contact(prior_name)
+            if c:
+                return ContactResolutionResult(
+                    status="resolved",
+                    resolved_contact=c,
+                    recipient_name=c.name,
+                    is_group=c.is_group,
+                    candidates=[c]
+                )
+            return ContactResolutionResult(
+                status="resolved",
+                resolved_contact=Contact(name=prior_name),
+                recipient_name=prior_name,
+                is_group=False
+            )
+
+        # 2. Check for Follow-Up Corrections
+        # e.g., "not that Rahul", "find the other Rahul", "use the group chat", "send it to Rahul instead"
+        if "use the group chat" in q_text or "use the group" in q_text:
+            # Filter groups
+            groups = [c for c in self.contacts if c.is_group]
+            if len(groups) == 1:
+                return ContactResolutionResult(
+                    status="resolved",
+                    resolved_contact=groups[0],
+                    recipient_name=groups[0].name,
+                    is_group=True,
+                    candidates=groups
+                )
+            elif len(groups) > 1:
+                opts = [f"{i+1}) {g.name}" for i, g in enumerate(groups)]
+                return ContactResolutionResult(
+                    status="needs_clarification",
+                    is_ambiguous=True,
+                    is_group=True,
+                    candidates=groups,
+                    clarification_prompt=f"Which group chat would you like to use?\n  " + "\n  ".join(opts)
+                )
+
+        if "not that rahul" in q_text or "the other rahul" in q_text:
+            # Exclude currently selected Rahul
+            prior_name = getattr(context, "last_person", None) if context else None
+            other_rahuls = [c for c in self.contacts if "rahul" in c.name.lower() and c.name != prior_name]
+            if len(other_rahuls) == 1:
+                return ContactResolutionResult(
+                    status="resolved",
+                    resolved_contact=other_rahuls[0],
+                    recipient_name=other_rahuls[0].name,
+                    is_group=other_rahuls[0].is_group,
+                    candidates=other_rahuls
+                )
+            elif len(other_rahuls) > 1:
+                opts = [f"{i+1}) {c.name} ({c.role or 'Contact'})" for i, c in enumerate(other_rahuls)]
+                return ContactResolutionResult(
+                    status="needs_clarification",
+                    is_ambiguous=True,
+                    candidates=other_rahuls,
+                    clarification_prompt=f"Which Rahul did you mean?\n  " + "\n  ".join(opts)
+                )
+
+        if not recip_term:
+            return ContactResolutionResult(
+                status="empty",
+                clarification_prompt="Who would you like me to send this message to?"
+            )
+
+        # 2b. Direct Phone Number Recognition (e.g. 8591211342 or +918591211342)
+        clean_digits = re.sub(r"[^\d+]", "", recip_term)
+        digits_only = re.sub(r"\D", "", recip_term)
+        if len(digits_only) >= 10:
+            for c in self.contacts:
+                if c.phone and re.sub(r"\D", "", c.phone).endswith(digits_only[-10:]):
+                    return ContactResolutionResult(
+                        status="resolved",
+                        resolved_contact=c,
+                        recipient_name=c.name,
+                        is_group=False,
+                        candidates=[c]
+                    )
+            phone_formatted = clean_digits if clean_digits.startswith("+") else f"+91{digits_only[-10:]}"
+            direct_contact = Contact(name=recip_term, phone=phone_formatted, role="direct_number")
+            return ContactResolutionResult(
+                status="resolved",
+                resolved_contact=direct_contact,
+                recipient_name=recip_term,
+                is_group=False,
+                candidates=[direct_contact]
+            )
+
+        # 3. Match against Contact Repository
+        clean_target = recip_term.lower()
+
+        # Exact match on full name
+        for c in self.contacts:
+            if c.name.lower() == clean_target:
+                return ContactResolutionResult(
+                    status="resolved",
+                    resolved_contact=c,
+                    recipient_name=c.name,
+                    is_group=c.is_group,
+                    candidates=[c]
+                )
+
+        # Token / First-name check across all contacts (e.g. "Rahul" -> "Rahul Sharma" & "Rahul Verma")
+        token_matches = []
+        for c in self.contacts:
+            c_tokens = [t.lower() for t in re.split(r"[\s_\-]+", c.name) if t]
+            if clean_target in c_tokens:
+                token_matches.append(c)
+
+        if len(token_matches) > 1:
+            opts = [f"{i+1}) {c.name} ({c.role or 'Contact'})" for i, c in enumerate(token_matches)]
+            return ContactResolutionResult(
+                status="needs_clarification",
+                is_ambiguous=True,
+                candidates=token_matches,
+                clarification_prompt=(
+                    f"I found multiple people named '{recip_term}':\n  " +
+                    "\n  ".join(opts) +
+                    f"\nWhich person do you mean?"
+                )
+            )
+        elif len(token_matches) == 1:
+            return ContactResolutionResult(
+                status="resolved",
+                resolved_contact=token_matches[0],
+                recipient_name=token_matches[0].name,
+                is_group=token_matches[0].is_group,
+                candidates=token_matches
+            )
+
+        # Exact match on aliases or role
+        exact_alias_matches = []
+        for c in self.contacts:
+            if clean_target == (c.role or "").lower() or clean_target in [a.lower() for a in c.aliases]:
+                exact_alias_matches.append(c)
+
+        if len(exact_alias_matches) == 1:
+            return ContactResolutionResult(
+                status="resolved",
+                resolved_contact=exact_alias_matches[0],
+                recipient_name=exact_alias_matches[0].name,
+                is_group=exact_alias_matches[0].is_group,
+                candidates=exact_alias_matches
+            )
+        elif len(exact_alias_matches) > 1:
+            # Ambiguity among alias matches (e.g. multiple "colleagues" or multiple "Rahuls")
+            opts = [f"{i+1}) {c.name} ({c.role or 'Contact'})" for i, c in enumerate(exact_alias_matches)]
+            return ContactResolutionResult(
+                status="needs_clarification",
+                is_ambiguous=True,
+                candidates=exact_alias_matches,
+                clarification_prompt=(
+                    f"I found multiple contacts matching '{recip_term}':\n  " +
+                    "\n  ".join(opts) +
+                    f"\nWhich person would you like to message?"
+                )
+            )
+
+        # Partial substring match on names
+        partial_matches = []
+        for c in self.contacts:
+            if clean_target in c.name.lower():
+                partial_matches.append(c)
+
+        if len(partial_matches) == 1:
+            return ContactResolutionResult(
+                status="resolved",
+                resolved_contact=partial_matches[0],
+                recipient_name=partial_matches[0].name,
+                is_group=partial_matches[0].is_group,
+                candidates=partial_matches
+            )
+        elif len(partial_matches) > 1:
+            # Multiple matches for partial name (e.g. "Rahul" -> "Rahul Sharma", "Rahul Verma")
+            opts = [f"{i+1}) {c.name} ({c.role or 'Contact'})" for i, c in enumerate(partial_matches)]
+            return ContactResolutionResult(
+                status="needs_clarification",
+                is_ambiguous=True,
+                candidates=partial_matches,
+                clarification_prompt=(
+                    f"I found multiple people named '{recip_term}':\n  " +
+                    "\n  ".join(opts) +
+                    f"\nWhich person do you mean?"
+                )
+            )
+
+        # Fuzzy match for typos / minor misspellings (e.g. "Raahul", "Adity")
+        fuzzy_matches = []
+        for c in self.contacts:
+            name_ratio = difflib.SequenceMatcher(None, clean_target, c.name.lower()).ratio()
+            alias_ratios = [difflib.SequenceMatcher(None, clean_target, a.lower()).ratio() for a in c.aliases]
+            best = max([name_ratio] + alias_ratios, default=0.0)
+            if best >= 0.78:
+                fuzzy_matches.append((best, c))
+
+        if fuzzy_matches:
+            fuzzy_matches.sort(key=lambda x: x[0], reverse=True)
+            top_best, top_contact = fuzzy_matches[0]
+            # Check if second match is nearly identical in score
+            if len(fuzzy_matches) > 1 and (top_best - fuzzy_matches[1][0]) < 0.10:
+                cand_list = [c for _, c in fuzzy_matches[:3]]
+                opts = [f"{i+1}) {c.name}" for i, c in enumerate(cand_list)]
+                return ContactResolutionResult(
+                    status="needs_clarification",
+                    is_ambiguous=True,
+                    candidates=cand_list,
+                    clarification_prompt=f"Did you mean one of these contacts?\n  " + "\n  ".join(opts)
+                )
+            return ContactResolutionResult(
+                status="resolved",
+                resolved_contact=top_contact,
+                recipient_name=top_contact.name,
+                is_group=top_contact.is_group,
+                candidates=[top_contact]
+            )
+
+        # If completely unknown, return unverified raw name without fabricating details
+        is_grp = "group" in clean_target or "team" in clean_target
+        return ContactResolutionResult(
+            status="not_found",
+            recipient_name=recip_term.title(),
+            is_group=is_grp,
+            clarification_prompt=f"'{recip_term}' was not found in your saved contacts. Would you like to message this contact name on WhatsApp anyway?"
+        )
+
+    def get_exact_contact(self, name: str) -> Optional[Contact]:
+        """Retrieve contact by exact name."""
+        name_low = name.strip().lower()
+        for c in self.contacts:
+            if c.name.lower() == name_low:
+                return c
+        return None

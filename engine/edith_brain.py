@@ -72,6 +72,22 @@ except ImportError:
         ExecutionTraceLogger = None
         ExecutionTrace = None
 
+try:
+    from runtime.contact_resolver import ContactResolver
+except ImportError:
+    try:
+        from contact_resolver import ContactResolver
+    except ImportError:
+        ContactResolver = None
+
+try:
+    from runtime.permission_guard import PermissionGuard
+except ImportError:
+    try:
+        from permission_guard import PermissionGuard
+    except ImportError:
+        PermissionGuard = None
+
 
 
 APP_NAMES = {
@@ -79,7 +95,8 @@ APP_NAMES = {
     "microsoft edge", "spotify", "vlc", "vscode", "code", "terminal", "powershell",
     "cmd", "command prompt", "task manager", "taskmgr", "file explorer", "explorer",
     "files", "settings", "paint", "wordpad", "discord", "slack", "teams", "control panel",
-    "mail", "outlook", "gmail", "text editor", "code editor", "file manager"
+    "mail", "outlook", "gmail", "text editor", "code editor", "file manager",
+    "whatsapp", "whatsapp desktop"
 }
 
 ACTION_PATTERNS = [
@@ -91,6 +108,11 @@ ACTION_PATTERNS = [
     r"^(?:search|google|find|look\s+up|browse)\b",
     r"^(?:go\s+(?:to|on)|visit|navigate\s+(?:to)?)\b",
     r"^(?:draft|compose|write\s+(?:an?\s+)?(?:email|mail|letter|message|note|memo))\b",
+    r"^(?:send|text|message|dm)\b",
+    r"^(?:summarize|overview|condense)\b",
+    r"^(?:organize|sort|categorize)\b",
+    r"^(?:attach|share)\b",
+    r"^(?:preview|show\s+me)\b",
     r"^(?:take\s+a?\s*screenshot|capture\s+(?:the\s+)?screen|screenshot)\b",
     r"^(?:copy|cut|paste|move|relocate)\b",
     r"^(?:delete|remove|erase|trash)\b",
@@ -599,6 +621,8 @@ class EdithBrain:
         self.normalizer = UnderstandingNormalizer() if UnderstandingNormalizer is not None else None
         self.verifier = ClosedLoopVerifier() if ClosedLoopVerifier is not None else None
         self.trace_logger = ExecutionTraceLogger() if ExecutionTraceLogger is not None else None
+        self.contact_resolver = ContactResolver() if ContactResolver is not None else None
+        self.permission_guard = PermissionGuard() if PermissionGuard is not None else None
         self._gui_agent = None
 
     @property
@@ -804,7 +828,7 @@ class EdithBrain:
             return res
 
         # Context Control & Undo Reversal Check
-        cmd_lower = cmd_clean.lower()
+        cmd_lower = cmd_clean.lower().strip(" .!?\t\r\n")
         if any(u in cmd_lower for u in ["undo the last step", "undo that", "undo last step", "undo last action"]):
             if self.context and hasattr(self.context, "undo_last_step"):
                 undo_item = self.context.undo_last_step()
@@ -829,6 +853,210 @@ class EdithBrain:
                 }
                 self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
                 return res
+
+        # Consequential Task Cancellation Gate ('cancel that', 'don't send', 'abort')
+        if any(c in cmd_lower for c in [
+            "cancel that", "don't send", "dont send", "abort send", "abort sending",
+            "abort message", "stop sending", "cancel the message", "cancel message", "do not send"
+        ]) or (cmd_lower in ["cancel", "abort"]):
+            if self.context and hasattr(self.context, "cancel_current_task"):
+                self.context.cancel_current_task()
+            reg = self.executor.action_registry if self.executor else None
+            if reg:
+                reg.permission_guard.cancel_all_pending()
+                reg.whatsapp_adapter.clear_active_draft()
+                reg.email_adapter.clear_active_draft()
+            elif self.permission_guard:
+                self.permission_guard.cancel_all_pending()
+
+            cancel_msg = "Action cancelled. The pending message has been aborted and will not be sent."
+            res = {
+                "query": user_command,
+                "intent": "dialogue",
+                "action": "cancel_task",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": False,
+                    "message": cancel_msg,
+                    "handler": "dialogue",
+                    "parameters": {}
+                },
+                "execution": {"status": "cancelled", "message": cancel_msg}
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # Follow-up Confirmation Gate ('yes', 'send it', 'confirm', 'go ahead')
+        is_confirm = cmd_lower in [
+            "yes", "send it", "confirm", "send the message", "go ahead",
+            "yes send it", "send now", "yes, send it", "go ahead and send",
+            "please send it", "sure, send it", "sure send it", "send"
+        ]
+        reg = self.executor.action_registry if self.executor else None
+        has_pending_wa = bool(reg and reg.whatsapp_adapter.active_draft and reg.whatsapp_adapter.active_draft.content)
+        has_pending_ctx = bool(self.context and getattr(self.context, "pending_confirmation", None))
+
+        if is_confirm and (has_pending_wa or has_pending_ctx):
+            if self.context and hasattr(self.context, "approve_pending"):
+                self.context.approve_pending()
+            if reg and reg.whatsapp_adapter.active_draft:
+                active_draft = reg.whatsapp_adapter.active_draft
+                active_draft.approved_for_sending = True
+                exec_res, ver = reg.execute("whatsapp_send", {
+                    "recipient": active_draft.recipient,
+                    "content": active_draft.content,
+                    "attachment_path": active_draft.attachment_path,
+                    "authorized": True
+                })
+                res = {
+                    "query": user_command,
+                    "intent": "communication",
+                    "action": "send_whatsapp",
+                    "entities": {"RECIPIENT": exec_res.get("recipient", active_draft.recipient)},
+                    "intent_confidence": 1.0,
+                    "action_confidence": 1.0,
+                    "operational_confidence": 1.0,
+                    "status": "OPERATIONAL",
+                    "directive": {
+                        "can_execute": True,
+                        "message": exec_res.get("message", "Message submitted."),
+                        "handler": "whatsapp_send",
+                        "parameters": {"authorized": True}
+                    },
+                    "execution": exec_res
+                }
+                if self.context:
+                    self.context.pending_confirmation = None
+                self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                return res
+
+        # WhatsApp Active Draft Preview ('show me the message before sending it')
+        if any(p in cmd_lower for p in [
+            "show me the message before sending it", "preview the message", "show draft",
+            "show the message", "show me the message"
+        ]) and reg and reg.whatsapp_adapter.active_draft:
+            exec_res, ver = reg.execute("whatsapp_preview", {})
+            res = {
+                "query": user_command,
+                "intent": "communication",
+                "action": "preview_whatsapp_draft",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": True,
+                    "message": exec_res.get("message", ""),
+                    "handler": "whatsapp_preview",
+                    "parameters": {}
+                },
+                "execution": exec_res
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # WhatsApp Active Draft Revision ('make that message shorter')
+        is_msg_revision = (
+            any(p in cmd_lower for p in [
+                "make that message shorter", "make it shorter", "make the message shorter",
+                "shorten the message", "make it more concise", "make that shorter"
+            ]) or
+            cmd_lower.startswith("add that ") or
+            cmd_lower.startswith("also mention ")
+        )
+        if is_msg_revision and reg and reg.whatsapp_adapter.active_draft:
+            exec_res, ver = reg.execute("whatsapp_revise", {"instruction": cmd_clean})
+            res = {
+                "query": user_command,
+                "intent": "communication",
+                "action": "edit_whatsapp_draft",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": True,
+                    "message": exec_res.get("message", ""),
+                    "handler": "whatsapp_revise",
+                    "parameters": {"instruction": cmd_clean}
+                },
+                "execution": exec_res
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # Contact Disambiguation Turn (user answering a clarification question like "Rahul Sharma")
+        if self.context and getattr(self.context, "pending_clarification", None):
+            pend = self.context.pending_clarification
+            resolver = reg.contact_resolver if reg else (self.contact_resolver or ContactResolver())
+            res_clar = resolver.resolve(cmd_clean, context=self.context)
+            if res_clar.status == "resolved" and res_clar.resolved_contact:
+                contact = res_clar.resolved_contact
+                self.context.pending_clarification = None
+                self.context.set_selected_recipient(contact.name, contact.phone, contact.is_group)
+                pending_act = pend.get("action_type", "send")
+                pending_text = pend.get("pending_text", "")
+                if pending_act == "draft":
+                    exec_res, ver = reg.execute("whatsapp_draft", {
+                        "recipient": contact.name,
+                        "content": pending_text
+                    }) if reg else ({"status": "success", "message": f"Draft created for {contact.name}."}, None)
+                    res = {
+                        "query": user_command,
+                        "intent": "communication",
+                        "action": "draft_whatsapp",
+                        "entities": {"RECIPIENT": contact.name},
+                        "intent_confidence": 1.0,
+                        "action_confidence": 1.0,
+                        "operational_confidence": 1.0,
+                        "status": "OPERATIONAL",
+                        "directive": {
+                            "can_execute": True,
+                            "message": exec_res.get("message", ""),
+                            "handler": "whatsapp_draft",
+                            "parameters": {"recipient": contact.name, "content": pending_text}
+                        },
+                        "execution": exec_res
+                    }
+                    self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                    return res
+                else:
+                    is_exact_d = pend.get("is_exact", False)
+                    exec_res, ver = reg.execute("whatsapp_send", {
+                        "recipient": contact.name,
+                        "content": pending_text,
+                        "authorized": is_exact_d,
+                        "is_exact": is_exact_d
+                    }) if reg else ({"status": "needs_confirmation", "message": f"Please confirm message to {contact.name}"}, None)
+                    stat = "NEEDS_CONFIRMATION" if exec_res.get("status") == "needs_confirmation" else "OPERATIONAL"
+                    res = {
+                        "query": user_command,
+                        "intent": "communication",
+                        "action": "send_whatsapp",
+                        "entities": {"RECIPIENT": contact.name},
+                        "intent_confidence": 1.0,
+                        "action_confidence": 1.0,
+                        "operational_confidence": 1.0,
+                        "status": stat,
+                        "directive": {
+                            "can_execute": (exec_res.get("status") == "success"),
+                            "needs_confirmation": (exec_res.get("status") == "needs_confirmation"),
+                            "message": exec_res.get("message", ""),
+                            "handler": "whatsapp_send",
+                            "parameters": {"recipient": contact.name, "content": pending_text}
+                        },
+                        "execution": exec_res
+                    }
+                    if exec_res.get("status") == "needs_confirmation":
+                        self.context.pending_confirmation = exec_res
+                    self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                    return res
 
         # Multi-turn context and reference resolution (anaphora, ordinals, pronouns, alternatives)
         detected_refs = []
@@ -955,6 +1183,16 @@ class EdithBrain:
                     self.context.last_app = exec_res.get("app")
                 if directive.get("handler") == "project_action":
                     self.context.last_project = directive.get("parameters", {}).get("project")
+                if exec_res.get("status") == "needs_confirmation":
+                    result["status"] = "NEEDS_CONFIRMATION"
+                    directive["message"] = exec_res.get("message")
+                    directive["needs_confirmation"] = True
+                    self.context.pending_confirmation = exec_res
+                elif exec_res.get("status") == "needs_clarification":
+                    result["status"] = "NEEDS_CLARIFICATION"
+                    directive["message"] = exec_res.get("message")
+                    directive["can_execute"] = False
+
                 if directive.get("handler") == "draft_content":
                     d_params = directive.get("parameters", {})
                     if hasattr(self.context, "set_draft") and d_params.get("body"):
@@ -1355,6 +1593,119 @@ class EdithBrain:
                 "handler": "safety_gate",
                 "parameters": {"command": cmd_text, "safety_gated": True}
             }
+
+        # 0a-0. WhatsApp & Direct Communication Subsystem
+        reg = self.executor.action_registry if self.executor else None
+        resolver = reg.contact_resolver if reg else (self.contact_resolver or ContactResolver())
+        
+        parsed_comm = resolver.extract_intent_and_entities(cmd_text)
+        is_comm = False
+        if "whatsapp" in cmd_lower:
+            is_comm = True
+        elif any(cmd_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "draft a message", "draft a polite message", "draft a quick message", "draft a short message"]):
+            if not ("email" in cmd_lower or "mail" in cmd_lower or "@" in cmd_lower):
+                is_comm = True
+        elif any(p in cmd_lower for p in [
+            "send the revised message", "send it to", "use the group chat",
+            "not that rahul", "the other rahul"
+        ]):
+            is_comm = True
+
+        if is_comm and (
+            parsed_comm.get("recipient_raw") or
+            parsed_comm.get("message_text") or
+            "revised message" in cmd_lower or
+            "group chat" in cmd_lower or
+            getattr(self.context, "last_person", None) or
+            (reg and reg.whatsapp_adapter.active_draft)
+        ):
+            recip_query = parsed_comm.get("recipient_raw")
+            if not recip_query:
+                if "group chat" in cmd_lower or "the group" in cmd_lower:
+                    recip_query = "group chat"
+                elif "the same person" in cmd_lower or "same person" in cmd_lower or "revised message" in cmd_lower:
+                    recip_query = getattr(self.context, "last_person", None) or (
+                        reg.whatsapp_adapter.active_draft.recipient if (reg and reg.whatsapp_adapter.active_draft) else None
+                    )
+
+            res_cont = resolver.resolve(recip_query, context=self.context, raw_query=cmd_text)
+            
+            # Check for ambiguity
+            if res_cont.status == "needs_clarification":
+                prediction["intent"] = "communication"
+                prediction["action"] = "request_clarification"
+                prediction["status"] = "NEEDS_CLARIFICATION"
+                prediction["operational_confidence"] = 0.95
+                if self.context:
+                    self.context.pending_clarification = {
+                        "action_type": parsed_comm.get("action_type", "send"),
+                        "pending_text": parsed_comm.get("message_text", ""),
+                        "candidates": [c.to_dict() for c in res_cont.candidates],
+                        "is_exact": parsed_comm.get("is_exact", False)
+                    }
+                return {
+                    "can_execute": False,
+                    "needs_clarification": True,
+                    "message": res_cont.clarification_prompt,
+                    "handler": "clarification",
+                    "parameters": {
+                        "ambiguous_target": recip_query,
+                        "candidates": [c.to_dict() for c in res_cont.candidates]
+                    }
+                }
+
+            # Resolved contact
+            target_contact = res_cont.resolved_contact
+            target_name = res_cont.recipient_name or (target_contact.name if target_contact else recip_query)
+            target_phone = target_contact.phone if target_contact else None
+            is_group = res_cont.is_group
+            
+            if self.context and target_name:
+                self.context.set_selected_recipient(target_name, target_phone, is_group)
+
+            action_type = parsed_comm.get("action_type", "send")
+            is_exact = parsed_comm.get("is_exact", False)
+            msg_text = parsed_comm.get("message_text")
+
+            # If user said "send the revised message", retrieve active draft content
+            if not msg_text and "revised message" in cmd_lower and reg and reg.whatsapp_adapter.active_draft:
+                msg_text = reg.whatsapp_adapter.active_draft.content
+
+            prediction["intent"] = "communication"
+            prediction["action"] = "draft_whatsapp" if action_type == "draft" else "send_whatsapp"
+            prediction["operational_confidence"] = 1.0
+
+            if action_type == "draft":
+                return {
+                    "can_execute": True,
+                    "message": f"Drafting WhatsApp message for {target_name}.",
+                    "handler": "whatsapp_draft",
+                    "parameters": {
+                        "recipient": target_name,
+                        "phone": target_phone,
+                        "content": msg_text,
+                        "is_group": is_group
+                    }
+                }
+            else:
+                # Send message:
+                # Exact dictation to unambiguous contact is pre-authorized.
+                # "send the revised message" is explicit authorization.
+                # Substantive assistant-generated content requires confirmation.
+                is_authorized = is_exact or ("send the revised message" in cmd_lower)
+                return {
+                    "can_execute": True,
+                    "message": f"Preparing WhatsApp message for {target_name}.",
+                    "handler": "whatsapp_send",
+                    "parameters": {
+                        "recipient": target_name,
+                        "phone": target_phone,
+                        "content": msg_text,
+                        "is_exact": is_exact,
+                        "authorized": is_authorized,
+                        "is_group": is_group
+                    }
+                }
 
         # 0a-1. Check for writing the active draft into Notepad
         # e.g., "write that in notepad", "put that into notepad", "write active draft into notepad"
