@@ -70,6 +70,20 @@ class StructuredTaskContext:
         # 8. Text Drafting & Editing Pipeline State
         self.draft_manager = DraftManager()
 
+        # 9. Cross-Application V4 Task State
+        self.selected_recipient: Optional[str] = None
+        self.selected_phone: Optional[str] = None
+        self.is_recipient_group: bool = False
+        self.active_conversation: Optional[str] = None
+        self.selected_file_path: Optional[str] = None
+        self.pending_attachment_path: Optional[str] = None
+        self.pending_confirmation: Optional[Dict[str, Any]] = None
+        self.user_approved_send: bool = False
+        self.completed_actions: List[Dict[str, Any]] = []
+        self.failed_actions: List[Dict[str, Any]] = []
+        self.verification_evidence: List[Dict[str, Any]] = []
+        self.is_cancelled: bool = False
+
     def has_draft(self) -> bool:
         """Check if an active draft exists in context."""
         return self.draft_manager.has_draft()
@@ -93,6 +107,55 @@ class StructuredTaskContext:
         self.touch()
         return self.draft_manager.revert_draft()
 
+    def set_selected_recipient(self, name: str, phone: Optional[str] = None, is_group: bool = False):
+        """Record the active recipient or group for the current task."""
+        self.touch()
+        self.selected_recipient = name
+        self.selected_phone = phone
+        self.is_recipient_group = is_group
+        self.last_person = name
+
+    def set_selected_file(self, file_path: str):
+        """Record the selected file and verified full path."""
+        self.touch()
+        self.selected_file_path = file_path
+        self.last_file = os.path.basename(file_path)
+        self.last_path = file_path
+
+    def cancel_current_task(self) -> Dict[str, Any]:
+        """Cancel pending actions immediately. Guarantees no pending send proceeds."""
+        self.touch()
+        self.is_cancelled = True
+        self.pending_confirmation = None
+        self.user_approved_send = False
+        self.workflow_status = "cancelled"
+        return {
+            "status": "cancelled",
+            "message": "Task cancelled. Pending actions and draft sends were halted."
+        }
+
+    def approve_pending(self):
+        """Mark pending action as approved by the user."""
+        self.touch()
+        self.user_approved_send = True
+        self.is_cancelled = False
+
+    def record_action_outcome(self, handler: str, success: bool, details: Dict[str, Any], evidence: Optional[str] = None):
+        """Record observable verification evidence and outcome."""
+        self.touch()
+        entry = {
+            "handler": handler,
+            "success": success,
+            "details": details,
+            "evidence": evidence,
+            "timestamp": time.time()
+        }
+        if success:
+            self.completed_actions.append(entry)
+        else:
+            self.failed_actions.append(entry)
+        if evidence:
+            self.verification_evidence.append(entry)
 
     def touch(self):
         """Update last activity timestamp."""
@@ -128,6 +191,18 @@ class StructuredTaskContext:
         self.last_platform = "spotify"
         self.last_media_action = None
         self.last_command_executed = None
+        self.selected_recipient = None
+        self.selected_phone = None
+        self.is_recipient_group = False
+        self.active_conversation = None
+        self.selected_file_path = None
+        self.pending_attachment_path = None
+        self.pending_confirmation = None
+        self.user_approved_send = False
+        self.is_cancelled = False
+        self.completed_actions = []
+        self.failed_actions = []
+        self.verification_evidence = []
         self.last_test_output = None
         self.last_action_result = None
         self.pending_clarification = None
@@ -474,6 +549,11 @@ class StructuredTaskContext:
         unresolved_tokens = re.findall(r"\b(it|that|the other one|the second one|that one|the file|the document|second result|first result)\b", resolved_query, re.IGNORECASE)
         for tok in unresolved_tokens:
             t_low = tok.lower()
+            if t_low == "that":
+                # Filter out 'that' when used as a subordinating conjunction in communication dictation
+                if re.search(r"\bthat\s+(?:i\b|we\b|you\b|he\b|she\b|they\b|the\b|our\b|my\b|there\b|it\b|a\b)", resolved_query, re.IGNORECASE) or re.search(r"\b(?:draft|send|tell|message|notify|saying|state|stating)\b.+?\bthat\b", resolved_query, re.IGNORECASE):
+                    continue
+
             if t_low in ["it", "that", "that one", "the file", "the document"] and not self.last_file and not self.last_path and not self.last_app and not (hasattr(self, "has_draft") and self.has_draft()):
                 references.append({
                     "raw_reference": tok,

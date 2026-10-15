@@ -1,0 +1,132 @@
+[
+  {
+    "name": "Test Recipient",
+    "phone": "+918591211342",
+    "email": null,
+    "role": "test",
+    "is_group": false,
+    "aliases": [
+      "test",
+      "test recipient",
+      "8591211342",
+      "+918591211342",
+      "tester",
+      "aditya",
+      "myself",
+      "me"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Rahul Sharma",
+    "phone": "+919876543210",
+    "email": null,
+    "role": "colleague",
+    "is_group": false,
+    "aliases": [
+      "rahul",
+      "rahul sharma"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Rahul Verma",
+    "phone": "+919811223344",
+    "email": null,
+    "role": "college friend",
+    "is_group": false,
+    "aliases": [
+      "rahul verma"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Mom",
+    "phone": "+919822334455",
+    "email": null,
+    "role": "mom",
+    "is_group": false,
+    "aliases": [
+      "mother",
+      "mummy",
+      "maa"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Dad",
+    "phone": "+919833445566",
+    "email": null,
+    "role": "dad",
+    "is_group": false,
+    "aliases": [
+      "father",
+      "papa"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Professor Smith",
+    "phone": null,
+    "email": "smith@university.edu",
+    "role": "professor",
+    "is_group": false,
+    "aliases": [
+      "prof",
+      "professor",
+      "prof smith"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Recruiter Jane",
+    "phone": null,
+    "email": "jane.recruiter@techcorp.com",
+    "role": "recruiter",
+    "is_group": false,
+    "aliases": [
+      "recruiter",
+      "jane"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Project Core Group",
+    "phone": null,
+    "email": null,
+    "role": null,
+    "is_group": true,
+    "aliases": [
+      "project group",
+      "the project group",
+      "project team",
+      "core team"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "College Study Group",
+    "phone": null,
+    "email": null,
+    "role": null,
+    "is_group": true,
+    "aliases": [
+      "study group",
+      "college group",
+      "class group"
+    ],
+    "platform": "all"
+  },
+  {
+    "name": "Family Group",
+    "phone": null,
+    "email": null,
+    "role": null,
+    "is_group": true,
+    "aliases": [
+      "family",
+      "home group"
+    ],
+    "platform": "all"
+  }
+]

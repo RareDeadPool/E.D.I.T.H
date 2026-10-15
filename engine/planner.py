@@ -189,8 +189,20 @@ class TaskPlanner:
         goal_lower = goal.lower()
 
         # Check for compound project report finding, opening, and summarizing goal:
-        if ("report" in goal_lower and any(w in goal_lower for w in ["find", "look", "submit"]) and any(w in goal_lower for w in ["summary", "summarize", "prepare"])):
+        if ("report" in goal_lower and any(w in goal_lower for w in ["find", "look", "submit"]) and any(w in goal_lower for w in ["summary", "summarize", "prepare"]) and "notepad" not in goal_lower and "whatsapp" not in goal_lower):
             return cls._create_report_summary_plan(goal, context)
+
+        # Check for compound file discovery and WhatsApp sharing goal:
+        if any(w in goal_lower for w in ["find", "locate", "get", "share"]) and any(w in goal_lower for w in ["report", "file", "document", "notes"]) and "whatsapp" in goal_lower:
+            return cls._create_file_and_whatsapp_plan(goal, context)
+
+        # Check for compound file discovery, resume attach and email draft goal:
+        if any(w in goal_lower for w in ["find", "locate", "attach"]) and any(w in goal_lower for w in ["resume", "cv", "report", "file"]) and any(w in goal_lower for w in ["email", "mail"]):
+            return cls._create_file_and_email_plan(goal, context)
+
+        # Check for compound open notes, summarize, and put in Notepad goal:
+        if any(w in goal_lower for w in ["open", "find", "read", "take"]) and any(w in goal_lower for w in ["notes", "report", "file", "document", "text"]) and any(w in goal_lower for w in ["summary", "summarize", "short summary"]) and "notepad" in goal_lower:
+            return cls._create_file_summary_notepad_plan(goal, context)
 
         # Check for compound project test & run goal:
         if ("project" in goal_lower and re.search(r"\btests?\b", goal_lower) and any(w in goal_lower for w in ["pass", "fail", "check", "run"])):
@@ -401,6 +413,158 @@ class TaskPlanner:
         )
 
     @classmethod
+    def _create_file_and_whatsapp_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Find the latest project report and send it to Rahul on WhatsApp"
+        """
+        # Extract recipient if present
+        m_recip = re.search(r"(?:to|message|send)\s+([a-zA-Z0-9_\-\s]+?)(?:\s+on|\s+via)?\s+whatsapp", goal, re.IGNORECASE)
+        recip_name = m_recip.group(1).strip() if m_recip else (getattr(context, "last_person", None) or "Rahul")
+        recip_name = re.sub(r"^(?:it\s+to|it\s+on)\s+", "", recip_name, flags=re.IGNORECASE).strip()
+
+        # Determine target file keyword
+        m_file = re.search(r"(?:find|get|locate)\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+and|\s+to|\s+report)", goal, re.IGNORECASE)
+        file_term = "project report" if "report" in goal.lower() else (m_file.group(1).strip() if m_file else "document")
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query=f"Find the latest {file_term}",
+                handler="file_operation",
+                parameters={"subaction": "find", "query": file_term, "recency": "latest"},
+                expected_output="path",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query=f"Verify {file_term} exists on filesystem",
+                handler="file_operation",
+                parameters={"subaction": "verify_file"},
+                expected_output="verified_file",
+                dependencies=[1],
+            ),
+            PlanStep(
+                step_id=3,
+                query=f"Prepare and share {file_term} with {recip_name} on WhatsApp",
+                handler="whatsapp_send",
+                parameters={
+                    "recipient": recip_name,
+                    "content": f"Hi {recip_name}, here is the latest {file_term}.",
+                    "attachment_path": "",
+                    "authorized": False  # Confirmation required before real transmission
+                },
+                expected_output="message_submitted",
+                dependencies=[1, 2],
+                is_consequential=True,
+                requires_confirmation=True,
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Located latest {file_term} and prepared WhatsApp message with attachment for {recip_name}."
+        )
+
+    @classmethod
+    def _create_file_and_email_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Find my resume, attach it to an email to the recruiter, and save the email as a draft."
+        """
+        m_recip = re.search(r"(?:to|email)\s+(?:the\s+)?([a-zA-Z0-9_\-]+)(?:\s+and|\s+as|\s+with|$)", goal, re.IGNORECASE)
+        recip_name = m_recip.group(1).strip() if m_recip else "recruiter"
+        if recip_name.lower() in ["an", "email", "draft", "a"]:
+            m_recip2 = re.search(r"\bto\s+(?:the\s+)?([a-zA-Z0-9_\-]+)\b", goal, re.IGNORECASE)
+            if m_recip2 and m_recip2.group(1).lower() not in ["an", "email"]:
+                recip_name = m_recip2.group(1).strip()
+            else:
+                recip_name = "recruiter"
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query="Find my latest resume",
+                handler="file_operation",
+                parameters={"subaction": "find", "query": "resume", "recency": "latest"},
+                expected_output="path",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query="Verify resume file exists and is accessible",
+                handler="file_operation",
+                parameters={"subaction": "verify_file"},
+                expected_output="verified_file",
+                dependencies=[1],
+            ),
+            PlanStep(
+                step_id=3,
+                query=f"Draft email to {recip_name} with resume attached",
+                handler="email_draft",
+                parameters={
+                    "recipient": recip_name,
+                    "topic": "Job Application Resume Submission",
+                    "attachment_path": ""
+                },
+                expected_output="email_draft_stored",
+                dependencies=[1, 2],
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Discovered latest resume and saved email draft with attachment for {recip_name}."
+        )
+
+    @classmethod
+    def _create_file_summary_notepad_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Open the project notes, create a short summary, and put it in Notepad."
+        """
+        m_doc = re.search(r"(?:open|find|read)\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)(?:,|\s+create|\s+and)", goal, re.IGNORECASE)
+        doc_term = m_doc.group(1).strip() if m_doc else "project notes"
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query=f"Find {doc_term}",
+                handler="file_operation",
+                parameters={"subaction": "find", "query": doc_term, "recency": "latest"},
+                expected_output="path",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query=f"Read and create extractive summary of {doc_term}",
+                handler="file_summarize",
+                parameters={"max_points": 4},
+                expected_output="summary",
+                dependencies=[1],
+            ),
+            PlanStep(
+                step_id=3,
+                query="Insert verified summary into Windows Notepad",
+                handler="gui_action",
+                parameters={
+                    "action": "type",
+                    "app_name": "notepad",
+                    "text": "",
+                    "content": "",
+                    "force_focus": True
+                },
+                expected_output="notepad_written",
+                dependencies=[2],
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Discovered {doc_term}, generated factual summary, and faithfully inserted into Notepad."
+        )
+
+    @classmethod
     def pipe_step_dependencies(cls, step: PlanStep, step_outputs: Dict[int, Any]):
         """Inject resolved outputs from prerequisite steps into downstream step parameters."""
         for dep_id in step.dependencies:
@@ -417,6 +581,18 @@ class TaskPlanner:
                         step.parameters["path"] = actual_path
                     if not step.parameters.get("file"):
                         step.parameters["file"] = os.path.basename(actual_path)
+                    # Pipe attachment path for communication actions
+                    if step.handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"]:
+                        step.parameters["attachment_path"] = actual_path
+
+                # Pipe summary content into Notepad typing or message drafting
+                if dep_output.get("summary"):
+                    sum_text = dep_output["summary"]
+                    if step.handler in ["gui_action", "type_notepad", "notepad_write"]:
+                        step.parameters["text"] = sum_text
+                        step.parameters["content"] = sum_text
+                    elif step.handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"]:
+                        step.parameters["content"] = sum_text
 
                 if dep_output.get("test_command") and step.handler in ["project_action", "exec_project_action"]:
                     step.parameters["command"] = dep_output["test_command"]

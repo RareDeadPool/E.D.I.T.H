@@ -10,6 +10,7 @@ from ctypes import wintypes
 from typing import Optional, Tuple
 
 user32 = ctypes.windll.user32
+kernel32 = ctypes.windll.kernel32
 
 # DPI Awareness
 try:
@@ -588,4 +589,50 @@ def get_clipboard_text() -> str:
             kernel32.GlobalUnlock(h)
     finally:
         user32.CloseClipboard()
+
+
+def set_clipboard_file(file_path: str) -> bool:
+    """Place a file on the Windows clipboard as a CF_HDROP object for pasting into apps."""
+    abs_path = os.path.abspath(file_path)
+    if not os.path.exists(abs_path):
+        return False
+    CF_HDROP = 15
+    GMEM_MOVEABLE = 0x0002
+
+    class DROPFILES(ctypes.Structure):
+        _fields_ = [
+            ("pFiles", wintypes.DWORD),
+            ("pt", wintypes.POINT),
+            ("fNC", wintypes.BOOL),
+            ("fWide", wintypes.BOOL),
+        ]
+
+    df = DROPFILES()
+    df.pFiles = ctypes.sizeof(DROPFILES)
+    df.pt = wintypes.POINT(0, 0)
+    df.fNC = False
+    df.fWide = True
+
+    path_bytes = abs_path.encode("utf-16le") + b"\x00\x00\x00\x00"
+    total_bytes = ctypes.sizeof(DROPFILES) + len(path_bytes)
+
+    if not user32.OpenClipboard(0):
+        return False
+    try:
+        user32.EmptyClipboard()
+        h = kernel32.GlobalAlloc(GMEM_MOVEABLE, total_bytes)
+        if not h:
+            return False
+        p = kernel32.GlobalLock(h)
+        if not p:
+            kernel32.GlobalFree(h)
+            return False
+        ctypes.memmove(p, ctypes.byref(df), ctypes.sizeof(DROPFILES))
+        ctypes.memmove(p + ctypes.sizeof(DROPFILES), path_bytes, len(path_bytes))
+        kernel32.GlobalUnlock(h)
+        res = user32.SetClipboardData(CF_HDROP, h)
+        return bool(res)
+    finally:
+        user32.CloseClipboard()
+
 

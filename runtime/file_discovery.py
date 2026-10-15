@@ -104,6 +104,17 @@ class FileDiscoveryEngine:
         self._last_scan_time = 0.0
 
     @property
+    def search_roots(self) -> List[str]:
+        return self.get_search_roots()
+
+    @search_roots.setter
+    def search_roots(self, paths: List[str]):
+        self.custom_roots = list(paths)
+        self._include_system_roots = False
+        self._cache.clear()
+        self._last_scan_time = 0.0
+
+    @property
     def include_system_roots(self) -> bool:
         return self._include_system_roots
 
@@ -527,3 +538,306 @@ class FileDiscoveryEngine:
             "clarification_prompt": clarification_msg,
             "message": clarification_msg or f"Found '{top_candidates[0].name}' at {top_candidates[0].path} ({top_candidates[0].mtime_str})."
         }
+
+    def read_document_text(self, file_path: str, max_chars: int = 25000) -> Dict[str, Any]:
+        """Safely read and extract text from supported document types (.txt, .md, .py, .json, .docx, .pdf)."""
+        abs_p = os.path.abspath(file_path)
+        if not os.path.isfile(abs_p):
+            return {"status": "error", "success": False, "message": f"File does not exist: '{file_path}'"}
+        
+        text = self._extract_text_content(abs_p, max_chars=max_chars)
+        if text is None:
+            return {"status": "error", "success": False, "message": f"Could not read text content from '{file_path}'."}
+        
+        return {
+            "status": "success",
+            "success": True,
+            "path": abs_p,
+            "name": os.path.basename(abs_p),
+            "text": text,
+            "length": len(text),
+            "word_count": len(text.split()),
+            "message": f"Successfully read {len(text)} characters from '{os.path.basename(abs_p)}'."
+        }
+
+    def summarize_document(self, file_path: str, max_points: int = 4, focus_topic: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Extractive, local document summarization without third-party LLMs.
+        Extracts key sentences, headers, core metrics, and produces a structured summary.
+        """
+        read_res = self.read_document_text(file_path)
+        if not read_res.get("success"):
+            return read_res
+        
+        raw_text = read_res["text"]
+        lines = [l.strip() for l in raw_text.splitlines() if l.strip()]
+        if not lines:
+            return {
+                "status": "success",
+                "success": True,
+                "path": read_res["path"],
+                "title": read_res["name"],
+                "summary": "The document is empty.",
+                "points": [],
+                "message": f"Document '{read_res['name']}' contains no readable text."
+            }
+        
+        # 1. Determine Title / Header
+        title = read_res["name"]
+        for line in lines[:5]:
+            # Look for markdown header or prominent leading line
+            if line.startswith("#"):
+                title = line.lstrip("#").strip()
+                break
+            elif len(line) < 80 and not line.endswith(".") and not line.startswith("//") and not line.startswith("/*"):
+                title = line
+                break
+
+        # 2. Extract Clean Sentences
+        sentences = []
+        in_code_block = False
+        for line in lines:
+            line_str = line.strip()
+            if line_str.startswith("```"):
+                in_code_block = not in_code_block
+                continue
+            if in_code_block:
+                continue
+            # Skip code import lines, formatting-only lines, diagrams, table rows
+            if (line_str.startswith("import ") or line_str.startswith("from ") or
+                line_str.startswith("|") or "│" in line_str or "├" in line_str or "└" in line_str or "$$" in line_str or
+                "-->" in line_str or '["' in line_str or '"]' in line_str or line_str.startswith("---") or line_str.startswith("===")):
+                continue
+            # Strip markdown formatting
+            clean_l = re.sub(r"[*_~`#]", "", line_str).strip()
+            if not clean_l or len(clean_l) < 25:
+                continue
+            for s in re.split(r"(?<=[.!?])\s+", clean_l):
+                s_clean = s.strip()
+                if len(s_clean) >= 25 and not s_clean.startswith("//") and not s_clean.startswith("•"):
+                    sentences.append(s_clean)
+
+        if not sentences:
+            sentences = [re.sub(r"[*_~`#]", "", l).strip() for l in lines if len(l.strip()) >= 20][:max_points]
+
+        # 3. Score Sentences by Extractive Importance
+        # Build local term frequency map excluding common stopwords
+        stopwords = {
+            "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
+            "with", "by", "of", "from", "is", "was", "are", "were", "be", "been",
+            "this", "that", "these", "those", "it", "its", "as", "have", "has", "had"
+        }
+        words = re.findall(r"\b[a-zA-Z]{3,}\b", raw_text.lower())
+        word_freq: Dict[str, int] = {}
+        for w in words:
+            if w not in stopwords:
+                word_freq[w] = word_freq.get(w, 0) + 1
+
+        scored: List[Tuple[float, int, str]] = []
+        key_markers = ["conclude", "summary", "result", "goal", "achieve", "implement", "feature", "metric", "architecture", "final", "status", "deadline"]
+        focus_terms = re.findall(r"\b[a-zA-Z]{3,}\b", (focus_topic or "").lower())
+
+        for idx, s in enumerate(sentences):
+            s_low = s.lower()
+            s_words = re.findall(r"\b[a-zA-Z]{3,}\b", s_low)
+            if not s_words:
+                continue
+
+            # Term frequency score
+            tf_score = sum(word_freq.get(w, 0) for w in s_words) / len(s_words)
+            
+            # Position boost (early sentences in paragraphs contain topic sentences)
+            pos_boost = 1.2 if idx < 3 else 1.0
+
+            # Marker bonus
+            marker_bonus = 1.3 if any(m in s_low for m in key_markers) else 1.0
+            
+            # Numeric/statistic bonus (e.g. 100%, 5MB, 2026)
+            num_bonus = 1.15 if re.search(r"\b\d+(?:\.\d+)?%?\b", s) else 1.0
+
+            # Focus query bonus if specified
+            focus_bonus = 1.5 if any(ft in s_low for ft in focus_terms) else 1.0
+
+            final_score = tf_score * pos_boost * marker_bonus * num_bonus * focus_bonus
+            scored.append((final_score, idx, s))
+
+        # Sort by importance, select top distinct points, re-sort by document order
+        scored.sort(key=lambda x: x[0], reverse=True)
+        top_selected = scored[:max_points]
+        top_selected.sort(key=lambda x: x[1])
+
+        points = [s for _, _, s in top_selected]
+
+        summary_lines = [f"Document Summary: {title}", ""]
+        for p in points:
+            summary_lines.append(f"• {p}")
+        summary_text = "\n".join(summary_lines)
+
+        return {
+            "status": "success",
+            "success": True,
+            "path": read_res["path"],
+            "title": title,
+            "summary": summary_text,
+            "points": points,
+            "word_count": read_res["word_count"],
+            "message": f"Generated summary for '{read_res['name']}' ({len(points)} key points)."
+        }
+
+    def rename_file(self, source_path: str, new_name_or_path: str) -> Dict[str, Any]:
+        """Safely rename a file or directory with path verification."""
+        abs_src = os.path.abspath(source_path)
+        if not os.path.exists(abs_src):
+            return {"status": "error", "success": False, "message": f"Source file does not exist: '{source_path}'"}
+
+        # If new_name_or_path is just a filename, keep the same directory
+        if os.path.sep not in new_name_or_path and "/" not in new_name_or_path:
+            abs_dest = os.path.join(os.path.dirname(abs_src), new_name_or_path)
+        else:
+            abs_dest = os.path.abspath(new_name_or_path)
+
+        if os.path.exists(abs_dest) and abs_dest.lower() != abs_src.lower():
+            return {
+                "status": "error",
+                "success": False,
+                "message": f"Cannot rename: destination already exists at '{abs_dest}'."
+            }
+
+        try:
+            os.rename(abs_src, abs_dest)
+            verified = os.path.exists(abs_dest)
+            return {
+                "status": "success" if verified else "error",
+                "success": verified,
+                "source": abs_src,
+                "destination": abs_dest,
+                "message": f"Successfully renamed '{os.path.basename(abs_src)}' to '{os.path.basename(abs_dest)}'."
+            }
+        except Exception as e:
+            return {"status": "error", "success": False, "message": f"Rename failed: {e}"}
+
+    def copy_file(self, source_path: str, destination_path: str, overwrite: bool = False) -> Dict[str, Any]:
+        """Safely copy a file to a destination with overwrite protection."""
+        abs_src = os.path.abspath(source_path)
+        if not os.path.exists(abs_src):
+            return {"status": "error", "success": False, "message": f"Source file does not exist: '{source_path}'"}
+
+        abs_dest = os.path.abspath(destination_path)
+        if os.path.isdir(abs_dest):
+            abs_dest = os.path.join(abs_dest, os.path.basename(abs_src))
+
+        if os.path.exists(abs_dest) and not overwrite:
+            return {
+                "status": "error",
+                "success": False,
+                "message": f"Destination already exists at '{abs_dest}'. Specify overwrite=True to replace."
+            }
+
+        try:
+            os.makedirs(os.path.dirname(abs_dest), exist_ok=True)
+            if os.path.isdir(abs_src):
+                shutil.copytree(abs_src, abs_dest, dirs_exist_ok=overwrite)
+            else:
+                shutil.copy2(abs_src, abs_dest)
+            verified = os.path.exists(abs_dest)
+            return {
+                "status": "success" if verified else "error",
+                "success": verified,
+                "source": abs_src,
+                "destination": abs_dest,
+                "message": f"Successfully copied '{os.path.basename(abs_src)}' to '{abs_dest}'."
+            }
+        except Exception as e:
+            return {"status": "error", "success": False, "message": f"Copy failed: {e}"}
+
+    def move_file(self, source_path: str, destination_path: str, overwrite: bool = False) -> Dict[str, Any]:
+        """Safely move a file or folder with overwrite protection."""
+        abs_src = os.path.abspath(source_path)
+        if not os.path.exists(abs_src):
+            return {"status": "error", "success": False, "message": f"Source file does not exist: '{source_path}'"}
+
+        abs_dest = os.path.abspath(destination_path)
+        if os.path.isdir(abs_dest):
+            abs_dest = os.path.join(abs_dest, os.path.basename(abs_src))
+
+        if os.path.exists(abs_dest) and not overwrite:
+            return {
+                "status": "error",
+                "success": False,
+                "message": f"Destination already exists at '{abs_dest}'. Specify overwrite=True to replace."
+            }
+
+        try:
+            os.makedirs(os.path.dirname(abs_dest), exist_ok=True)
+            shutil.move(abs_src, abs_dest)
+            verified = os.path.exists(abs_dest) and not os.path.exists(abs_src)
+            return {
+                "status": "success" if verified else "error",
+                "success": verified,
+                "source": abs_src,
+                "destination": abs_dest,
+                "message": f"Successfully moved '{os.path.basename(abs_src)}' to '{abs_dest}'."
+            }
+        except Exception as e:
+            return {"status": "error", "success": False, "message": f"Move failed: {e}"}
+
+    def organize_folder(self, folder_path: str, strategy: str = "by_extension") -> Dict[str, Any]:
+        """
+        Organize unorganized files in a folder into standard subdirectories (Documents, Images, Code, etc.).
+        Avoids moving subdirectories, hidden files, or critical repository files.
+        """
+        abs_folder = os.path.abspath(folder_path)
+        if not os.path.isdir(abs_folder):
+            return {"status": "error", "success": False, "message": f"Folder does not exist: '{folder_path}'"}
+
+        category_map = {
+            "Documents": [".pdf", ".docx", ".doc", ".txt", ".rtf", ".odt"],
+            "Spreadsheets": [".xlsx", ".xls", ".csv"],
+            "Images": [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".svg"],
+            "Code": [".py", ".js", ".ts", ".html", ".css", ".cpp", ".c", ".java", ".json", ".sql", ".bat", ".ps1"],
+            "Archives": [".zip", ".tar", ".gz", ".7z", ".rar"],
+            "Audio": [".mp3", ".wav", ".flac", ".m4a"],
+            "Video": [".mp4", ".mkv", ".avi", ".mov"]
+        }
+
+        moved_files = []
+        errors = []
+
+        try:
+            for item in os.listdir(abs_folder):
+                item_path = os.path.join(abs_folder, item)
+                if os.path.isdir(item_path) or item.startswith("."):
+                    continue
+
+                ext = os.path.splitext(item)[1].lower()
+                target_sub = "Other"
+                for cat, exts in category_map.items():
+                    if ext in exts:
+                        target_sub = cat
+                        break
+
+                target_dir = os.path.join(abs_folder, target_sub)
+                os.makedirs(target_dir, exist_ok=True)
+                dest_path = os.path.join(target_dir, item)
+
+                if os.path.exists(dest_path):
+                    continue  # Don't overwrite existing file in target subfolder
+
+                try:
+                    shutil.move(item_path, dest_path)
+                    moved_files.append({"file": item, "category": target_sub})
+                except Exception as ex:
+                    errors.append(f"Failed to move '{item}': {ex}")
+
+            return {
+                "status": "success",
+                "success": True,
+                "folder": abs_folder,
+                "moved_count": len(moved_files),
+                "moved_files": moved_files,
+                "errors": errors,
+                "message": f"Organized {len(moved_files)} files in '{os.path.basename(abs_folder)}' by category."
+            }
+        except Exception as e:
+            return {"status": "error", "success": False, "message": f"Folder organization failed: {e}"}
+

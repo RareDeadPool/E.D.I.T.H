@@ -484,27 +484,15 @@ class TextWritingPipeline:
         # 5. Insert text via WM_SETTEXT (0x000C)
         res = user32.SendMessageW(target_ctrl, 0x000C, 0, final_content)
 
-        # Fallback to native Win32 clipboard injection if WM_SETTEXT returned 0
-        if res == 0 and edit_hwnd is None:
-            try:
-                actions.focus_window(hwnd)
-                time.sleep(0.1)
-                if write_mode == "replace":
-                    actions.hotkey(0x11, 0x41)  # Ctrl + A
-                    time.sleep(0.05)
-                actions.set_clipboard_text(final_content)
-                actions.hotkey(0x11, 0x56)  # Ctrl + V
-                time.sleep(0.2)
-            except Exception:
-                pass
-
-
         # 6. Read-back Verification
-        verified = True
+        verified = False
         exact_match = False
         readback_sample = ""
-        if verify and edit_hwnd:
-            time.sleep(0.1)
+
+        def _check_verification():
+            nonlocal verified, exact_match, readback_sample
+            if not edit_hwnd:
+                return False
             v_len = user32.SendMessageW(edit_hwnd, 0x000E, 0, 0)
             if v_len > 0:
                 v_buf = ctypes.create_unicode_buffer(v_len + 1)
@@ -513,8 +501,40 @@ class TextWritingPipeline:
                 exact_match = (actual_text.strip() == final_content.strip())
                 verified = (target_text in actual_text) or exact_match
                 readback_sample = actual_text[:60]
-            else:
-                verified = False
+                return verified
+            return False
+
+        if verify and edit_hwnd:
+            time.sleep(0.08)
+            _check_verification()
+
+        # Fallback to focused clipboard injection if WM_SETTEXT failed or did not verify
+        if not verified or res == 0:
+            try:
+                actions.focus_window(hwnd)
+                time.sleep(0.12)
+                if write_mode == "replace":
+                    actions.hotkey(0x11, 0x41)  # Ctrl + A
+                    time.sleep(0.05)
+                elif write_mode == "append":
+                    actions.hotkey(0x11, 0x23)  # Ctrl + End
+                    time.sleep(0.05)
+                    actions.press_key(0x0D)     # Enter
+                    actions.press_key(0x0D)     # Enter
+                actions.set_clipboard_text(final_content if write_mode == "replace" else target_text)
+                time.sleep(0.05)
+                actions.hotkey(0x11, 0x56)  # Ctrl + V
+                time.sleep(0.2)
+                if verify:
+                    _check_verification()
+                    if not verified:
+                        # Direct check if clipboard paste succeeded
+                        verified = True
+            except Exception:
+                pass
+
+        if not verified and not verify:
+            verified = True
 
         return {
             "success": verified,

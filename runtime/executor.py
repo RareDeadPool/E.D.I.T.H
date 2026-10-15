@@ -34,6 +34,21 @@ class EdithTaskExecutor:
         self._file_discovery = None
         self._text_writer = None
         self._memory_manager = None
+        self._action_registry = None
+
+    @property
+    def action_registry(self):
+        """Lazy-loaded ActionRegistry for cross-application capability execution."""
+        if self._action_registry is None:
+            try:
+                from runtime.action_registry import ActionRegistry
+                self._action_registry = ActionRegistry(
+                    file_discovery=self.file_discovery,
+                    text_writer=self.text_writer
+                )
+            except ImportError:
+                self._action_registry = None
+        return self._action_registry
 
     @property
     def file_discovery(self):
@@ -122,6 +137,8 @@ class EdithTaskExecutor:
         "email": "explorer.exe shell:AppsFolder\\microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail",
         "outlook": "outlook.exe",
         "gmail": "https://mail.google.com",
+        "whatsapp": "whatsapp:",
+        "whatsapp desktop": "whatsapp:",
     }
 
     def _find_app_in_registry(self, app_name: str) -> Optional[str]:
@@ -232,6 +249,44 @@ class EdithTaskExecutor:
         # 18. Project Action (run tests, test suite, project build, project run)
         elif handler in ["project_action", "exec_project_action", "run_tests"]:
             return self._project_action(params)
+
+        # 19. WhatsApp Cross-App Capability Execution
+        elif handler in ["whatsapp", "whatsapp_send", "whatsapp_draft", "whatsapp_revise", "whatsapp_preview", "send_whatsapp", "draft_whatsapp"]:
+            reg = self.action_registry
+            if reg:
+                cap_name = handler if handler.startswith("whatsapp_") else f"whatsapp_{handler.replace('send_whatsapp', 'send').replace('draft_whatsapp', 'draft')}"
+                if cap_name not in reg.capabilities:
+                    cap_name = "whatsapp_send" if "send" in handler else "whatsapp_draft"
+                res, ver = reg.execute(cap_name, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
+
+        # 20. Email Cross-App Capability Execution
+        elif handler in ["email", "email_send", "email_draft", "email_revise", "email_preview", "send_email", "draft_email"]:
+            reg = self.action_registry
+            if reg:
+                cap_name = handler if handler.startswith("email_") else f"email_{handler.replace('send_email', 'send').replace('draft_email', 'draft')}"
+                if cap_name not in reg.capabilities:
+                    cap_name = "email_send" if "send" in handler else "email_draft"
+                res, ver = reg.execute(cap_name, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
+
+        # 21. Document Summarization & File Organization
+        elif handler in ["file_summarize", "file_rename", "file_copy", "file_move", "file_organize"]:
+            reg = self.action_registry
+            if reg:
+                res, ver = reg.execute(handler, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
+
+        # 22. Browser and Web Actions
+        elif handler in ["browser_open", "browser_search_and_summarize", "browser_fill_form"]:
+            reg = self.action_registry
+            if reg:
+                res, ver = reg.execute(handler, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
 
         return {
             "status": "unhandled",
@@ -1830,7 +1885,7 @@ class EdithTaskExecutor:
 
     def _file_operation(self, params: Dict[str, Any]) -> Dict[str, Any]:
         subaction = params.get("subaction", "").lower().strip()
-        source = params.get("source", "") or params.get("file", "")
+        source = params.get("source", "") or params.get("file", "") or params.get("query", "")
         dest = params.get("destination", "") or params.get("path", "")
         cmd = params.get("command", "").lower().strip()
 

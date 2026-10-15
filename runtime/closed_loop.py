@@ -267,6 +267,48 @@ class ClosedLoopVerifier:
                     fallback_parameters={"app_name": parameters.get("app_name"), "force_focus": True}
                 )
 
+        # 4c. WhatsApp & Email Cross-App Verification
+        elif handler in ["whatsapp", "whatsapp_send", "whatsapp_draft", "whatsapp_revise", "whatsapp_preview", "send_whatsapp", "draft_whatsapp"]:
+            if raw_status in ["success", "duplicate_prevented", "needs_confirmation"]:
+                return VerificationResult(
+                    success=True,
+                    observed_state=execution_result.get("transmission_state", "whatsapp_completed"),
+                    diagnostic_message=raw_message or "WhatsApp action completed and verified."
+                )
+            return VerificationResult(
+                success=False,
+                observed_state="whatsapp_failed",
+                diagnostic_message=raw_message or "WhatsApp action failed.",
+                can_recover=True,
+                recovery_strategy="retry_via_web"
+            )
+
+        elif handler in ["email", "email_send", "email_draft", "email_revise", "send_email", "draft_email"]:
+            if raw_status in ["success", "needs_confirmation"]:
+                return VerificationResult(
+                    success=True,
+                    observed_state="email_completed",
+                    diagnostic_message=raw_message or "Email action completed."
+                )
+            return VerificationResult(
+                success=False,
+                observed_state="email_failed",
+                diagnostic_message=raw_message or "Email action failed."
+            )
+
+        elif handler in ["file_summarize", "file_rename", "file_copy", "file_move", "file_organize"]:
+            if raw_status in ["success"]:
+                return VerificationResult(
+                    success=True,
+                    observed_state=f"{handler}_completed",
+                    diagnostic_message=raw_message or f"{handler} completed."
+                )
+            return VerificationResult(
+                success=False,
+                observed_state=f"{handler}_failed",
+                diagnostic_message=raw_message or f"{handler} failed."
+            )
+
         # 5. Default Verification
         return VerificationResult(
             success=(raw_status in ["success", "ok"]),
