@@ -126,48 +126,92 @@ class ContactResolver:
 
         # 1. Determine Action Type
         action_type = "send"
-        if any(w in q_low for w in ["draft", "compose", "write a draft", "prepare a message"]):
-            action_type = "draft"
-        elif any(w in q_low for w in ["show me the message", "preview", "show draft", "show the message"]):
+        if any(w in q_low for w in ["cancel that", "abort", "cancel the message", "don't send that"]):
+            action_type = "cancel"
+        elif any(w in q_low for w in ["keep it as a draft", "don't send it yet", "keep as draft", "just keep it as a draft"]):
+            action_type = "keep_draft"
+        elif any(w in q_low for w in [
+            "show me the message", "preview", "show draft", "show the message",
+            "show me the message first", "show the message first", "let me see the message"
+        ]):
             action_type = "preview"
-        elif any(w in q_low for w in ["make that message shorter", "make it shorter", "add that", "correct the message", "revise"]):
+        elif any(w in q_low for w in [
+            "make that message shorter", "make it shorter", "make the message sound more polite",
+            "make it more polite", "make that shorter", "make it more formal", "make it more professional",
+            "add that", "add a note", "add a sentence", "correct the message", "revise"
+        ]):
             action_type = "edit"
-        elif any(w in q_low for w in ["send", "tell", "message", "text"]):
+        elif any(w in q_low for w in [
+            "send the message we just drafted", "send the revised version", "send the revised message",
+            "send it", "send message", "send that"
+        ]):
+            action_type = "send"
+        elif any(w in q_low for w in ["draft", "compose", "write a draft", "prepare a message"]):
+            action_type = "draft"
+        elif any(w in q_low for w in ["send", "tell", "message", "text", "whatsapp", "ping"]):
             action_type = "send"
 
         recipient_candidate = None
         extracted_text = None
+        is_exact = False
 
-        # 2. Extract Exact Dictation
-        # e.g., "Send Rahul this exact message: I will be late" or "Send this exact message to Rahul: I will be late"
-        m_exact = re.search(
-            r"^(?:send|text|message)\s+(?:(?:to\s+)?([a-zA-Z0-9_\-\s]+?)\s+)?(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)(?:\s+to\s+([a-zA-Z0-9_\-\s]+?))?\s*:\s*(.+)$",
+        # 2. Extract Exact Quoted Dictation (Preserves inner instructions like "open the browser")
+        # e.g., Tell Rahul 'open the browser when you reach home'
+        m_quoted = re.search(
+            r"^(?:can\s+you\s+)?(?:tell|notify|inform|send\s+(?:to\s+)?|message|text|whatsapp|ping)\s+([a-zA-Z0-9_\-\s]+?)(?:\s+(?:on|via)\s+whatsapp)?\s*['\"](.+?)['\"]$",
             q,
             re.IGNORECASE
         )
-        if m_exact:
-            recipient_candidate = (m_exact.group(1) or m_exact.group(2) or "").strip() or None
-            extracted_text = m_exact.group(3).strip()
-        else:
-            m_exact2 = re.search(r"(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)\s*(?:to\s+(.+?))?\s*:\s*(.+)$", q, re.IGNORECASE)
-            if m_exact2:
-                if m_exact2.group(1):
-                    recipient_candidate = m_exact2.group(1).strip()
-                extracted_text = m_exact2.group(2).strip()
-                m_exact = m_exact2
+        if m_quoted:
+            recipient_candidate = m_quoted.group(1).strip()
+            extracted_text = m_quoted.group(2).strip()
+            is_exact = True
 
-        # 3. Pattern: "Draft/Write a (polite) message to <RECIPIENT> saying/asking/about <TEXT>"
+        # 2b. Exact Dictation with explicit marker
+        # e.g., "Send Rahul this exact message: I will be late"
+        if not extracted_text:
+            m_exact = re.search(
+                r"^(?:send|text|message)\s+(?:(?:to\s+)?([a-zA-Z0-9_\-\s]+?)\s+)?(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)(?:\s+to\s+([a-zA-Z0-9_\-\s]+?))?\s*:\s*(.+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_exact:
+                recipient_candidate = (m_exact.group(1) or m_exact.group(2) or "").strip() or None
+                extracted_text = m_exact.group(3).strip()
+                is_exact = True
+            else:
+                m_exact2 = re.search(r"(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)\s*(?:to\s+(.+?))?\s*:\s*(.+)$", q, re.IGNORECASE)
+                if m_exact2:
+                    if m_exact2.group(1):
+                        recipient_candidate = m_exact2.group(1).strip()
+                    extracted_text = m_exact2.group(2).strip()
+                    is_exact = True
+
+        # 3. Pattern: "Send [a] [whatsapp] message to <RECIPIENT> saying/that/asking/about <TEXT>"
+        # e.g. "Send a message to my project group saying the meeting starts at 4 PM."
+        if not extracted_text:
+            m_send_to_saying = re.search(
+                r"^(?:can\s+you\s+)?(?:send|text|ping)\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text|note)?\s*to\s+([a-zA-Z0-9_\-\s]+?)\s+(?:saying|that|asking|about)\s+(.+)$",
+                q,
+                re.IGNORECASE
+            )
+            if m_send_to_saying:
+                recipient_candidate = m_send_to_saying.group(1).strip()
+                extracted_text = m_send_to_saying.group(2).strip()
+
+        # 4. Pattern: "Draft/Write a (polite) message to <RECIPIENT> saying/asking/about <TEXT>"
         if not extracted_text:
             m_draft = re.search(
-                r"^(?:draft|write|compose)\s+(?:a\s+)?(?:polite\s+|formal\s+|quick\s+|short\s+)?(?:whatsapp\s+)?(?:message|text|email|note)\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+(?:saying|asking|about|that)\s+(.+)$",
+                r"^(?:draft|write|compose)\s+(?:a\s+)?(?:polite\s+|formal\s+|quick\s+|short\s+)?(?:whatsapp\s+)?(?:message|text|email|note)?\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+(?:saying|asking|about|that)\s+(.+)$",
                 q,
                 re.IGNORECASE
             )
             if m_draft:
+                action_type = "draft"
                 recipient_candidate = m_draft.group(1).strip()
                 extracted_text = m_draft.group(2).strip()
 
-        # 4. Pattern: "Send <RECIPIENT> a message saying <TEXT>"
+        # 5. Pattern: "Send <RECIPIENT> a message saying <TEXT>"
         if not extracted_text:
             m_send_a = re.search(
                 r"^(?:send|text)\s+([a-zA-Z0-9_\-\s]+?)\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text)?\s*(?:saying|that)\s+(.+)$",
@@ -178,29 +222,31 @@ class ContactResolver:
                 recipient_candidate = m_send_a.group(1).strip()
                 extracted_text = m_send_a.group(2).strip()
 
-        # 5. Pattern: "Tell <RECIPIENT> that/saying <TEXT>"
+        # 6. Pattern: "WhatsApp/Ping/Tell/Notify/Message <RECIPIENT> [on WhatsApp] saying/that/about <TEXT>"
+        # e.g. "WhatsApp Rahul that I'm on my way." or "Tell Rahul on WhatsApp I'll be there in ten minutes."
         if not extracted_text:
-            m_tell = re.search(
-                r"^(?:tell|notify|inform)\s+([a-zA-Z0-9_\-\s]+?)\s+(?:that|saying)\s+(.+)$",
+            m_wa_tell = re.search(
+                r"^(?:can\s+you\s+)?(?:tell|notify|inform|ping|whatsapp|message)\s+(?:the\s+|my\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+(?:on|via)\s+whatsapp)?\s+(?:saying\s+|that\s+|about\s+)?(.+)$",
                 q,
                 re.IGNORECASE
             )
-            if m_tell:
-                recipient_candidate = m_tell.group(1).strip()
-                extracted_text = m_tell.group(2).strip()
+            if m_wa_tell:
+                cand_recip = m_wa_tell.group(1).strip()
+                cand_text = m_wa_tell.group(2).strip()
+                # Ignore if cand_recip is generic
+                if cand_recip.lower() not in ["the message", "it", "that", "browser"]:
+                    recipient_candidate = cand_recip
+                    extracted_text = cand_text
 
-        # 6. Pattern: "Message <RECIPIENT> that/saying <TEXT>"
-        if not extracted_text:
-            m_msg = re.search(
-                r"^message\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)\s+(?:that|saying)\s+(.+)$",
-                q,
-                re.IGNORECASE
-            )
-            if m_msg:
-                recipient_candidate = m_msg.group(1).strip()
-                extracted_text = m_msg.group(2).strip()
+        # 7. Pattern: "No, send it to <RECIPIENT> instead"
+        if not recipient_candidate:
+            m_redir = re.search(r"^(?:no,?\s+)?send\s+it\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+instead$", q, re.IGNORECASE)
+            if m_redir:
+                action_type = "send"
+                recipient_candidate = m_redir.group(1).strip()
+                extracted_text = None
 
-        # 7. Pattern: "Send <TEXT> to <RECIPIENT>"
+        # 8. Pattern: "Send <TEXT> to <RECIPIENT>"
         if not extracted_text:
             m_send_to = re.search(
                 r"^send\s+(?:the\s+)?(?:revised\s+|active\s+)?(?:message|draft|text)?\s*(.+?)\s+to\s+([a-zA-Z0-9_\-\s]+)$",
@@ -209,20 +255,22 @@ class ContactResolver:
             )
             if m_send_to:
                 cand_text = m_send_to.group(1).strip()
-                recipient_candidate = m_send_to.group(2).strip()
-                # If cand_text is empty or just generic reference, it refers to active draft
-                if not cand_text or cand_text.lower() in ["message", "draft", "revised message", "that"]:
+                cand_recip = m_send_to.group(2).strip()
+                if not cand_text or cand_text.lower() in ["message", "draft", "revised message", "that", "the message"]:
                     extracted_text = None
                 else:
                     extracted_text = cand_text
+                recipient_candidate = cand_recip
 
-        # 8. Clean up recipient candidate
+        # 9. Clean up recipient candidate
         if recipient_candidate:
+            recipient_candidate = re.sub(r"^(?:a\s+message\s+to\s+|message\s+to\s+|to\s+)", "", recipient_candidate, flags=re.IGNORECASE).strip()
             recipient_candidate = re.sub(r"^(?:the\s+)?(?:contact\s+|person\s+|group\s+)?", "", recipient_candidate, flags=re.IGNORECASE).strip()
+            recipient_candidate = re.sub(r"^(?:my\s+)", "", recipient_candidate, flags=re.IGNORECASE).strip()
             # Remove trailing words like 'on whatsapp', 'via whatsapp'
             recipient_candidate = re.sub(r"\s+(?:on|via|through)\s+whatsapp.*$", "", recipient_candidate, flags=re.IGNORECASE).strip()
 
-        # 9. Clean up extracted text
+        # 10. Clean up extracted text
         if extracted_text:
             # Strip outer quotes if present
             extracted_text = re.sub(r'^["\']|["\']$', '', extracted_text).strip()
@@ -231,7 +279,7 @@ class ContactResolver:
             "action_type": action_type,
             "recipient_raw": recipient_candidate,
             "message_text": extracted_text,
-            "is_exact": bool(m_exact),
+            "is_exact": is_exact,
         }
 
     def resolve(
@@ -294,25 +342,37 @@ class ContactResolver:
                     clarification_prompt=f"Which group chat would you like to use?\n  " + "\n  ".join(opts)
                 )
 
-        if "not that rahul" in q_text or "the other rahul" in q_text:
-            # Exclude currently selected Rahul
+        m_other = re.search(r"\b(?:not\s+that|the\s+other|other|second)\s+([a-zA-Z]+)", q_text)
+        if m_other or "the other rahul" in q_text or "not that rahul" in q_text:
+            name_term = m_other.group(1).lower() if m_other else "rahul"
             prior_name = getattr(context, "last_person", None) if context else None
-            other_rahuls = [c for c in self.contacts if "rahul" in c.name.lower() and c.name != prior_name]
-            if len(other_rahuls) == 1:
+            cand_objs = []
+            if context and hasattr(context, "pending_clarification") and context.pending_clarification:
+                raw_cands = context.pending_clarification.get("candidates", [])
+                for rc in raw_cands:
+                    c_name = rc.get("name") if isinstance(rc, dict) else str(rc)
+                    c_obj = self.get_exact_contact(c_name)
+                    if c_obj and c_obj not in cand_objs:
+                        cand_objs.append(c_obj)
+            all_matches = cand_objs if cand_objs else [c for c in self.contacts if name_term in c.name.lower()]
+            other_matches = [c for c in all_matches if c.name != prior_name]
+            if not other_matches and len(all_matches) > 1:
+                other_matches = [all_matches[1]]
+            if len(other_matches) == 1:
                 return ContactResolutionResult(
                     status="resolved",
-                    resolved_contact=other_rahuls[0],
-                    recipient_name=other_rahuls[0].name,
-                    is_group=other_rahuls[0].is_group,
-                    candidates=other_rahuls
+                    resolved_contact=other_matches[0],
+                    recipient_name=other_matches[0].name,
+                    is_group=other_matches[0].is_group,
+                    candidates=other_matches
                 )
-            elif len(other_rahuls) > 1:
-                opts = [f"{i+1}) {c.name} ({c.role or 'Contact'})" for i, c in enumerate(other_rahuls)]
+            elif len(other_matches) > 1:
+                opts = [f"{i+1}) {c.name} ({c.role or 'Contact'})" for i, c in enumerate(other_matches)]
                 return ContactResolutionResult(
                     status="needs_clarification",
                     is_ambiguous=True,
-                    candidates=other_rahuls,
-                    clarification_prompt=f"Which Rahul did you mean?\n  " + "\n  ".join(opts)
+                    candidates=other_matches,
+                    clarification_prompt=f"Which {name_term.capitalize()} did you mean?\n  " + "\n  ".join(opts)
                 )
 
         if not recip_term:

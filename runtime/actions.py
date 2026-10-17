@@ -7,7 +7,7 @@ actions that any module can call without reimplementing Win32 boilerplate.
 import time
 import ctypes
 from ctypes import wintypes
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any, List
 
 user32 = ctypes.windll.user32
 kernel32 = ctypes.windll.kernel32
@@ -150,23 +150,48 @@ def scroll(x: int, y: int, amount: int = -3):
     _send_mouse(MOUSEEVENTF_WHEEL, data=amount * 120)
 
 
-def press_key(vk: int, delay: float = 0.04):
-    """Press and release a single virtual key."""
+VK_NAMES = {
+    "ctrl": 0x11, "control": 0x11, "shift": 0x10, "alt": 0x12,
+    "enter": 0x0D, "return": 0x0D, "esc": 0x1B, "escape": 0x1B,
+    "tab": 0x09, "backspace": 0x08, "space": 0x20,
+    "up": 0x26, "down": 0x28, "left": 0x25, "right": 0x27,
+    "win": 0x5B, "windows": 0x5B, "cmd": 0x5B,
+    "delete": 0x2E, "del": 0x2E, "home": 0x24, "end": 0x23,
+}
+
+
+def _normalize_vk(key: Any) -> int:
+    """Convert virtual key code or string key name ('enter', 'ctrl', 'v') to integer VK."""
+    if isinstance(key, int):
+        return key
+    if isinstance(key, str):
+        k_low = key.lower().strip()
+        if k_low in VK_NAMES:
+            return VK_NAMES[k_low]
+        if len(k_low) == 1:
+            return ord(k_low.upper())
+    return int(key)
+
+
+def press_key(key: Any, delay: float = 0.04):
+    """Press and release a single virtual key (int VK or string name like 'enter')."""
+    vk = _normalize_vk(key)
     _send_key(vk, 0)
     time.sleep(delay)
     _send_key(vk, KEYEVENTF_KEYUP)
     time.sleep(delay)
 
 
-def hotkey(*vkeys: int, delay: float = 0.04):
-    """Press a key combination (e.g. Ctrl+A = hotkey(0x11, 0x41)).
+def hotkey(*keys: Any, delay: float = 0.04):
+    """Press a key combination (e.g. hotkey('ctrl', 'v') or hotkey(0x11, 0x41)).
 
     Keys are pressed in order and released in reverse order.
     """
-    for vk in vkeys:
+    vks = [_normalize_vk(k) for k in keys]
+    for vk in vks:
         _send_key(vk, 0)
         time.sleep(delay)
-    for vk in reversed(vkeys):
+    for vk in reversed(vks):
         _send_key(vk, KEYEVENTF_KEYUP)
         time.sleep(delay)
 
@@ -312,6 +337,7 @@ def get_window_size(hwnd: int) -> Tuple[int, int]:
 
 def focus_window(hwnd: int) -> bool:
     """Bring a window to the foreground reliably using the Win32 Alt-key bypass and SwitchToThisWindow."""
+    ensure_default_desktop()
     if not hwnd or not user32.IsWindow(hwnd):
         return False
 
@@ -361,12 +387,23 @@ def focus_window(hwnd: int) -> bool:
     return user32.GetForegroundWindow() == hwnd
 
 
+def ensure_default_desktop():
+    """Ensure the calling thread is attached to the interactive 'default' desktop on WinSta0."""
+    try:
+        hdesk = user32.OpenDesktopW("default", 0, False, 0x01FF)
+        if hdesk:
+            user32.SetThreadDesktop(hdesk)
+    except Exception:
+        pass
+
+
 def find_window_by_process(process_names: list, title_contains: Optional[str] = None) -> Optional[int]:
     """Find a top-level visible window belonging to any of the given process names.
 
     Filters out zero-sized and hidden utility helper windows, scoring candidates
     by title match, non-empty title, and largest visible client area.
     """
+    ensure_default_desktop()
     try:
         import psutil
         target_pids = set()
@@ -422,9 +459,16 @@ def find_window_by_process(process_names: list, title_contains: Optional[str] = 
     WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
     callback = WNDENUMPROC(_enum_callback)
 
-    user32.EnumWindows.argtypes = [WNDENUMPROC, wintypes.LPARAM]
-    user32.EnumWindows.restype = wintypes.BOOL
-    user32.EnumWindows(callback, 0)
+    hdesk_default = user32.OpenDesktopW("default", 0, False, 0x01FF)
+    if hdesk_default:
+        user32.EnumDesktopWindows.argtypes = [wintypes.HANDLE, WNDENUMPROC, wintypes.LPARAM]
+        user32.EnumDesktopWindows.restype = wintypes.BOOL
+        user32.EnumDesktopWindows(hdesk_default, callback, 0)
+        user32.CloseDesktop(hdesk_default)
+    else:
+        user32.EnumWindows.argtypes = [WNDENUMPROC, wintypes.LPARAM]
+        user32.EnumWindows.restype = wintypes.BOOL
+        user32.EnumWindows(callback, 0)
 
     if candidates:
         candidates.sort(key=lambda x: x[0], reverse=True)

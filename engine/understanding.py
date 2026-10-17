@@ -232,19 +232,42 @@ class UnderstandingNormalizer:
             confidence = 0.98
 
         # 00a. WhatsApp / Direct Messaging Normalization
-        elif "whatsapp" in q_lower or any(q_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "draft a message", "draft a whatsapp", "draft a polite message", "draft a quick message", "draft a short message"]):
+        elif (
+            "whatsapp" in q_lower or
+            bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway)(?:my\s+)?[a-zA-Z]+", q_lower)) or
+            bool(re.search(r"\bmake\s+(?:the\s+message|it|that|the\s+draft)\s+(?:sound\s+)?(?:more\s+)?(?:polite|formal|casual|professional|shorter|concise|brief)", q_lower)) or
+            any(w in q_lower for w in ["show me the message", "preview", "show draft", "show the message", "show me the message first"]) or
+            any(w in q_lower for w in ["make that message shorter", "make it shorter", "add that", "correct the message", "revise"]) or
+            any(w in q_lower for w in ["keep it as a draft", "don't send it yet", "keep as draft", "just keep it as a draft"]) or
+            any(w in q_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send it", "send message"]) or
+            any(q_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "ping ", "can you ping ", "draft a message", "draft a whatsapp", "draft a polite message", "draft a quick message", "draft a short message"]) or
+            any(p in q_lower for p in ["send it to", "use the group chat", "not that rahul", "the other rahul"])
+        ):
             if not ("email" in q_lower or "mail" in q_lower or "@" in q_lower):
-                is_draft = any(w in q_lower for w in ["draft", "compose", "write a message", "write a draft"])
-                goal = "whatsapp_draft" if is_draft else "whatsapp_send"
-                intent = "communication"
-                action = "draft_whatsapp" if is_draft else "send_whatsapp"
-                confidence = 0.98
+                is_msg_make = bool(re.search(r"\bmake\s+(?:the\s+message|it|that|the\s+draft)\s+(?:sound\s+)?(?:more\s+)?(?:polite|formal|casual|professional|shorter|concise|brief)", q_lower))
+                is_preview = any(w in q_lower for w in ["show me the message", "preview", "show draft", "show the message", "show me the message first"])
+                is_revision = is_msg_make or any(w in q_lower for w in ["make that message shorter", "make it shorter", "add that", "correct the message", "revise"])
+                is_keep_draft = any(w in q_lower for w in ["keep it as a draft", "don't send it yet", "keep as draft", "just keep it as a draft"])
+                is_explicit_send = any(w in q_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send it", "send message"])
 
-        elif any(p in q_lower for p in ["send the revised message", "send it to", "use the group chat", "not that rahul", "the other rahul"]):
-            goal = "whatsapp_send"
-            intent = "communication"
-            action = "send_whatsapp"
-            confidence = 0.98
+                if is_revision:
+                    goal = "whatsapp_revise"
+                    intent = "communication"
+                    action = "edit_whatsapp_draft"
+                elif is_preview:
+                    goal = "whatsapp_preview"
+                    intent = "communication"
+                    action = "preview_whatsapp_draft"
+                elif is_keep_draft:
+                    goal = "whatsapp_draft"
+                    intent = "communication"
+                    action = "draft_whatsapp"
+                else:
+                    is_draft = (not is_explicit_send) and any(w in q_lower for w in ["draft a ", "draft the ", "compose ", "write a draft", "prepare a message"])
+                    goal = "whatsapp_draft" if is_draft else "whatsapp_send"
+                    intent = "communication"
+                    action = "draft_whatsapp" if is_draft else "send_whatsapp"
+                confidence = 0.98
 
         # 0. Out-of-Distribution / General Knowledge / Philosophical queries
         elif any(re.search(pat, q_lower) for pat in [
