@@ -1416,6 +1416,11 @@ class EdithBrain:
         if low.startswith("put on ") or low.startswith("put some ") or any(k in low for k in ["find out", "online", "on the web", "on internet", "on google"]):
             return None
 
+        # Reject message and draft editing queries that start with "make" or "revise"
+        if any(k in low for k in ["message", "draft", "more polite", "more formal", "shorter", "concise", "polite"]):
+            if any(low.startswith(w) for w in ["make ", "revise ", "edit ", "update ", "change ", "shorten "]):
+                return None
+
         subaction = None
         verb_pattern = None
 
@@ -1599,26 +1604,82 @@ class EdithBrain:
         resolver = reg.contact_resolver if reg else (self.contact_resolver or ContactResolver())
         
         parsed_comm = resolver.extract_intent_and_entities(cmd_text)
+        action_type = parsed_comm.get("action_type", "send")
+
+        is_msg_ping = bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway)(?:my\s+)?[a-zA-Z]+", cmd_lower))
+        is_msg_make = bool(re.search(r"\bmake\s+(?:the\s+message|it|that|the\s+draft)\s+(?:sound\s+)?(?:more\s+)?(?:polite|formal|casual|professional|shorter|concise|brief)", cmd_lower))
+        is_explicit_send = any(w in cmd_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send it", "send message"])
+
         is_comm = False
         if "whatsapp" in cmd_lower:
+            is_comm = True
+        elif is_msg_ping or any(cmd_lower.startswith(w) for w in ["ping ", "can you ping "]):
+            is_comm = True
+        elif is_msg_make:
             is_comm = True
         elif any(cmd_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "draft a message", "draft a polite message", "draft a quick message", "draft a short message"]):
             if not ("email" in cmd_lower or "mail" in cmd_lower or "@" in cmd_lower):
                 is_comm = True
-        elif any(p in cmd_lower for p in [
-            "send the revised message", "send it to", "use the group chat",
-            "not that rahul", "the other rahul"
+        elif is_explicit_send or any(p in cmd_lower for p in [
+            "send it to", "use the group chat", "not that rahul", "the other rahul",
+            "show me the message first", "keep it as a draft", "don't send it yet"
         ]):
             is_comm = True
 
-        if is_comm and (
-            parsed_comm.get("recipient_raw") or
-            parsed_comm.get("message_text") or
-            "revised message" in cmd_lower or
-            "group chat" in cmd_lower or
-            getattr(self.context, "last_person", None) or
-            (reg and reg.whatsapp_adapter.active_draft)
-        ):
+        if is_comm:
+            # Handle Keep Draft
+            if action_type == "keep_draft":
+                return {
+                    "can_execute": True,
+                    "message": "The message has been kept as an unsent draft. You can say 'Send it' whenever you are ready.",
+                    "handler": "dialogue",
+                    "parameters": {"keep_draft": True}
+                }
+
+            # Handle Preview
+            if action_type == "preview":
+                prediction["intent"] = "communication"
+                prediction["action"] = "preview_whatsapp_draft"
+                prediction["operational_confidence"] = 1.0
+                return {
+                    "can_execute": True,
+                    "message": "Previewing WhatsApp message draft.",
+                    "handler": "whatsapp_preview",
+                    "parameters": {}
+                }
+
+            # Handle In-Place Revision
+            if action_type == "edit":
+                prediction["intent"] = "communication"
+                prediction["action"] = "edit_whatsapp_draft"
+                prediction["operational_confidence"] = 1.0
+                return {
+                    "can_execute": True,
+                    "message": f"Revising message draft: '{cmd_text}'.",
+                    "handler": "whatsapp_revise",
+                    "parameters": {"instruction": cmd_text}
+                }
+
+            # If user said "Send the message we just drafted" or "Send the revised version"
+            if is_explicit_send and reg and reg.whatsapp_adapter.active_draft:
+                draft_obj = reg.whatsapp_adapter.active_draft
+                prediction["intent"] = "communication"
+                prediction["action"] = "send_whatsapp"
+                prediction["operational_confidence"] = 1.0
+                return {
+                    "can_execute": True,
+                    "message": f"Sending approved WhatsApp message to {draft_obj.recipient}.",
+                    "handler": "whatsapp_send",
+                    "parameters": {
+                        "recipient": draft_obj.recipient,
+                        "phone": draft_obj.phone,
+                        "content": draft_obj.content,
+                        "is_exact": True,
+                        "authorized": True,
+                        "is_group": draft_obj.is_group
+                    }
+                }
+
             recip_query = parsed_comm.get("recipient_raw")
             if not recip_query:
                 if "group chat" in cmd_lower or "the group" in cmd_lower:
@@ -1638,7 +1699,7 @@ class EdithBrain:
                 prediction["operational_confidence"] = 0.95
                 if self.context:
                     self.context.pending_clarification = {
-                        "action_type": parsed_comm.get("action_type", "send"),
+                        "action_type": action_type,
                         "pending_text": parsed_comm.get("message_text", ""),
                         "candidates": [c.to_dict() for c in res_cont.candidates],
                         "is_exact": parsed_comm.get("is_exact", False)
@@ -1663,13 +1724,15 @@ class EdithBrain:
             if self.context and target_name:
                 self.context.set_selected_recipient(target_name, target_phone, is_group)
 
-            action_type = parsed_comm.get("action_type", "send")
             is_exact = parsed_comm.get("is_exact", False)
             msg_text = parsed_comm.get("message_text")
 
-            # If user said "send the revised message", retrieve active draft content
-            if not msg_text and "revised message" in cmd_lower and reg and reg.whatsapp_adapter.active_draft:
+            # If user said "send it to Rahul instead", reuse active draft message
+            if not msg_text and ("instead" in cmd_lower or "send it to" in cmd_lower) and reg and reg.whatsapp_adapter.active_draft:
                 msg_text = reg.whatsapp_adapter.active_draft.content
+                reg.whatsapp_adapter.active_draft.recipient = target_name
+                reg.whatsapp_adapter.active_draft.phone = target_phone
+                reg.whatsapp_adapter.active_draft.is_group = is_group
 
             prediction["intent"] = "communication"
             prediction["action"] = "draft_whatsapp" if action_type == "draft" else "send_whatsapp"
@@ -1690,9 +1753,9 @@ class EdithBrain:
             else:
                 # Send message:
                 # Exact dictation to unambiguous contact is pre-authorized.
-                # "send the revised message" is explicit authorization.
+                # "send the revised message" or "send the message we just drafted" is explicit authorization.
                 # Substantive assistant-generated content requires confirmation.
-                is_authorized = is_exact or ("send the revised message" in cmd_lower)
+                is_authorized = is_exact or is_explicit_send
                 return {
                     "can_execute": True,
                     "message": f"Preparing WhatsApp message for {target_name}.",
