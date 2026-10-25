@@ -136,16 +136,16 @@ class ContactResolver:
         ]):
             action_type = "preview"
         elif any(w in q_low for w in [
-            "make that message shorter", "make it shorter", "make the message sound more polite",
-            "make it more polite", "make that shorter", "make it more formal", "make it more professional",
-            "add that", "add a note", "add a sentence", "correct the message", "revise"
-        ]):
-            action_type = "edit"
-        elif any(w in q_low for w in [
             "send the message we just drafted", "send the revised version", "send the revised message",
-            "send it", "send message", "send that"
+            "send the message", "send it", "send message", "send that"
         ]):
             action_type = "send"
+        elif any(w in q_low for w in [
+            "make that message shorter", "make it shorter", "make the message sound more polite",
+            "make it more polite", "make that shorter", "make it more formal", "make it more professional",
+            "add that", "add a note", "add a sentence", "correct the message"
+        ]) or bool(re.search(r"\brevise\b", q_low)):
+            action_type = "edit"
         elif any(w in q_low for w in ["draft", "compose", "write a draft", "prepare a message"]):
             action_type = "draft"
         elif any(w in q_low for w in ["send", "tell", "message", "text", "whatsapp", "ping"]):
@@ -155,11 +155,13 @@ class ContactResolver:
         extracted_text = None
         is_exact = False
 
+        q_work = re.sub(r"^(?:can\s+you\s+(?:please\s+)?|could\s+you\s+(?:please\s+)?|please\s+)", "", q, flags=re.IGNORECASE).strip()
+
         # 2. Extract Exact Quoted Dictation (Preserves inner instructions like "open the browser")
         # e.g., Tell Rahul 'open the browser when you reach home'
         m_quoted = re.search(
-            r"^(?:can\s+you\s+)?(?:tell|notify|inform|send\s+(?:to\s+)?|message|text|whatsapp|ping)\s+([a-zA-Z0-9_\-\s]+?)(?:\s+(?:on|via)\s+whatsapp)?\s*['\"](.+?)['\"]$",
-            q,
+            r"^(?:send\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text)?\s*(?:to\s+)?|message\s+(?:to\s+)?|text\s+(?:to\s+)?|whatsapp\s+(?:to\s+|message\s+to\s+)?|tell\s+|notify\s+|inform\s+|ping\s+)(?:the\s+|my\s+)?([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)(?:\s+(?:on|via)\s+whatsapp)?\s*['\"](.+?)['\"]$",
+            q_work,
             re.IGNORECASE
         )
         if m_quoted:
@@ -172,7 +174,7 @@ class ContactResolver:
         if not extracted_text:
             m_exact = re.search(
                 r"^(?:send|text|message)\s+(?:(?:to\s+)?([a-zA-Z0-9_\-\s]+?)\s+)?(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)(?:\s+to\s+([a-zA-Z0-9_\-\s]+?))?\s*:\s*(.+)$",
-                q,
+                q_work,
                 re.IGNORECASE
             )
             if m_exact:
@@ -180,7 +182,7 @@ class ContactResolver:
                 extracted_text = m_exact.group(3).strip()
                 is_exact = True
             else:
-                m_exact2 = re.search(r"(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)\s*(?:to\s+(.+?))?\s*:\s*(.+)$", q, re.IGNORECASE)
+                m_exact2 = re.search(r"(?:this\s+exact\s+message|exact\s+text(?:\s+i\s+dictated)?|exactly\s+this)\s*(?:to\s+(.+?))?\s*:\s*(.+)$", q_work, re.IGNORECASE)
                 if m_exact2:
                     if m_exact2.group(1):
                         recipient_candidate = m_exact2.group(1).strip()
@@ -191,8 +193,8 @@ class ContactResolver:
         # e.g. "Send a message to my project group saying the meeting starts at 4 PM."
         if not extracted_text:
             m_send_to_saying = re.search(
-                r"^(?:can\s+you\s+)?(?:send|text|ping)\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text|note)?\s*to\s+([a-zA-Z0-9_\-\s]+?)\s+(?:saying|that|asking|about)\s+(.+)$",
-                q,
+                r"^(?:send\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text|note)?\s*(?:to\s+)?|message\s+(?:to\s+)?|text\s+(?:to\s+)?|whatsapp\s+(?:to\s+|message\s+to\s+)?|tell\s+|notify\s+|inform\s+|ping\s+)(?:the\s+|my\s+)?([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)(?:\s+(?:on|via)\s+whatsapp)?\s+(?:saying|that|asking|about|with\s+text)\s+(.+)$",
+                q_work,
                 re.IGNORECASE
             )
             if m_send_to_saying:
@@ -203,7 +205,7 @@ class ContactResolver:
         if not extracted_text:
             m_draft = re.search(
                 r"^(?:draft|write|compose)\s+(?:a\s+)?(?:polite\s+|formal\s+|quick\s+|short\s+)?(?:whatsapp\s+)?(?:message|text|email|note)?\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+(?:saying|asking|about|that)\s+(.+)$",
-                q,
+                q_work,
                 re.IGNORECASE
             )
             if m_draft:
@@ -211,11 +213,11 @@ class ContactResolver:
                 recipient_candidate = m_draft.group(1).strip()
                 extracted_text = m_draft.group(2).strip()
 
-        # 5. Pattern: "Send <RECIPIENT> a message saying <TEXT>"
+        # 5. Pattern: "Send <RECIPIENT> a message saying/that <TEXT>"
         if not extracted_text:
             m_send_a = re.search(
                 r"^(?:send|text)\s+([a-zA-Z0-9_\-\s]+?)\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text)?\s*(?:saying|that)\s+(.+)$",
-                q,
+                q_work,
                 re.IGNORECASE
             )
             if m_send_a:
@@ -226,8 +228,8 @@ class ContactResolver:
         # e.g. "WhatsApp Rahul that I'm on my way." or "Tell Rahul on WhatsApp I'll be there in ten minutes."
         if not extracted_text:
             m_wa_tell = re.search(
-                r"^(?:can\s+you\s+)?(?:tell|notify|inform|ping|whatsapp|message)\s+(?:the\s+|my\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+(?:on|via)\s+whatsapp)?\s+(?:saying\s+|that\s+|about\s+)?(.+)$",
-                q,
+                r"^(?:tell|notify|inform|ping|whatsapp|message)\s+(?:the\s+|my\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+(?:on|via)\s+whatsapp)?\s+(?:saying\s+|that\s+|about\s+)(.+)$",
+                q_work,
                 re.IGNORECASE
             )
             if m_wa_tell:
@@ -240,7 +242,7 @@ class ContactResolver:
 
         # 7. Pattern: "No, send it to <RECIPIENT> instead"
         if not recipient_candidate:
-            m_redir = re.search(r"^(?:no,?\s+)?send\s+it\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+instead$", q, re.IGNORECASE)
+            m_redir = re.search(r"^(?:no,?\s+)?send\s+it\s+to\s+([a-zA-Z0-9_\-\s]+?)\s+instead$", q_work, re.IGNORECASE)
             if m_redir:
                 action_type = "send"
                 recipient_candidate = m_redir.group(1).strip()
@@ -250,27 +252,63 @@ class ContactResolver:
         if not extracted_text:
             m_send_to = re.search(
                 r"^send\s+(?:the\s+)?(?:revised\s+|active\s+)?(?:message|draft|text)?\s*(.+?)\s+to\s+([a-zA-Z0-9_\-\s]+)$",
-                q,
+                q_work,
                 re.IGNORECASE
             )
             if m_send_to:
                 cand_text = m_send_to.group(1).strip()
                 cand_recip = m_send_to.group(2).strip()
-                if not cand_text or cand_text.lower() in ["message", "draft", "revised message", "that", "the message"]:
+                if not cand_text or cand_text.lower() in ["message", "a message", "draft", "a draft", "revised message", "that", "the message"]:
                     extracted_text = None
                 else:
                     extracted_text = cand_text
                 recipient_candidate = cand_recip
 
-        # 9. Clean up recipient candidate
+        # 8b. Pattern: "Search (for) / Find <RECIPIENT> on WhatsApp [and message/tell him/her/them [saying/that <TEXT>]]"
+        if not recipient_candidate:
+            m_search_wa = re.search(
+                r"^(?:search\s+(?:for\s+)?|find\s+)([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)\s+(?:on|in)\s+whatsapp(?:\s+and\s+(?:message|text|tell)\s+(?:him|her|them)?(?:\s+(?:saying|that|about)\s+(.+))?)?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_search_wa:
+                action_type = "send"
+                recipient_candidate = m_search_wa.group(1).strip()
+                extracted_text = m_search_wa.group(2).strip() if m_search_wa.group(2) else None
+
+        # 9. Simple Direct Form: "message/text/whatsapp/send message to <RECIPIENT> [<TEXT>]"
+        # e.g. "message rahul", "text mom", "whatsapp rahul", "message rahul hello", "send message to rahul"
+        if not recipient_candidate:
+            m_simple = re.search(
+                r"^(?:send\s+(?:a\s+)?(?:whatsapp\s+)?(?:message|text)?\s*(?:to\s+)?|message\s+(?:to\s+)?|text\s+(?:to\s+)?|whatsapp\s+(?:to\s+|message\s+to\s+)?|ping\s+)(?:the\s+|my\s+)?([a-zA-Z0-9_\-\+]+)(?:\s+(.+))?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_simple:
+                cand_rec = m_simple.group(1).strip()
+                cand_extra = m_simple.group(2).strip() if m_simple.group(2) else None
+                # Check if cand_extra starts with second word of recipient name (e.g. 'Sharma')
+                if cand_extra:
+                    parts = cand_extra.split(" ", 1)
+                    two_w = f"{cand_rec} {parts[0]}".lower()
+                    known_matches = [c.name.lower() for c in self.contacts]
+                    if two_w in known_matches or two_w in ["project group", "test recipient"]:
+                        cand_rec = f"{cand_rec} {parts[0]}"
+                        cand_extra = parts[1].strip() if len(parts) > 1 else None
+                recipient_candidate = cand_rec
+                extracted_text = cand_extra
+
+        # 10. Clean up recipient candidate
         if recipient_candidate:
             recipient_candidate = re.sub(r"^(?:a\s+message\s+to\s+|message\s+to\s+|to\s+)", "", recipient_candidate, flags=re.IGNORECASE).strip()
             recipient_candidate = re.sub(r"^(?:the\s+)?(?:contact\s+|person\s+|group\s+)?", "", recipient_candidate, flags=re.IGNORECASE).strip()
             recipient_candidate = re.sub(r"^(?:my\s+)", "", recipient_candidate, flags=re.IGNORECASE).strip()
             # Remove trailing words like 'on whatsapp', 'via whatsapp'
             recipient_candidate = re.sub(r"\s+(?:on|via|through)\s+whatsapp.*$", "", recipient_candidate, flags=re.IGNORECASE).strip()
+            if recipient_candidate.lower() in ["a", "an", "the", "a recipient", "someone", "recipient", "person", "contact", "anybody"]:
+                recipient_candidate = None
 
-        # 10. Clean up extracted text
+        # 11. Clean up extracted text
         if extracted_text:
             # Strip outer quotes if present
             extracted_text = re.sub(r'^["\']|["\']$', '', extracted_text).strip()
@@ -403,6 +441,31 @@ class ContactResolver:
                 is_group=False,
                 candidates=[direct_contact]
             )
+
+        # 2c. Direct Email Address Recognition (e.g. user@example.com)
+        if "@" in recip_term and "." in recip_term:
+            email_match = re.search(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+", recip_term)
+            if email_match:
+                e_addr = email_match.group(0).lower()
+                for c in self.contacts:
+                    if c.email and c.email.lower() == e_addr:
+                        return ContactResolutionResult(
+                            status="resolved",
+                            resolved_contact=c,
+                            recipient_name=c.name,
+                            is_group=False,
+                            candidates=[c]
+                        )
+                # Generate human-readable recipient name from local-part
+                prefix = e_addr.split("@")[0].replace(".", " ").replace("_", " ").title()
+                direct_email = Contact(name=prefix, email=e_addr, role="direct_email")
+                return ContactResolutionResult(
+                    status="resolved",
+                    resolved_contact=direct_email,
+                    recipient_name=prefix,
+                    is_group=False,
+                    candidates=[direct_email]
+                )
 
         # 3. Match against Contact Repository
         clean_target = recip_term.lower()

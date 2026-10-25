@@ -272,8 +272,11 @@ class EdithTaskExecutor:
                 return res
             return {"status": "error", "message": "Action registry is not initialized."}
 
-        # 21. Document Summarization & File Organization
-        elif handler in ["file_summarize", "file_rename", "file_copy", "file_move", "file_organize"]:
+        # 21. Document Summarization, File Operations, and Archiving
+        elif handler in [
+            "file_summarize", "file_rename", "file_copy", "file_move", "file_organize",
+            "file_create", "file_read", "file_append", "file_zip", "file_unzip"
+        ]:
             reg = self.action_registry
             if reg:
                 res, ver = reg.execute(handler, params)
@@ -281,10 +284,42 @@ class EdithTaskExecutor:
             return {"status": "error", "message": "Action registry is not initialized."}
 
         # 22. Browser and Web Actions
-        elif handler in ["browser_open", "browser_search_and_summarize", "browser_fill_form"]:
+        elif handler in ["browser_open", "browser_search_and_summarize", "browser_fill_form", "browser_read_page"]:
             reg = self.action_registry
             if reg:
                 res, ver = reg.execute(handler, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
+
+        # 23. System Utilities & Clipboard Actions
+        elif handler in ["system_screenshot", "system_clipboard_copy", "system_clipboard_read", "clipboard_copy", "clipboard_read"]:
+            reg = self.action_registry
+            if reg:
+                cap_name = handler if handler.startswith("system_") else f"system_{handler}"
+                res, ver = reg.execute(cap_name, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
+
+        # 24. Voice STT & TTS Actions
+        elif handler in ["voice_listen", "voice_speak"]:
+            reg = self.action_registry
+            if reg:
+                res, ver = reg.execute(handler, params)
+                return res
+            return {"status": "error", "message": "Action registry is not initialized."}
+
+        # 25. Extended Desktop & Productivity Utilities
+        elif handler in [
+            "window_control", "system_timer", "notes_manager", "system_weather",
+            "unit_convert", "system_processes", "timer", "notes", "weather"
+        ]:
+            reg = self.action_registry
+            if reg:
+                norm_handler = handler
+                if handler == "timer": norm_handler = "system_timer"
+                elif handler == "notes": norm_handler = "notes_manager"
+                elif handler == "weather": norm_handler = "system_weather"
+                res, ver = reg.execute(norm_handler, params)
                 return res
             return {"status": "error", "message": "Action registry is not initialized."}
 
@@ -911,21 +946,32 @@ class EdithTaskExecutor:
         except Exception:
             pass
 
-        spotify_hwnd = None
+        candidates = []
         def enum_proc(hwnd, lparam):
-            nonlocal spotify_hwnd
             cbuf = ctypes.create_unicode_buffer(256)
             user32.GetClassNameW(hwnd, cbuf, 256)
             cls_name = cbuf.value
-            if cls_name in ["Chrome_WidgetWin_1", "Spotify"]:
-                pid = wintypes.DWORD()
-                user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-                tbuf = ctypes.create_unicode_buffer(256)
-                user32.GetWindowTextW(hwnd, tbuf, 256)
-                title = tbuf.value.lower()
-                if (spot_pids and pid.value in spot_pids) or "spotify" in title:
-                    spotify_hwnd = hwnd
-                    return False
+            pid = wintypes.DWORD()
+            user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+            tbuf = ctypes.create_unicode_buffer(256)
+            user32.GetWindowTextW(hwnd, tbuf, 256)
+            title = tbuf.value.lower()
+            
+            is_spot = (spot_pids and pid.value in spot_pids) or ("spotify" in title) or (cls_name == "Spotify")
+            if is_spot:
+                rect = wintypes.RECT()
+                user32.GetWindowRect(hwnd, ctypes.byref(rect))
+                w = rect.right - rect.left
+                h = rect.bottom - rect.top
+                vis = user32.IsWindowVisible(hwnd)
+                # Ignore background helper / IME / notification windows
+                if w >= 250 and h >= 200:
+                    score = w * h
+                    if vis:
+                        score += 10000000
+                    if cls_name in ["Chrome_WidgetWin_1", "Spotify"]:
+                        score += 5000000
+                    candidates.append((score, hwnd))
             return True
 
         WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
@@ -934,12 +980,14 @@ class EdithTaskExecutor:
 
         if hdesk:
             user32.EnumDesktopWindows(hdesk, WNDENUMPROC(enum_proc), 0)
-        if not spotify_hwnd:
+        if not candidates:
             user32.EnumWindows.argtypes = [WNDENUMPROC, wintypes.LPARAM]
             user32.EnumWindows.restype = wintypes.BOOL
             user32.EnumWindows(WNDENUMPROC(enum_proc), 0)
 
-        if spotify_hwnd:
+        if candidates:
+            candidates.sort(key=lambda x: x[0], reverse=True)
+            spotify_hwnd = candidates[0][1]
             user32.AllowSetForegroundWindow(0xFFFFFFFF)
             if user32.IsIconic(spotify_hwnd):
                 user32.ShowWindow(spotify_hwnd, 9) # SW_RESTORE
@@ -950,6 +998,30 @@ class EdithTaskExecutor:
             user32.SetForegroundWindow(spotify_hwnd)
             time.sleep(0.08)
             return spotify_hwnd
+        return None
+
+    def _find_spotify_green_button(self, img: Any) -> Optional[Tuple[int, int]]:
+        """Visually detect Spotify's high-contrast green play button (#1DB954)."""
+        w, h = img.size
+        clusters = []
+        for y in range(int(h * 0.15), int(h * 0.55)):
+            for x in range(int(w * 0.15), int(w * 0.75)):
+                r, g, b = img.getpixel((x, y))[:3]
+                if g > 165 and r < 80 and b < 130 and (g - r > 100) and (g - b > 60):
+                    placed = False
+                    for c in clusters:
+                        if abs(c["cx"] - x) < 30 and abs(c["cy"] - y) < 30:
+                            c["pts"].append((x, y))
+                            c["cx"] = sum(p[0] for p in c["pts"]) // len(c["pts"])
+                            c["cy"] = sum(p[1] for p in c["pts"]) // len(c["pts"])
+                            placed = True
+                            break
+                    if not placed:
+                        clusters.append({"pts": [(x, y)], "cx": x, "cy": y})
+        valid = [c for c in clusters if len(c["pts"]) > 30]
+        if valid:
+            valid.sort(key=lambda c: len(c["pts"]), reverse=True)
+            return (valid[0]["cx"], valid[0]["cy"])
         return None
 
     def _capture_window_image(self, hwnd: int) -> Optional[Any]:
@@ -1125,7 +1197,9 @@ class EdithTaskExecutor:
                 return False
 
             if was_cold_start:
-                time.sleep(2.0)
+                # Wait for Spotify Electron DOM to mount and hydrate
+                self._wait_for_spotify_dom(hwnd, timeout=12.0)
+                time.sleep(0.8)
 
             # 3. Bring Spotify reliably to foreground using Alt-key bypass
             actions.focus_window(hwnd)
@@ -1141,14 +1215,68 @@ class EdithTaskExecutor:
 
             # Type target query
             actions.type_text(clean_search)
-            time.sleep(0.12)
+            time.sleep(0.15)
             actions.press_key(0x0D)     # Enter
-            time.sleep(1.2)             # Wait for results to render
+            time.sleep(1.0)             # Wait for results to render over network
 
-            # 5. Perceive search results via ScreenEngine RapidOCR
-            elements = self.gui_agent.see(hwnd=hwnd, force_ocr=True)
+            # 5. Move mouse to hover over Top Result card to reveal hover play button
+            rect = wintypes.RECT()
+            user32 = ctypes.windll.user32
+            user32.GetWindowRect(hwnd, ctypes.byref(rect))
+            win_w = rect.right - rect.left
+            win_h = rect.bottom - rect.top
+            hover_x = rect.left + int(win_w * 0.22)
+            hover_y = rect.top + int(win_h * 0.35)
+            user32.SetCursorPos(hover_x, hover_y)
+            user32.mouse_event(0x0001, 1, 1, 0, 0)
 
-            # 6. Click "Songs" tab if present to filter to clean track table
+            # 6. Check for high-contrast green play button in the search results
+            btn_pos = None
+            img_res = None
+            for _ in range(12):
+                time.sleep(0.25)
+                # Jiggle hover over Top Result card to trigger Chromium :hover reveal
+                user32.SetCursorPos(hover_x, hover_y)
+                user32.mouse_event(0x0001, 2, 2, 0, 0)
+                time.sleep(0.04)
+                user32.mouse_event(0x0001, -2, -2, 0, 0)
+
+                img_res = self._capture_window_topdown(hwnd) or self._capture_window_image(hwnd)
+                if img_res:
+                    btn_pos = self._find_spotify_green_button(img_res)
+                    if btn_pos:
+                        break
+
+            if btn_pos and img_res:
+                scale_x = win_w / img_res.size[0] if img_res.size[0] > 0 else 1.0
+                scale_y = win_h / img_res.size[1] if img_res.size[1] > 0 else 1.0
+                click_x = rect.left + int(btn_pos[0] * scale_x)
+                click_y = rect.top + int(btn_pos[1] * scale_y)
+                user32.SetCursorPos(click_x, click_y)
+                time.sleep(0.05)
+                user32.mouse_event(0x0002, 0, 0, 0, 0)
+                time.sleep(0.05)
+                user32.mouse_event(0x0004, 0, 0, 0, 0)
+                time.sleep(0.5)
+                return True
+
+            # 7. Fallback 1: Double-click Top Result card directly
+            user32.SetCursorPos(hover_x, hover_y)
+            time.sleep(0.05)
+            user32.mouse_event(0x0002, 0, 0, 0, 0)
+            user32.mouse_event(0x0004, 0, 0, 0, 0)
+            time.sleep(0.05)
+            user32.mouse_event(0x0002, 0, 0, 0, 0)
+            user32.mouse_event(0x0004, 0, 0, 0, 0)
+            time.sleep(0.5)
+
+            # 8. Fallback 2: Perceive search results via ScreenEngine RapidOCR
+            try:
+                elements = self.gui_agent.see(hwnd=hwnd, force_ocr=True)
+            except Exception:
+                elements = []
+
+            # Click "Songs" tab if present to filter to clean track table
             songs_tab = None
             for e in elements:
                 if 100 < e.center[1] < 145 and e.name.strip().lower() in ["songs", "song"]:
@@ -1158,9 +1286,12 @@ class EdithTaskExecutor:
             if songs_tab:
                 actions.click_with_restore(songs_tab.center[0], songs_tab.center[1])
                 time.sleep(0.5)
-                elements = self.gui_agent.see(hwnd=hwnd, force_ocr=True)
+                try:
+                    elements = self.gui_agent.see(hwnd=hwnd, force_ocr=True)
+                except Exception:
+                    elements = []
 
-            # 7. Locate matching song in results table (y between 140 and 880)
+            # Locate matching song in results table (y between 140 and 880)
             q_words = [w.lower() for w in re.findall(r"\w+", clean_search.lower()) if len(w) > 1]
             best_elem = None
             best_score = 0.0

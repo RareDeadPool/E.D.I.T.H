@@ -204,6 +204,26 @@ class TaskPlanner:
         if any(w in goal_lower for w in ["open", "find", "read", "take"]) and any(w in goal_lower for w in ["notes", "report", "file", "document", "text"]) and any(w in goal_lower for w in ["summary", "summarize", "short summary"]) and "notepad" in goal_lower:
             return cls._create_file_summary_notepad_plan(goal, context)
 
+        # Check for compound screenshot and WhatsApp sharing goal:
+        if ("screenshot" in goal_lower or "screen capture" in goal_lower) and "whatsapp" in goal_lower:
+            return cls._create_screenshot_and_whatsapp_plan(goal, context)
+
+        # Check for compound calculate and Notepad goal:
+        if any(w in goal_lower for w in ["calculate", "compute", "what is"]) and "notepad" in goal_lower:
+            return cls._create_calc_and_notepad_plan(goal, context)
+
+        # Check for compound metrics / battery and Notepad goal:
+        if any(w in goal_lower for w in ["metrics", "stats", "battery", "cpu usage", "system status"]) and "notepad" in goal_lower and not any(w in goal_lower for w in ["calculate", "report", "notes"]):
+            return cls._create_metrics_and_notepad_plan(goal, context)
+
+        # Check for compound web search, summarize, and Notepad goal:
+        if any(w in goal_lower for w in ["search", "google", "look up"]) and any(w in goal_lower for w in ["summary", "summarize"]) and "notepad" in goal_lower:
+            return cls._create_web_summary_notepad_plan(goal, context)
+
+        # Check for compound create file, write content, and open goal:
+        if any(w in goal_lower for w in ["create a file", "create file", "make a file", "make file"]) and any(w in goal_lower for w in ["write", "with content", "saying"]) and "open" in goal_lower:
+            return cls._create_file_create_write_open_plan(goal, context)
+
         # Check for compound project test & run goal:
         if ("project" in goal_lower and re.search(r"\btests?\b", goal_lower) and any(w in goal_lower for w in ["pass", "fail", "check", "run"])):
             return cls._create_project_test_plan(goal, context)
@@ -235,10 +255,14 @@ class TaskPlanner:
             # Determine dependencies on previous steps
             dependencies = []
             if idx > 1:
-                # If current step references anaphora ('it', 'that', 'the file', 'into it')
-                if re.search(r"\b(it|that|the file|the screenshot|the result|there)\b", raw_query, re.IGNORECASE):
+                # If current step references anaphora ('it', 'that', 'the file', 'the screenshot', 'the result', etc.)
+                if re.search(r"\b(it|that|the file|the screenshot|the result|the answer|that number|the stats|the metrics|the summary|there|into it)\b", raw_query, re.IGNORECASE):
                     dependencies.append(idx - 1)
-                elif handler in ["file_operation", "draft_content"] and not params.get("source") and not params.get("body") and not params.get("file"):
+                elif handler in ["gui_action", "type_notepad", "notepad_write"] and not params.get("text") and not params.get("content"):
+                    dependencies.append(idx - 1)
+                elif handler in ["file_operation", "draft_content", "file_create", "file_append", "file_read"] and not params.get("source") and not params.get("body") and not params.get("file") and not params.get("path"):
+                    dependencies.append(idx - 1)
+                elif handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"] and (not params.get("attachment_path") and not params.get("content")):
                     dependencies.append(idx - 1)
                 elif handler in ["launch_app"] and not params.get("app_name") and context and context.last_app:
                     params["app_name"] = context.last_app
@@ -565,6 +589,216 @@ class TaskPlanner:
         )
 
     @classmethod
+    def _create_screenshot_and_whatsapp_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Take a screenshot and send it to Rahul on WhatsApp"
+        """
+        m_recip = re.search(r"(?:to|message|send)\s+([a-zA-Z0-9_\-\s]+?)(?:\s+on|\s+via)?\s+whatsapp", goal, re.IGNORECASE)
+        recip_name = m_recip.group(1).strip() if m_recip else (getattr(context, "last_person", None) or "8591211342")
+        recip_name = re.sub(r"^(?:it\s+to|it\s+on)\s+", "", recip_name, flags=re.IGNORECASE).strip()
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query="Capture full screen snapshot",
+                handler="system_utility",
+                parameters={"utility": "screenshot", "command": "screenshot"},
+                expected_output="screenshot_path",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query=f"Send captured screenshot to {recip_name} on WhatsApp",
+                handler="whatsapp_send",
+                parameters={
+                    "recipient": recip_name,
+                    "content": f"Here is the screenshot requested.",
+                    "attachment_path": "",
+                    "authorized": False
+                },
+                expected_output="message_submitted",
+                dependencies=[1],
+                is_consequential=True,
+                requires_confirmation=True,
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Captured screenshot and prepared WhatsApp transmission for {recip_name}."
+        )
+
+    @classmethod
+    def _create_calc_and_notepad_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Calculate 15 * 40, write the result in notepad, and save the file"
+        """
+        m_calc = re.search(r"(?:calculate|compute|what\s+is)\s+([0-9\+\-\*\/\^\.\s\%]+)", goal, re.IGNORECASE)
+        expr = m_calc.group(1).strip() if m_calc else "15 * 40"
+        expr = re.sub(r"\s+(?:and|then|write|put).*$", "", expr, flags=re.IGNORECASE).strip()
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query=f"Calculate {expr}",
+                handler="compute_math",
+                parameters={"expr": expr, "command": expr},
+                expected_output="calc_result",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query="Insert calculation result into Windows Notepad",
+                handler="gui_action",
+                parameters={
+                    "action": "type",
+                    "app_name": "notepad",
+                    "text": "",
+                    "content": "",
+                    "force_focus": True
+                },
+                expected_output="notepad_written",
+                dependencies=[1],
+            ),
+        ]
+        if "save" in goal.lower():
+            steps.append(PlanStep(
+                step_id=3,
+                query="Save document in Notepad",
+                handler="file_operation",
+                parameters={"subaction": "save"},
+                expected_output="file_saved",
+                dependencies=[2],
+            ))
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Computed '{expr}', entered result into Notepad{', and saved file' if 'save' in goal.lower() else ''}."
+        )
+
+    @classmethod
+    def _create_metrics_and_notepad_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Check battery and write the stats in notepad"
+        """
+        steps = [
+            PlanStep(
+                step_id=1,
+                query="Query system performance metrics",
+                handler="system_metrics",
+                parameters={},
+                expected_output="system_metrics",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query="Insert verified system metrics into Windows Notepad",
+                handler="gui_action",
+                parameters={
+                    "action": "type",
+                    "app_name": "notepad",
+                    "text": "",
+                    "content": "",
+                    "force_focus": True
+                },
+                expected_output="notepad_written",
+                dependencies=[1],
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome="Queried system metrics and inserted telemetry into Notepad."
+        )
+
+    @classmethod
+    def _create_web_summary_notepad_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Search for Python tutorials, summarize it, and put it in Notepad"
+        """
+        m_query = re.search(r"(?:search\s+for|search|google|look\s+up)\s+(.+?)(?:,|\s+summarize|\s+and)", goal, re.IGNORECASE)
+        q_term = m_query.group(1).strip() if m_query else "information"
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query=f"Search online for '{q_term}'",
+                handler="web_search",
+                parameters={"query": q_term},
+                expected_output="search_results",
+                dependencies=[],
+            ),
+            PlanStep(
+                step_id=2,
+                query=f"Synthesize extractive summary of '{q_term}' findings",
+                handler="browser_search_and_summarize",
+                parameters={"query": q_term},
+                expected_output="summary",
+                dependencies=[1],
+            ),
+            PlanStep(
+                step_id=3,
+                query="Insert factual summary into Windows Notepad",
+                handler="gui_action",
+                parameters={
+                    "action": "type",
+                    "app_name": "notepad",
+                    "text": "",
+                    "content": "",
+                    "force_focus": True
+                },
+                expected_output="notepad_written",
+                dependencies=[2],
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Discovered online data for '{q_term}', synthesized summary, and typed into Notepad."
+        )
+
+    @classmethod
+    def _create_file_create_write_open_plan(cls, goal: str, context: Optional[Any] = None) -> TaskPlan:
+        """
+        Synthesize compound goal plan:
+        "Create a file named notes.txt with content hello and open it"
+        """
+        m_file = re.search(r"(?:file\s+named|file\s+called|file)\s+['\"]?([a-zA-Z0-9_\-\.]+)['\"]?", goal, re.IGNORECASE)
+        filename = m_file.group(1).strip() if m_file else "output.txt"
+
+        m_content = re.search(r"(?:with\s+content|with\s+text|saying|containing|write)\s+['\"]?(.+?)['\"]?(?:\s+and\s+open|\s*,\s*open|$)", goal, re.IGNORECASE)
+        content_text = m_content.group(1).strip() if m_content else "Hello from EDITH."
+
+        steps = [
+            PlanStep(
+                step_id=1,
+                query=f"Create file '{filename}' with content",
+                handler="file_create",
+                parameters={"path": filename, "content": content_text},
+                expected_output="file_created",
+                dependencies=[],
+                is_consequential=True,
+            ),
+            PlanStep(
+                step_id=2,
+                query=f"Open file '{filename}'",
+                handler="file_operation",
+                parameters={"subaction": "open", "source": filename},
+                expected_output="file_open",
+                dependencies=[1],
+            ),
+        ]
+        return TaskPlan(
+            goal=goal,
+            steps=steps,
+            intended_outcome=f"Created '{filename}' with verified content and opened it."
+        )
+
+    @classmethod
     def pipe_step_dependencies(cls, step: PlanStep, step_outputs: Dict[int, Any]):
         """Inject resolved outputs from prerequisite steps into downstream step parameters."""
         for dep_id in step.dependencies:
@@ -573,9 +807,9 @@ class TaskPlanner:
                 continue
 
             if isinstance(dep_output, dict):
-                actual_path = dep_output.get("path") or dep_output.get("file")
+                actual_path = dep_output.get("path") or dep_output.get("file") or dep_output.get("created_file")
                 if actual_path:
-                    if not step.parameters.get("source") or step.parameters.get("source") in ["it", "that", "the file"]:
+                    if not step.parameters.get("source") or step.parameters.get("source") in ["it", "that", "the file", "the screenshot"]:
                         step.parameters["source"] = actual_path
                     if not step.parameters.get("path"):
                         step.parameters["path"] = actual_path
@@ -588,11 +822,46 @@ class TaskPlanner:
                 # Pipe summary content into Notepad typing or message drafting
                 if dep_output.get("summary"):
                     sum_text = dep_output["summary"]
-                    if step.handler in ["gui_action", "type_notepad", "notepad_write"]:
+                    if step.handler in ["gui_action", "type_notepad", "notepad_write", "file_create", "file_append"]:
                         step.parameters["text"] = sum_text
                         step.parameters["content"] = sum_text
                     elif step.handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"]:
                         step.parameters["content"] = sum_text
+
+                # Pipe calculation results
+                calc_val = dep_output.get("result") or dep_output.get("calc_result") or dep_output.get("answer")
+                if calc_val is not None:
+                    calc_str = str(calc_val)
+                    if step.handler in ["gui_action", "type_notepad", "notepad_write", "file_create", "file_append"]:
+                        if not step.parameters.get("text") and not step.parameters.get("content"):
+                            step.parameters["text"] = calc_str
+                            step.parameters["content"] = calc_str
+                    elif step.handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"]:
+                        if not step.parameters.get("content") or step.parameters.get("content") in ["the result", "the answer", "that number", "it", "that"]:
+                            step.parameters["content"] = f"The result is {calc_str}"
+
+                # Pipe clipboard content
+                clip_text = dep_output.get("content") if dep_output.get("action") == "clipboard_read" else (dep_output.get("clipboard") or dep_output.get("clipboard_text"))
+                if clip_text:
+                    if step.handler in ["gui_action", "type_notepad", "notepad_write", "file_create", "file_append"]:
+                        if not step.parameters.get("text") and not step.parameters.get("content"):
+                            step.parameters["text"] = clip_text
+                            step.parameters["content"] = clip_text
+                    elif step.handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"]:
+                        if not step.parameters.get("content") or step.parameters.get("content") in ["the clipboard", "it", "that"]:
+                            step.parameters["content"] = clip_text
+
+                # Pipe system metrics
+                metrics_data = dep_output.get("metrics") or (dep_output if dep_output.get("action") == "system_metrics" else None)
+                if metrics_data:
+                    m_formatted = dep_output.get("formatted") or dep_output.get("message") or str(metrics_data)
+                    if step.handler in ["gui_action", "type_notepad", "notepad_write", "file_create", "file_append"]:
+                        if not step.parameters.get("text") and not step.parameters.get("content"):
+                            step.parameters["text"] = m_formatted
+                            step.parameters["content"] = m_formatted
+                    elif step.handler in ["whatsapp_send", "whatsapp_draft", "email_draft", "email_send"]:
+                        if not step.parameters.get("content") or step.parameters.get("content") in ["the stats", "the metrics", "system stats"]:
+                            step.parameters["content"] = f"System Stats: {m_formatted}"
 
                 if dep_output.get("test_command") and step.handler in ["project_action", "exec_project_action"]:
                     step.parameters["command"] = dep_output["test_command"]
@@ -685,11 +954,33 @@ class TaskPlanner:
                     step.status = "completed"
                     step_outputs[step.step_id] = res
 
-                    if res.get("path"):
-                        context.last_path = res["path"]
-                        context.last_file = os.path.basename(res["path"])
-                    if res.get("app_name"):
-                        context.last_app = res.get("app_name")
+                    if context:
+                        if res.get("path"):
+                            context.last_path = res["path"]
+                            context.last_file = os.path.basename(res["path"])
+                        if res.get("app_name"):
+                            context.last_app = res.get("app_name")
+                        if res.get("result") or res.get("calc_result"):
+                            if hasattr(context, "set_last_calculation"):
+                                context.set_last_calculation(step.query, res.get("result") or res.get("calc_result"))
+                        if res.get("summary"):
+                            if hasattr(context, "set_last_summary"):
+                                context.set_last_summary(res.get("summary"), res.get("source", "step"))
+                        if res.get("screenshot_path") or res.get("action") == "screenshot" or (res.get("utility") == "screenshot" and res.get("path")):
+                            if hasattr(context, "set_last_screenshot"):
+                                context.set_last_screenshot(res.get("screenshot_path") or res.get("path"))
+                        if res.get("metrics") or res.get("action") == "system_metrics":
+                            if hasattr(context, "set_last_metrics"):
+                                context.set_last_metrics(res.get("metrics") or res)
+                        if res.get("clipboard") or res.get("action") in ["clipboard_read", "clipboard_copy"]:
+                            if hasattr(context, "set_last_clipboard"):
+                                context.set_last_clipboard(res.get("content") or res.get("clipboard") or "")
+                        if res.get("created_file") or (step.handler == "file_create" and res.get("path")):
+                            if hasattr(context, "set_last_created_file"):
+                                context.set_last_created_file(res.get("created_file") or res.get("path"))
+                        if res.get("url"):
+                            if hasattr(context, "set_last_url"):
+                                context.set_last_url(res.get("url"))
 
                     executed_messages.append(f"Step {step.step_id}: {res.get('message', 'Completed')}")
                 else:

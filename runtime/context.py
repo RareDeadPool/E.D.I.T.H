@@ -84,6 +84,62 @@ class StructuredTaskContext:
         self.verification_evidence: List[Dict[str, Any]] = []
         self.is_cancelled: bool = False
 
+        # 10. Rich Multi-Step Entity State
+        self.last_summary: Optional[str] = None
+        self.last_summary_source: Optional[str] = None
+        self.last_calculation: Optional[Dict[str, Any]] = None
+        self.last_screenshot: Optional[str] = None
+        self.last_metrics: Optional[Dict[str, Any]] = None
+        self.last_url: Optional[str] = None
+        self.last_clipboard: Optional[str] = None
+        self.last_created_file: Optional[str] = None
+
+    def set_last_summary(self, summary: str, source: str = ""):
+        """Store latest extractive summary from files or web search."""
+        self.touch()
+        self.last_summary = summary
+        self.last_summary_source = source
+        if hasattr(self, "draft_manager"):
+            self.draft_manager.create_draft(body=summary, topic="Summary", subject="Extractive Summary")
+
+    def set_last_calculation(self, expr: str, result: Any, formatted: str = ""):
+        """Store latest mathematical computation result."""
+        self.touch()
+        self.last_calculation = {
+            "expression": expr,
+            "result": result,
+            "formatted": formatted or f"{expr} = {result}"
+        }
+
+    def set_last_screenshot(self, file_path: str):
+        """Store latest captured screenshot path."""
+        self.touch()
+        self.last_screenshot = file_path
+        self.last_file = os.path.basename(file_path)
+        self.last_path = file_path
+
+    def set_last_metrics(self, metrics: Dict[str, Any]):
+        """Store latest system diagnostics and telemetry."""
+        self.touch()
+        self.last_metrics = metrics
+
+    def set_last_url(self, url: str):
+        """Store latest visited or opened URL."""
+        self.touch()
+        self.last_url = url
+
+    def set_last_clipboard(self, text: str):
+        """Store latest clipboard text."""
+        self.touch()
+        self.last_clipboard = text
+
+    def set_last_created_file(self, file_path: str):
+        """Store latest created file path."""
+        self.touch()
+        self.last_created_file = file_path
+        self.last_file = os.path.basename(file_path)
+        self.last_path = file_path
+
     def has_draft(self) -> bool:
         """Check if an active draft exists in context."""
         return self.draft_manager.has_draft()
@@ -210,6 +266,14 @@ class StructuredTaskContext:
         self.turn_history = []
         self.action_history = []
         self.undo_stack = []
+        self.last_summary = None
+        self.last_summary_source = None
+        self.last_calculation = None
+        self.last_screenshot = None
+        self.last_metrics = None
+        self.last_url = None
+        self.last_clipboard = None
+        self.last_created_file = None
         self.touch()
 
     def record_turn(self, query: str, intent: str, action: str, result: Dict[str, Any]):
@@ -461,7 +525,92 @@ class StructuredTaskContext:
                         t = t[:m_ord.start()] + f"'{clean_path}'" + t[m_ord.end():]
                         return t.strip()
 
-        # 1b. Draft References & In-place Editing ("write that in notepad", "make that shorter", "go back to previous version")
+        # 1a. Calculation References ("write the result in notepad", "send the result to Rahul", "put that answer in notepad")
+        if self.last_calculation:
+            calc_val = str(self.last_calculation.get("result", ""))
+            calc_fmt = str(self.last_calculation.get("formatted", calc_val))
+            if any(p in t_lower for p in [
+                "put that in notepad", "write that in notepad", "put the result in notepad",
+                "write the result in notepad", "put the answer in notepad", "write the answer in notepad",
+                "put that number in notepad", "write that number in notepad", "put the calculation in notepad",
+                "write the calculation in notepad"
+            ]):
+                if not (hasattr(self, "draft_manager") and self.draft_manager.has_draft()):
+                    return f"type '{calc_fmt}' into notepad"
+
+            m_calc_send = re.search(r"^(?:send|text|message)\s+(?:the\s+|that\s+)?(?:calculation|result|answer|number|total)\s+(?:to\s+([a-zA-Z0-9_\-\+]+))?(?:\s+(?:on|via)\s+whatsapp)?$", t, re.IGNORECASE)
+            if m_calc_send:
+                recip = m_calc_send.group(1) or self.selected_recipient or self.last_person or ""
+                return f"send WhatsApp message to {recip} saying The result is {calc_val}".strip()
+
+            if any(p in t_lower for p in ["copy the result", "copy that result", "copy the calculation", "copy that number", "copy the answer"]):
+                return f"copy text '{calc_val}' to clipboard"
+
+        # 1b. Summary References ("put the summary in notepad", "send the summary to Rahul on WhatsApp", "save that summary to notes.txt")
+        if self.last_summary:
+            if any(p in t_lower for p in [
+                "put the summary in notepad", "write the summary in notepad", "write the summary into notepad",
+                "put that summary in notepad", "write that summary in notepad", "insert the summary in notepad",
+                "insert that summary in notepad"
+            ]):
+                return "write active draft into notepad"
+
+            m_sum_send = re.search(r"^(?:send|text|share)\s+(?:the|that)\s+summary\s+(?:to\s+([a-zA-Z0-9_\-\+]+))?(?:\s+(?:on|via)\s+whatsapp)?$", t, re.IGNORECASE)
+            if m_sum_send:
+                recip = m_sum_send.group(1) or self.selected_recipient or self.last_person or ""
+                return f"send WhatsApp message to {recip} saying {self.last_summary}".strip()
+
+            m_sum_email = re.search(r"^(?:email|send\s+email)\s+(?:the|that)\s+summary(?:\s+to\s+([a-zA-Z0-9_\-\@]+))?", t, re.IGNORECASE)
+            if m_sum_email:
+                recip = m_sum_email.group(1) or self.selected_recipient or "recipient"
+                return f"draft email to {recip} with topic Summary saying {self.last_summary}"
+
+            m_sum_save = re.search(r"^(?:save|write)\s+(?:the|that)\s+summary\s+(?:to|in|into)\s+([a-zA-Z0-9_\-\.\/\\]+)$", t, re.IGNORECASE)
+            if m_sum_save:
+                target_f = m_sum_save.group(1).strip()
+                return f"create file '{target_f}' with content: {self.last_summary}"
+
+            if any(p in t_lower for p in ["copy the summary", "copy that summary", "copy summary to clipboard"]):
+                return f"copy text '{self.last_summary}' to clipboard"
+
+        # 1c. Screenshot References ("send the screenshot to Rahul on WhatsApp", "email the screenshot to...", "open the screenshot")
+        if self.last_screenshot:
+            clean_ss = str(self.last_screenshot).replace("\\", "/")
+            if any(p in t_lower for p in ["open the screenshot", "open that screenshot", "view the screenshot", "show the screenshot"]):
+                return f"open '{clean_ss}'"
+
+            m_ss_send = re.search(r"^(?:send|share)\s+(?:the\s+|that\s+)?(?:screenshot|screen\s+capture|screen)\s+(?:to\s+([a-zA-Z0-9_\-\+]+))?(?:\s+(?:on|via)\s+whatsapp)?$", t, re.IGNORECASE)
+            if m_ss_send:
+                recip = m_ss_send.group(1) or self.selected_recipient or self.last_person or ""
+                return f"send file '{clean_ss}' to {recip} on WhatsApp"
+
+            m_ss_email = re.search(r"^(?:email|send\s+email\s+with)\s+(?:the\s+|that\s+)?(?:screenshot|capture)(?:\s+to\s+([a-zA-Z0-9_\-\@]+))?", t, re.IGNORECASE)
+            if m_ss_email:
+                recip = m_ss_email.group(1) or self.selected_recipient or "recipient"
+                return f"draft email to {recip} with attachment '{clean_ss}'"
+
+        # 1d. System Metrics References ("put the stats in notepad", "write system metrics in notepad")
+        if self.last_metrics:
+            m_str = self.last_metrics.get("formatted") or f"CPU: {self.last_metrics.get('cpu', 0)}%, RAM: {self.last_metrics.get('memory', 0)}%, Disk: {self.last_metrics.get('disk', 0)}%"
+            if any(p in t_lower for p in ["put the stats in notepad", "put the metrics in notepad", "write system metrics in notepad", "put system stats in notepad", "write the stats in notepad"]):
+                return f"type '{m_str}' into notepad"
+
+        # 1e. URL / Webpage References ("open that link", "copy that link", "summarize that page")
+        if self.last_url:
+            clean_url = self.last_url
+            if any(p in t_lower for p in ["open that link", "open the link", "open that url", "open the url", "open that website"]):
+                return f"open page '{clean_url}'"
+            if any(p in t_lower for p in ["copy that link", "copy the link", "copy that url", "copy the url"]):
+                return f"copy text '{clean_url}' to clipboard"
+            if any(p in t_lower for p in ["summarize that page", "summarize that link", "summarize that website", "summarize that article"]):
+                return f"summarize web page '{clean_url}'"
+
+        # 1f. Person pronoun resolution ("send him a message saying...", "tell her that...")
+        if self.last_person:
+            t = re.sub(r"\b(?:send|text|message)\s+(?:him|her|them)\b", f"send {self.last_person}", t, flags=re.IGNORECASE)
+            t = re.sub(r"\btell\s+(?:him|her|them)\b", f"tell {self.last_person}", t, flags=re.IGNORECASE)
+
+        # 1g. Draft References & In-place Editing ("write that in notepad", "make that shorter", "go back to previous version")
         if hasattr(self, "draft_manager") and self.draft_manager.has_draft():
             if any(p in t_lower for p in ["write that in notepad", "put that in notepad", "insert that in notepad", "type that in notepad", "write that into notepad", "put that into notepad", "type that into notepad", "write it in notepad", "put it in notepad"]):
                 return "write active draft into notepad"
@@ -472,7 +621,7 @@ class StructuredTaskContext:
             if any(p in t_lower for p in ["undo the last change", "undo last change", "go back to the previous version", "go back to previous version", "revert to previous version", "previous draft", "rollback"]):
                 return "revert draft to previous version"
 
-        # 1c. Plan continuation ("continue where we stopped", "finish the rest")
+        # 1h. Plan continuation ("continue where we stopped", "finish the rest")
         if any(p in t_lower for p in ["continue where we stopped", "continue where we left off", "finish the rest", "continue the plan"]):
             return "continue active plan"
 
@@ -501,10 +650,10 @@ class StructuredTaskContext:
                 return f"run project '{proj}'"
 
         # 6. Check File pronouns like 'it', 'that', 'this', 'that file'
-        ref_path = self.last_path or self.last_file
+        ref_path = self.last_path or self.last_file or self.last_created_file or self.last_screenshot
         if ref_path:
             clean_ref = str(ref_path).replace("\\", "/")
-            idiom_pattern = r"\b(?:what time is it|is it\b|who are you|how is it|make it (?:louder|quieter|brighter|dimmer|quick)|cut it out|leave it|step on it|take it easy|forget it)\b"
+            idiom_pattern = r"\b(?:what time is it|is it\b|who are you|how is it|check it|check that|test it|run it|do it|tell me about it|what about it|make it (?:louder|quieter|brighter|dimmer|quick)|cut it out|leave it|step on it|take it easy|forget it)\b"
             if not re.search(idiom_pattern, t, re.IGNORECASE):
                 # Pattern A: Action verb + pronoun e.g. "open it", "delete that", "save it in Documents", "open that one"
                 verb_pronoun_pattern = re.compile(
@@ -541,12 +690,17 @@ class StructuredTaskContext:
             return resolved_query, [], False
 
         # Check if query contains non-referential dummy pronoun idioms
-        idiom_pattern = r"\b(?:what time is it|is it\b|who are you|how is it|make it (?:louder|quieter|brighter|dimmer|quick)|cut it out|leave it|step on it|take it easy|forget it)\b"
+        idiom_pattern = r"\b(?:what time is it|is it\b|who are you|how is it|check it|check that|test it|run it|do it|tell me about it|what about it|make it (?:louder|quieter|brighter|dimmer|quick)|cut it out|leave it|step on it|take it easy|forget it)\b"
         if re.search(idiom_pattern, resolved_query, re.IGNORECASE):
             return resolved_query, [], False
 
         # Check if query still contains unresolved references without prior context
         unresolved_tokens = re.findall(r"\b(it|that|the other one|the second one|that one|the file|the document|second result|first result)\b", resolved_query, re.IGNORECASE)
+        has_any_context = bool(
+            self.last_file or self.last_path or self.last_app or self.last_summary or
+            self.last_calculation or self.last_screenshot or self.last_metrics or
+            self.last_url or self.last_created_file or (hasattr(self, "has_draft") and self.has_draft())
+        )
         for tok in unresolved_tokens:
             t_low = tok.lower()
             if t_low == "that":
@@ -554,7 +708,7 @@ class StructuredTaskContext:
                 if re.search(r"\bthat\s+(?:i\b|we\b|you\b|he\b|she\b|they\b|the\b|our\b|my\b|there\b|it\b|a\b)", resolved_query, re.IGNORECASE) or re.search(r"\b(?:draft|send|tell|message|notify|saying|state|stating)\b.+?\bthat\b", resolved_query, re.IGNORECASE):
                     continue
 
-            if t_low in ["it", "that", "that one", "the file", "the document"] and not self.last_file and not self.last_path and not self.last_app and not (hasattr(self, "has_draft") and self.has_draft()):
+            if t_low in ["it", "that", "that one", "the file", "the document"] and not has_any_context:
                 references.append({
                     "raw_reference": tok,
                     "ref_type": "pronoun",
@@ -621,6 +775,10 @@ class StructuredTaskContext:
             "last_artist": self.last_artist,
             "last_platform": self.last_platform,
             "last_media_action": self.last_media_action,
+            "last_summary": bool(self.last_summary),
+            "last_calculation": self.last_calculation,
+            "last_screenshot": self.last_screenshot,
+            "last_url": self.last_url,
             "turn_count": len(self.turn_history),
             "undo_available": len(self.undo_stack) > 0,
         }

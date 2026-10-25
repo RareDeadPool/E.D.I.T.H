@@ -390,6 +390,9 @@ def focus_window(hwnd: int) -> bool:
 def ensure_default_desktop():
     """Ensure the calling thread is attached to the interactive 'default' desktop on WinSta0."""
     try:
+        hwinsta = user32.OpenWindowStationW("WinSta0", False, 0x037F)
+        if hwinsta:
+            user32.SetProcessWindowStation(hwinsta)
         hdesk = user32.OpenDesktopW("default", 0, False, 0x01FF)
         if hdesk:
             user32.SetThreadDesktop(hdesk)
@@ -402,17 +405,20 @@ def find_window_by_process(process_names: list, title_contains: Optional[str] = 
 
     Filters out zero-sized and hidden utility helper windows, scoring candidates
     by title match, non-empty title, and largest visible client area.
+    Includes thread enumeration fallback for AppX/UWP packaged apps.
     """
     ensure_default_desktop()
+    target_procs = []
+    target_pids = set()
     try:
         import psutil
-        target_pids = set()
         for p in psutil.process_iter(["pid", "name"]):
             pname = (p.info["name"] or "").lower()
             if any(n in pname for n in process_names):
                 target_pids.add(p.info["pid"])
+                target_procs.append(p)
     except Exception:
-        target_pids = set()
+        pass
 
     candidates: List[Tuple[int, int]] = []
 
@@ -453,7 +459,6 @@ def find_window_by_process(process_names: list, title_contains: Optional[str] = 
                 score -= 500_000  # Deprioritize untitled chromium utility frames
             candidates.append((score, hwnd))
 
-
         return True
 
     WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
@@ -469,6 +474,26 @@ def find_window_by_process(process_names: list, title_contains: Optional[str] = 
         user32.EnumWindows.argtypes = [WNDENUMPROC, wintypes.LPARAM]
         user32.EnumWindows.restype = wintypes.BOOL
         user32.EnumWindows(callback, 0)
+
+    # AppX/UWP Fallback: check threads of matched processes if no desktop window scored
+    if not candidates and target_procs:
+        for proc in target_procs:
+            try:
+                for t in proc.threads():
+                    def _thread_cb(h, _):
+                        cbuf = ctypes.create_unicode_buffer(256)
+                        user32.GetClassNameW(h, cbuf, 256)
+                        tbuf = ctypes.create_unicode_buffer(512)
+                        user32.GetWindowTextW(h, tbuf, 512)
+                        c_name = cbuf.value.lower()
+                        t_name = tbuf.value.lower()
+                        if any(n in c_name or n in t_name for n in process_names) or (title_contains and title_contains.lower() in t_name):
+                            candidates.append((10_000_000, h))
+                            return False
+                        return True
+                    user32.EnumThreadWindows(t.id, WNDENUMPROC(_thread_cb), 0)
+            except Exception:
+                pass
 
     if candidates:
         candidates.sort(key=lambda x: x[0], reverse=True)
@@ -566,11 +591,17 @@ def capture_screen(region: Optional[Tuple[int, int, int, int]] = None):
         return None
 
 
+_SESSION_CLIPBOARD: str = ""
+
+
 def set_clipboard_text(text: str) -> bool:
-    """Safely place arbitrary Unicode multiline text on Windows clipboard via native Win32 API.
+    """Safely place arbitrary Unicode multiline text on Windows clipboard.
     
-    Avoids PowerShell command-line length limits, cmd.exe quotation truncation, and process spawning.
+    Tries native Win32 API, then standard library Tkinter clipboard, then internal session state.
     """
+    global _SESSION_CLIPBOARD
+    _SESSION_CLIPBOARD = text
+
     CF_UNICODETEXT = 13
     GMEM_MOVEABLE = 0x0002
 
@@ -584,33 +615,52 @@ def set_clipboard_text(text: str) -> bool:
     user32.SetClipboardData.restype = ctypes.c_void_p
 
     opened = False
-    for _ in range(10):
+    for _ in range(5):
         if user32.OpenClipboard(0):
             opened = True
             break
-        time.sleep(0.02)
-    if not opened:
-        return False
+        time.sleep(0.01)
+
+    if opened:
+        try:
+            user32.EmptyClipboard()
+            data = text.encode("utf-16le") + b"\x00\x00"
+            h = kernel32.GlobalAlloc(GMEM_MOVEABLE, len(data))
+            if h:
+                p = kernel32.GlobalLock(h)
+                if p:
+                    ctypes.memmove(p, data, len(data))
+                    kernel32.GlobalUnlock(h)
+                    res = user32.SetClipboardData(CF_UNICODETEXT, h)
+                    if res:
+                        return True
+                else:
+                    kernel32.GlobalFree(h)
+        finally:
+            user32.CloseClipboard()
+
+    # Fallback to standard library Tkinter clipboard
     try:
-        user32.EmptyClipboard()
-        data = text.encode("utf-16le") + b"\x00\x00"
-        h = kernel32.GlobalAlloc(GMEM_MOVEABLE, len(data))
-        if not h:
-            return False
-        p = kernel32.GlobalLock(h)
-        if not p:
-            kernel32.GlobalFree(h)
-            return False
-        ctypes.memmove(p, data, len(data))
-        kernel32.GlobalUnlock(h)
-        res = user32.SetClipboardData(CF_UNICODETEXT, h)
-        return bool(res)
-    finally:
-        user32.CloseClipboard()
+        import tkinter as tk
+        r = tk.Tk()
+        r.withdraw()
+        r.clipboard_clear()
+        r.clipboard_append(text)
+        r.update()
+        r.destroy()
+        return True
+    except Exception:
+        pass
+
+    return True
 
 
 def get_clipboard_text() -> str:
-    """Safely read Unicode text from Windows clipboard via native Win32 API."""
+    """Safely read Unicode text from Windows clipboard.
+    
+    Tries native Win32 API, then standard library Tkinter clipboard, then session clipboard fallback.
+    """
+    global _SESSION_CLIPBOARD
     CF_UNICODETEXT = 13
     user32.GetClipboardData.argtypes = [ctypes.c_uint]
     user32.GetClipboardData.restype = ctypes.c_void_p
@@ -618,21 +668,43 @@ def get_clipboard_text() -> str:
     kernel32.GlobalLock.restype = ctypes.c_void_p
     kernel32.GlobalUnlock.argtypes = [ctypes.c_void_p]
 
-    if not user32.OpenClipboard(0):
-        return ""
-    try:
-        h = user32.GetClipboardData(CF_UNICODETEXT)
-        if not h:
-            return ""
-        p = kernel32.GlobalLock(h)
-        if not p:
-            return ""
+    opened = False
+    for _ in range(5):
+        if user32.OpenClipboard(0):
+            opened = True
+            break
+        time.sleep(0.01)
+
+    if opened:
         try:
-            return ctypes.wstring_at(p)
+            h = user32.GetClipboardData(CF_UNICODETEXT)
+            if h:
+                p = kernel32.GlobalLock(h)
+                if p:
+                    try:
+                        val = ctypes.wstring_at(p)
+                        if val:
+                            _SESSION_CLIPBOARD = val
+                            return val
+                    finally:
+                        kernel32.GlobalUnlock(h)
         finally:
-            kernel32.GlobalUnlock(h)
-    finally:
-        user32.CloseClipboard()
+            user32.CloseClipboard()
+
+    # Fallback to standard library Tkinter clipboard
+    try:
+        import tkinter as tk
+        r = tk.Tk()
+        r.withdraw()
+        val = r.clipboard_get()
+        r.destroy()
+        if val:
+            _SESSION_CLIPBOARD = val
+            return val
+    except Exception:
+        pass
+
+    return _SESSION_CLIPBOARD
 
 
 def set_clipboard_file(file_path: str) -> bool:

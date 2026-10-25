@@ -296,8 +296,15 @@ class ClosedLoopVerifier:
                 diagnostic_message=raw_message or "Email action failed."
             )
 
-        elif handler in ["file_summarize", "file_rename", "file_copy", "file_move", "file_organize"]:
-            if raw_status in ["success"]:
+        elif handler in [
+            "file_summarize", "file_rename", "file_copy", "file_move", "file_organize",
+            "file_create", "file_read", "file_append", "file_zip", "file_unzip",
+            "system_screenshot", "system_clipboard_copy", "system_clipboard_read",
+            "system_metrics", "browser_read_page", "browser_search_and_summarize", "compute_math",
+            "voice_listen", "voice_speak", "window_control", "system_timer",
+            "notes_manager", "system_weather", "unit_convert", "system_processes"
+        ]:
+            if raw_status in ["success", "ok"]:
                 return VerificationResult(
                     success=True,
                     observed_state=f"{handler}_completed",

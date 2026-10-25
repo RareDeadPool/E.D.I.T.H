@@ -175,3 +175,46 @@ class BrowserAdapter:
             "submitted": submit,
             "message": f"Prepared values for {form_desc}:\n{fields_summary}\n(Form ready for inspection.)"
         }
+
+    def read_and_summarize_url(self, url: str) -> Dict[str, Any]:
+        """Fetch content from a webpage URL and extract a clean factual summary."""
+        target_url = self.resolve_url(url)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        try:
+            req = urllib.request.Request(target_url, headers=headers)
+            with urllib.request.urlopen(req, timeout=7.0) as resp:
+                html = resp.read().decode("utf-8", errors="ignore")
+
+            m_title = re.search(r"<title[^>]*>(.*?)</title>", html, re.IGNORECASE | re.DOTALL)
+            title = re.sub(r"<[^>]+>", "", m_title.group(1)).strip() if m_title else "Web Page"
+
+            clean_html = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", html, flags=re.IGNORECASE | re.DOTALL)
+            raw_text = re.sub(r"<[^>]+>", " ", clean_html)
+            words = [w.strip() for w in raw_text.split() if len(w.strip()) > 2]
+            clean_body = " ".join(words[:400])
+
+            sentences = [s.strip() for s in re.split(r"[.!?]\s+", clean_body) if len(s.strip()) > 25]
+            key_pts = sentences[:4]
+            if key_pts:
+                summary_text = f"Summary of '{title}' ({target_url}):\n\n" + "\n".join(f"• {pt}." for pt in key_pts)
+            else:
+                summary_text = f"Accessed page '{title}' at {target_url}."
+
+            return {
+                "status": "success",
+                "action": "read_and_summarize_url",
+                "url": target_url,
+                "title": title,
+                "summary": summary_text,
+                "message": summary_text
+            }
+        except Exception as e:
+            return {
+                "status": "partial",
+                "action": "read_and_summarize_url",
+                "url": target_url,
+                "summary": f"Could not directly parse {target_url}: {e}. Opened in your browser.",
+                "message": f"Opened {target_url} in your browser."
+            }
