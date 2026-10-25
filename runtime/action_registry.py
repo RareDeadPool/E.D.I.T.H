@@ -370,6 +370,489 @@ class ActionRegistry:
             )
         ))
 
+        self.register(ActionCapability(
+            name="browser_read_page",
+            category="web",
+            description="Fetch a web page or article URL and generate a synthesized summary.",
+            parameters_schema={"url": "Website or article URL"},
+            preconditions=["url provided"],
+            expected_output="summary_generated",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self.browser_adapter.read_and_summarize_url(p.get("url") or p.get("target", ""))
+        ))
+
+        # ─────────────────────────────────────────────────────────────────────
+        # 6. EXPANDED FILE & ARCHIVE OPERATIONS
+        # ─────────────────────────────────────────────────────────────────────
+
+        self.register(ActionCapability(
+            name="file_create",
+            category="files",
+            description="Create or write content to a file with read-back verification.",
+            parameters_schema={"path": "File path", "content": "Text content to write", "overwrite": "Boolean"},
+            preconditions=[],
+            expected_output="file_created",
+            is_consequential=True,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self.text_writer.write_to_file(
+                file_path=p.get("path") or p.get("file") or p.get("filename", "output.txt"),
+                content=p.get("content") or p.get("text", ""),
+                overwrite=p.get("overwrite", True)
+            )
+        ))
+
+        self.register(ActionCapability(
+            name="file_read",
+            category="files",
+            description="Read text content from an accessible local document.",
+            parameters_schema={"path": "File path"},
+            preconditions=["file exists"],
+            expected_output="file_content",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_file_read(p.get("path") or p.get("file", ""))
+        ))
+
+        self.register(ActionCapability(
+            name="file_append",
+            category="files",
+            description="Append content to an existing file with read-back verification.",
+            parameters_schema={"path": "File path", "content": "Text to append"},
+            preconditions=["file exists"],
+            expected_output="file_appended",
+            is_consequential=True,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self.text_writer.write_to_file(
+                file_path=p.get("path") or p.get("file", ""),
+                content=p.get("content") or p.get("text", ""),
+                append=True
+            )
+        ))
+
+        self.register(ActionCapability(
+            name="file_zip",
+            category="files",
+            description="Compress files or folders into a .zip archive.",
+            parameters_schema={"source": "Source path", "destination": "Output zip path"},
+            preconditions=["source exists"],
+            expected_output="file_zipped",
+            is_consequential=True,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_zip(p.get("source", ""), p.get("destination", ""))
+        ))
+
+        self.register(ActionCapability(
+            name="file_unzip",
+            category="files",
+            description="Extract a .zip archive into a target folder.",
+            parameters_schema={"source": "Zip file path", "destination": "Extract destination"},
+            preconditions=["source exists"],
+            expected_output="file_unzipped",
+            is_consequential=True,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_unzip(p.get("source", ""), p.get("destination", ""))
+        ))
+
+        # ─────────────────────────────────────────────────────────────────────
+        # 7. SYSTEM UTILITIES, CLIPBOARD, & DIAGNOSTICS
+        # ─────────────────────────────────────────────────────────────────────
+
+        self.register(ActionCapability(
+            name="system_screenshot",
+            category="system",
+            description="Capture screen screenshot and save to Desktop or custom path.",
+            parameters_schema={"destination": "Optional destination path"},
+            preconditions=[],
+            expected_output="screenshot_path",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_screenshot(p.get("destination") or p.get("path"))
+        ))
+
+        self.register(ActionCapability(
+            name="system_clipboard_copy",
+            category="system",
+            description="Copy specified text to Windows system clipboard.",
+            parameters_schema={"content": "Text to copy"},
+            preconditions=[],
+            expected_output="clipboard_copied",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_clipboard_copy(p.get("content") or p.get("text", ""))
+        ))
+
+        self.register(ActionCapability(
+            name="system_clipboard_read",
+            category="system",
+            description="Read text from Windows system clipboard.",
+            parameters_schema={},
+            preconditions=[],
+            expected_output="clipboard_text",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_clipboard_read()
+        ))
+
+        self.register(ActionCapability(
+            name="system_metrics",
+            category="system",
+            description="Query live system CPU, RAM, disk, battery, and process diagnostics.",
+            parameters_schema={},
+            preconditions=[],
+            expected_output="system_metrics",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_metrics()
+        ))
+
+        self.register(ActionCapability(
+            name="voice_listen",
+            category="voice",
+            description="Record microphone input and transcribe using Speech-to-Text.",
+            parameters_schema={"timeout": {"type": "number", "default": 7.0}},
+            preconditions=[],
+            expected_output="transcription",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_voice_listen(p.get("timeout", 7.0))
+        ))
+
+        self.register(ActionCapability(
+            name="voice_speak",
+            category="voice",
+            description="Speak message aloud using Windows SAPI Text-to-Speech.",
+            parameters_schema={"text": {"type": "string", "required": True}},
+            preconditions=[],
+            expected_output="speech_output",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_voice_speak(p.get("text", ""))
+        ))
+
+        # ─────────────────────────────────────────────────────────────────────
+        # 8. EXTENDED SYSTEM & PRODUCTIVITY UTILITIES
+        # ─────────────────────────────────────────────────────────────────────
+
+        self.register(ActionCapability(
+            name="window_control",
+            category="system",
+            description="Manage active or target windows (maximize, minimize, restore, snap left/right, switch to, close).",
+            parameters_schema={"action": "maximize | minimize | restore | snap_left | snap_right | switch | close", "app_name": "Target application name"},
+            preconditions=[],
+            expected_output="window_manipulated",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_window_control(p.get("action", ""), p.get("app_name"))
+        ))
+
+        self.register(ActionCapability(
+            name="system_timer",
+            category="system",
+            description="Set a background countdown timer or reminder with audio notification.",
+            parameters_schema={"duration": "Seconds or duration string", "label": "Timer label", "subaction": "set | list | cancel"},
+            preconditions=[],
+            expected_output="timer_event",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_timer(p)
+        ))
+
+        self.register(ActionCapability(
+            name="notes_manager",
+            category="productivity",
+            description="Add, list, or clear persistent quick notes and scratchpad entries.",
+            parameters_schema={"action": "add | list | clear", "content": "Note text", "note_id": "Optional note index"},
+            preconditions=[],
+            expected_output="notes_updated",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_notes(p)
+        ))
+
+        self.register(ActionCapability(
+            name="system_weather",
+            category="system",
+            description="Query current weather and temperature for a city or local area.",
+            parameters_schema={"location": "Optional city name or country"},
+            preconditions=[],
+            expected_output="weather_report",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_weather(p.get("location", ""))
+        ))
+
+        self.register(ActionCapability(
+            name="unit_convert",
+            category="computation",
+            description="Convert physical units and currencies (length, mass, temperature, data storage, time).",
+            parameters_schema={"amount": "Number", "from_unit": "Unit", "to_unit": "Unit"},
+            preconditions=[],
+            expected_output="conversion_result",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_unit_convert(p)
+        ))
+
+        self.register(ActionCapability(
+            name="system_processes",
+            category="system",
+            description="Inspect open user desktop windows and check if an app or process is running.",
+            parameters_schema={"subaction": "list_apps | is_running", "app_name": "Target application name"},
+            preconditions=[],
+            expected_output="processes_info",
+            is_consequential=False,
+            requires_confirmation=False,
+            execute_fn=lambda p, ctx: self._execute_processes(p)
+        ))
+
+    def _execute_file_read(self, file_path: str) -> Dict[str, Any]:
+        """Read content from a local document."""
+        if not file_path or not os.path.exists(file_path):
+            return {"status": "error", "message": f"File '{file_path}' does not exist on disk."}
+        try:
+            content = self.file_discovery._extract_text_content(file_path, max_chars=12000)
+            if not content:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read(12000)
+            return {
+                "status": "success",
+                "action": "file_read",
+                "path": file_path,
+                "file": os.path.basename(file_path),
+                "length": len(content),
+                "content": content,
+                "message": f"Read {len(content)} characters from '{os.path.basename(file_path)}'."
+            }
+        except Exception as e:
+            return {"status": "error", "message": f"Failed reading file '{file_path}': {e}"}
+
+    def _execute_zip(self, source: str, destination: str = "") -> Dict[str, Any]:
+        """Compress file or directory to a .zip archive."""
+        if not source or not os.path.exists(source):
+            return {"status": "error", "message": f"Source '{source}' does not exist."}
+        import zipfile
+        out_zip = destination or (source.rstrip("/\\") + ".zip")
+        try:
+            with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_DEFLATED) as z:
+                if os.path.isdir(source):
+                    for root, dirs, files in os.walk(source):
+                        for f in files:
+                            full_p = os.path.join(root, f)
+                            rel_p = os.path.relpath(full_p, source)
+                            z.write(full_p, rel_p)
+                else:
+                    z.write(source, os.path.basename(source))
+            return {
+                "status": "success",
+                "action": "file_zip",
+                "path": out_zip,
+                "source": source,
+                "size_bytes": os.path.getsize(out_zip) if os.path.exists(out_zip) else 0,
+                "message": f"Compressed '{os.path.basename(source)}' into '{os.path.basename(out_zip)}'."
+            }
+        except Exception as e:
+            return {"status": "error", "message": f"Failed compressing '{source}': {e}"}
+
+    def _execute_unzip(self, source: str, destination: str = "") -> Dict[str, Any]:
+        """Extract a .zip archive to destination directory."""
+        if not source or not os.path.exists(source):
+            return {"status": "error", "message": f"Zip file '{source}' does not exist."}
+        import zipfile
+        dest_dir = destination or os.path.splitext(source)[0]
+        try:
+            os.makedirs(dest_dir, exist_ok=True)
+            with zipfile.ZipFile(source, "r") as z:
+                z.extractall(dest_dir)
+            return {
+                "status": "success",
+                "action": "file_unzip",
+                "path": dest_dir,
+                "source": source,
+                "message": f"Extracted '{os.path.basename(source)}' into '{os.path.basename(dest_dir)}'."
+            }
+        except Exception as e:
+            return {"status": "error", "message": f"Failed extracting '{source}': {e}"}
+
+    def _execute_screenshot(self, destination: Optional[str] = None) -> Dict[str, Any]:
+        """Capture screen screenshot and save to disk."""
+        import datetime
+        desktop = os.path.join(os.path.expanduser("~"), "Desktop")
+        ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"edith_screenshot_{ts}.png"
+        filepath = destination or os.path.join(desktop, filename)
+        try:
+            from PIL import ImageGrab
+            img = ImageGrab.grab()
+            img.save(filepath)
+            return {
+                "status": "success",
+                "action": "screenshot",
+                "path": filepath,
+                "file": filename,
+                "message": f"Captured screenshot and saved to: {filepath}"
+            }
+        except Exception:
+            import subprocess
+            escaped = filepath.replace("\\", "/")
+            ps_cmd = f"$b = New-Object System.Drawing.Bitmap ([System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Width, [System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Height); $g = [System.Drawing.Graphics]::FromImage($b); $g.CopyFromScreen(0, 0, 0, 0, $b.Size); $b.Save('{escaped}');"
+            subprocess.run(f'powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; {ps_cmd}"', shell=True)
+            return {
+                "status": "success" if os.path.exists(filepath) else "error",
+                "action": "screenshot",
+                "path": filepath,
+                "file": filename,
+                "message": f"Captured screenshot and saved to: {filepath}"
+            }
+
+    def _execute_clipboard_copy(self, text: str) -> Dict[str, Any]:
+        """Place text on Windows clipboard."""
+        from runtime import actions
+        ok = actions.set_clipboard_text(text)
+        return {
+            "status": "success" if ok else "error",
+            "action": "clipboard_copy",
+            "length": len(text),
+            "content": text,
+            "message": f"Copied {len(text)} characters to clipboard." if ok else "Failed copying text to clipboard."
+        }
+
+    def _execute_clipboard_read(self) -> Dict[str, Any]:
+        """Read text from Windows clipboard."""
+        from runtime import actions
+        txt = actions.get_clipboard_text()
+        return {
+            "status": "success",
+            "action": "clipboard_read",
+            "length": len(txt),
+            "content": txt,
+            "message": f"Retrieved {len(txt)} characters from clipboard."
+        }
+
+    def _execute_metrics(self) -> Dict[str, Any]:
+        """Query live system telemetry."""
+        import psutil
+        cpu = psutil.cpu_percent(interval=0.1)
+        mem = psutil.virtual_memory()
+        disk = psutil.disk_usage(os.path.abspath("."))
+        batt = psutil.sensors_battery()
+        batt_pct = batt.percent if batt else None
+        plugged = batt.power_plugged if batt else None
+
+        batt_str = f", Battery: {batt_pct}% ({'Charging' if plugged else 'Discharging'})" if batt_pct is not None else ""
+        formatted = f"CPU Usage: {cpu}%, RAM Usage: {mem.percent}% ({round(mem.used/(1024**3), 1)}GB / {round(mem.total/(1024**3), 1)}GB), Disk Free: {round(disk.free/(1024**3), 1)}GB{batt_str}"
+
+        return {
+            "status": "success",
+            "action": "system_metrics",
+            "cpu_percent": cpu,
+            "memory_percent": mem.percent,
+            "disk_free_gb": round(disk.free / (1024**3), 1),
+            "battery_percent": batt_pct,
+            "is_charging": plugged,
+            "formatted": formatted,
+            "message": f"System Diagnostics: {formatted}"
+        }
+
+    def _execute_voice_listen(self, timeout: float = 7.0) -> Dict[str, Any]:
+        """Transcribe speech from microphone using EdithSTTEngine."""
+        try:
+            from runtime.stt_engine import EdithSTTEngine
+            stt = EdithSTTEngine()
+            res = stt.listen_and_transcribe(timeout=timeout)
+            if res.get("success"):
+                return {
+                    "status": "success",
+                    "action": "voice_listen",
+                    "text": res["text"],
+                    "cleaned_text": res["cleaned_text"],
+                    "engine": res.get("engine", "faster-whisper"),
+                    "latency_ms": res.get("latency_ms", 0.0),
+                    "message": f"Recognized speech: \"{res['cleaned_text']}\""
+                }
+            return {
+                "status": "error",
+                "action": "voice_listen",
+                "error": res.get("error", "No speech detected"),
+                "message": res.get("error", "No speech detected")
+            }
+        except Exception as e:
+            return {"status": "error", "action": "voice_listen", "message": f"Voice listen failed: {e}"}
+
+    def _execute_voice_speak(self, text: str) -> Dict[str, Any]:
+        """Speak text using SAPI TTS."""
+        try:
+            from runtime.stt_engine import EdithTTSEngine
+            tts = EdithTTSEngine()
+            tts.speak(text, async_mode=True)
+            return {
+                "status": "success",
+                "action": "voice_speak",
+                "text": text,
+                "message": f"Spoke text ({len(text)} chars)."
+            }
+        except Exception as e:
+            return {"status": "error", "action": "voice_speak", "message": f"Voice speak failed: {e}"}
+
+    def _execute_window_control(self, action: str, app_name: Optional[str] = None) -> Dict[str, Any]:
+        """Manipulate window size, placement, or foreground focus."""
+        from runtime.system_functions import WindowController
+        return WindowController.execute_action(action, app_name)
+
+    def _execute_timer(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Manage countdown timers and reminders."""
+        from runtime.system_functions import TimerManager
+        tm = TimerManager()
+        subaction = params.get("subaction", "set")
+        if subaction == "list":
+            active = tm.list_timers()
+            return {"status": "success", "action": "system_timer", "timers": active, "message": f"Active timers ({len(active)})." if active else "No timers currently active."}
+        elif subaction == "cancel":
+            return tm.cancel_timer(params.get("timer_id"))
+        else:
+            dur = params.get("duration")
+            if isinstance(dur, (int, float)):
+                secs = float(dur)
+            else:
+                secs = TimerManager.parse_duration_string(str(dur or params.get("command", ""))) or 60.0
+            label = params.get("label", "Timer")
+            return tm.set_timer(secs, label)
+
+    def _execute_notes(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Manage persistent quick notes."""
+        from runtime.system_functions import NotesManager
+        act = params.get("action", "add")
+        if act == "list":
+            return NotesManager.list_notes()
+        elif act in ["clear", "delete"]:
+            return NotesManager.clear_notes(params.get("note_id"))
+        else:
+            return NotesManager.add_note(params.get("content") or params.get("text", ""))
+
+    def _execute_weather(self, location: str = "") -> Dict[str, Any]:
+        """Fetch current weather metrics."""
+        from runtime.system_functions import WeatherClient
+        return WeatherClient.get_weather(location)
+
+    def _execute_unit_convert(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert units or currencies."""
+        from runtime.system_functions import UnitConverter
+        amt = float(params.get("amount", 1.0))
+        u1 = params.get("from_unit", "")
+        u2 = params.get("to_unit", "")
+        return UnitConverter.convert(amt, u1, u2)
+
+    def _execute_processes(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Inspect running processes and open windows."""
+        from runtime.system_functions import ProcessInspector
+        subact = params.get("subaction", "list_apps")
+        if subact == "is_running" or params.get("app_name"):
+            return ProcessInspector.is_app_running(params.get("app_name", ""))
+        elif subact == "network":
+            return ProcessInspector.get_network_info()
+        else:
+            return ProcessInspector.list_running_apps()
+
     def execute(self, capability_name: str, parameters: Dict[str, Any], context: Optional[Any] = None) -> Tuple[Dict[str, Any], VerifiedOutcome]:
         """
         Execute an action capability through safety gating and result verification.

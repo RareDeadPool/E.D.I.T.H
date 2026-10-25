@@ -8,6 +8,16 @@ import re
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field, asdict
 
+try:
+    from engine.human_dialogue import EdithDialogueEngine
+    _DIALOGUE_ENGINE = EdithDialogueEngine()
+except ImportError:
+    try:
+        from human_dialogue import EdithDialogueEngine
+        _DIALOGUE_ENGINE = EdithDialogueEngine()
+    except ImportError:
+        _DIALOGUE_ENGINE = None
+
 
 @dataclass
 class ContextReference:
@@ -185,8 +195,28 @@ class UnderstandingNormalizer:
         ("communication_drafting", "exec_draft_content"): "draft_content",
         ("communication", "send_email"): "email_send",
         ("communication", "draft_email"): "email_draft",
+        ("communication", "set_default_route"): "set_default_route",
         ("file_operation", "summarize_document"): "file_summarize",
         ("file_operation", "organize_folder"): "file_organize",
+        ("window_control", "window_snap_left"): "control_window",
+        ("window_control", "window_snap_right"): "control_window",
+        ("window_control", "window_maximize"): "control_window",
+        ("window_control", "window_minimize"): "control_window",
+        ("window_control", "window_restore"): "control_window",
+        ("window_control", "window_switch"): "control_window",
+        ("window_control", "window_close"): "control_window",
+        ("system_timer", "set_timer"): "manage_timer",
+        ("system_timer", "cancel_timer"): "manage_timer",
+        ("system_timer", "list_timers"): "manage_timer",
+        ("system_timer", "set_reminder"): "manage_timer",
+        ("notes_manager", "add_note"): "manage_notes",
+        ("notes_manager", "list_notes"): "manage_notes",
+        ("notes_manager", "clear_notes"): "manage_notes",
+        ("system_weather", "check_weather"): "query_weather",
+        ("unit_convert", "convert_units"): "convert_units",
+        ("system_processes", "list_apps"): "inspect_processes",
+        ("system_processes", "check_app_running"): "inspect_processes",
+        ("system_processes", "network_info"): "inspect_network",
     }
 
     @classmethod
@@ -224,45 +254,150 @@ class UnderstandingNormalizer:
         # Refine goal for coding environments and projects
         q_lower = raw_query.lower().strip(" .!?\t\r\n")
 
+        # 00-a. Network Diagnostics & Host IP Address
+        if any(q_lower == p or q_lower.startswith(p + " ") for p in [
+            "what is my ip", "my ip", "what's my ip", "public ip", "check my ip",
+            "network info", "local ip", "ip address", "what is my ip address"
+        ]):
+            goal = "inspect_network"
+            intent = "system_processes"
+            action = "network_info"
+            confidence = 0.99
+
+        # 00-b. Real-Time Environmental Weather
+        elif re.match(r"^(?:what\s+is\s+the\s+weather|what\'s\s+the\s+weather|weather|check\s+weather|how\s+is\s+the\s+weather|temperature)(?:\s+(?:in|for|at|of)\s+(.+))?$", q_lower):
+            goal = "query_weather"
+            intent = "system_weather"
+            action = "check_weather"
+            confidence = 0.99
+
+        # 00-c. Dimensional Unit & Currency Conversions
+        elif re.match(r"^(?:convert\s+)?(\d+(?:\.\d+)?)\s*([a-zA-Z°]+)\s+(?:to|in|into)\s+([a-zA-Z°]+)$", q_lower):
+            goal = "convert_units"
+            intent = "unit_convert"
+            action = "convert_units"
+            confidence = 0.99
+
+        # 00-d. Persistent Scratchpad & Notes Manager
+        elif any(q_lower == p for p in ["show notes", "show my notes", "read my notes", "read notes", "list notes", "my notes"]):
+            goal = "manage_notes"
+            intent = "notes_manager"
+            action = "list_notes"
+            confidence = 0.99
+        elif any(q_lower == p for p in ["clear notes", "clear all notes", "delete notes", "delete all notes"]):
+            goal = "manage_notes"
+            intent = "notes_manager"
+            action = "clear_notes"
+            confidence = 0.99
+        elif re.match(r"^(?:take\s+a?\s*note|add\s+note|create\s+note|save\s+note|note)\s*[:\-]?\s*(.+)$", q_lower):
+            goal = "manage_notes"
+            intent = "notes_manager"
+            action = "add_note"
+            confidence = 0.99
+
+        # 00-e. Background Countdown Timers & Reminders
+        elif any(q_lower == p for p in ["cancel timer", "cancel timers", "stop timer", "cancel the timer"]):
+            goal = "manage_timer"
+            intent = "system_timer"
+            action = "cancel_timer"
+            confidence = 0.99
+        elif any(q_lower == p for p in ["check timer", "check timers", "list timers", "show timers", "active timers"]):
+            goal = "manage_timer"
+            intent = "system_timer"
+            action = "list_timers"
+            confidence = 0.99
+        elif re.match(r"^remind\s+me\s+(?:in\s+)?(.+?)\s+to\s+(.+)$", q_lower):
+            goal = "manage_timer"
+            intent = "system_timer"
+            action = "set_reminder"
+            confidence = 0.99
+        elif re.match(r"^(?:set\s+a?\s*timer|set\s+timer|timer|countdown)\s+(?:for\s+)?(.+?)(?:\s+(?:called|labeled|for)\s+(.+))?$", q_lower):
+            goal = "manage_timer"
+            intent = "system_timer"
+            action = "set_timer"
+            confidence = 0.99
+
+        # 00-f. Precision Win32 Window Control
+        elif re.match(r"^(?:snap|tile)\s+(?:window\s+)?(left|right)$", q_lower):
+            goal = "control_window"
+            intent = "window_control"
+            action = "window_snap"
+            confidence = 0.99
+        elif re.match(r"^(maximize|fullscreen|unmaximize|restore|minimize)\s+(?:the\s+)?(?:window|screen)?(?:\s+(?:for|of)\s+([a-zA-Z0-9_\-]+))?$", q_lower):
+            goal = "control_window"
+            intent = "window_control"
+            action = "window_state"
+            confidence = 0.99
+        elif re.match(r"^(?:switch\s+to|focus\s+(?:on\s+)?)([a-zA-Z0-9_\-\s]+?)(?:\s+window)?$", q_lower) or re.match(r"^bring\s+(?:up\s+)?([a-zA-Z0-9_\-\s]+?)\s+window$", q_lower):
+            goal = "control_window"
+            intent = "window_control"
+            action = "window_switch"
+            confidence = 0.99
+        elif q_lower in ["close window", "close active window", "close current window", "exit window"]:
+            goal = "control_window"
+            intent = "window_control"
+            action = "window_close"
+            confidence = 0.99
+
+        # 00-g. Active Running Applications & Processes
+        elif any(q_lower == p for p in ["what apps are open", "what apps are running", "list running apps", "running apps", "list open windows", "open windows", "active windows"]):
+            goal = "inspect_processes"
+            intent = "system_processes"
+            action = "list_apps"
+            confidence = 0.99
+        elif re.match(r"^(?:is|check\s+if)\s+([a-zA-Z0-9_\-]+)\s+(?:running|open)$", q_lower):
+            goal = "inspect_processes"
+            intent = "system_processes"
+            action = "check_app_running"
+            confidence = 0.99
+
+        # 00-h. YouTube Specific Search Dispatch
+        elif re.match(r"^(?:search\s+youtube\s+for|search\s+on\s+youtube\s+for|youtube\s+search)\s+(.+)$", q_lower):
+            goal = "search_youtube"
+            intent = "web_navigation"
+            action = "exec_web_navigation"
+            confidence = 0.99
+
         # 00. Draft Revision / Notepad Writing
-        if q_lower.startswith("revise draft:") or q_lower.startswith("write active draft") or q_lower.startswith("revert draft"):
+        elif q_lower.startswith("revise draft:") or q_lower.startswith("write active draft") or q_lower.startswith("revert draft"):
             goal = "draft_content"
             intent = "communication_drafting"
             action = "exec_draft_content"
             confidence = 0.98
 
+        # 00a-0. Setting / Changing Default Messaging Route
+        elif re.search(r"\bdefault\s+(?:route|messaging\s+route|number|phone)\b", q_lower):
+            goal = "set_default_route"
+            intent = "communication"
+            action = "set_default_route"
+            confidence = 0.99
+
         # 00a. WhatsApp / Direct Messaging Normalization
         elif (
             "whatsapp" in q_lower or
-            bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway)(?:my\s+)?[a-zA-Z]+", q_lower)) or
-            bool(re.search(r"\bmake\s+(?:the\s+message|it|that|the\s+draft)\s+(?:sound\s+)?(?:more\s+)?(?:polite|formal|casual|professional|shorter|concise|brief)", q_lower)) or
-            any(w in q_lower for w in ["show me the message", "preview", "show draft", "show the message", "show me the message first"]) or
-            any(w in q_lower for w in ["make that message shorter", "make it shorter", "add that", "correct the message", "revise"]) or
+            bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway|google|127\.)(?:my\s+)?[a-zA-Z]+", q_lower)) or
+            any(w in q_lower for w in ["make that message shorter", "make the message shorter", "shorten the message"]) or
+            any(w in q_lower for w in ["show me the message", "show me the message first", "preview the message"]) or
             any(w in q_lower for w in ["keep it as a draft", "don't send it yet", "keep as draft", "just keep it as a draft"]) or
-            any(w in q_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send it", "send message"]) or
-            any(q_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "ping ", "can you ping ", "draft a message", "draft a whatsapp", "draft a polite message", "draft a quick message", "draft a short message"]) or
-            any(p in q_lower for p in ["send it to", "use the group chat", "not that rahul", "the other rahul"])
+            any(q_lower.startswith(w) for w in ["send ", "text ", "message ", "draft a message", "draft a whatsapp", "draft a polite message", "draft a quick message", "draft a short message", "can you message ", "can you text ", "can you whatsapp "]) or
+            bool(re.search(r"^(?:can\s+you\s+)?tell\s+(?!me\b|us\b)[a-zA-Z0-9_\-]+", q_lower)) or
+            any(p in q_lower for p in ["send the revised message", "send it to", "use the group chat", "not that rahul", "the other rahul"])
         ):
-            if not ("email" in q_lower or "mail" in q_lower or "@" in q_lower):
-                is_msg_make = bool(re.search(r"\bmake\s+(?:the\s+message|it|that|the\s+draft)\s+(?:sound\s+)?(?:more\s+)?(?:polite|formal|casual|professional|shorter|concise|brief)", q_lower))
-                is_preview = any(w in q_lower for w in ["show me the message", "preview", "show draft", "show the message", "show me the message first"])
-                is_revision = is_msg_make or any(w in q_lower for w in ["make that message shorter", "make it shorter", "add that", "correct the message", "revise"])
-                is_keep_draft = any(w in q_lower for w in ["keep it as a draft", "don't send it yet", "keep as draft", "just keep it as a draft"])
-                is_explicit_send = any(w in q_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send it", "send message"])
-
-                if is_revision:
+            if not ("email" in q_lower or "mail" in q_lower or "@" in q_lower or "notepad" in q_lower):
+                if any(w in q_lower for w in ["make that message shorter", "make the message shorter", "shorten the message"]):
                     goal = "whatsapp_revise"
                     intent = "communication"
                     action = "edit_whatsapp_draft"
-                elif is_preview:
+                elif any(w in q_lower for w in ["show me the message", "show me the message first", "preview the message"]):
                     goal = "whatsapp_preview"
                     intent = "communication"
                     action = "preview_whatsapp_draft"
-                elif is_keep_draft:
+                elif any(w in q_lower for w in ["keep it as a draft", "don't send it yet", "keep as draft", "just keep it as a draft"]):
                     goal = "whatsapp_draft"
                     intent = "communication"
                     action = "draft_whatsapp"
                 else:
+                    is_explicit_send = any(w in q_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send that", "send it"])
                     is_draft = (not is_explicit_send) and any(w in q_lower for w in ["draft a ", "draft the ", "compose ", "write a draft", "prepare a message"])
                     goal = "whatsapp_draft" if is_draft else "whatsapp_send"
                     intent = "communication"
@@ -276,6 +411,7 @@ class UnderstandingNormalizer:
             r"\bwhy\s+is\s+the\s+sky\b",
             r"\bworld\s+peace\b",
             r"\bsecret\s+recipe\b",
+            r"\brecipe\s+for\b",
             r"\btranslate\s+(?:this\s+)?entire\s+novel\b",
             r"\bteleport\s+me\b",
             r"\bwrite\s+a\s+\d+\s+word\s+poem\b",
@@ -321,8 +457,12 @@ class UnderstandingNormalizer:
                 entities["FILE"] = "resume"
 
 
-        # 3b. Media resume
-        if re.search(r"\b(?:resume\s+(?:the\s+)?(?:track|song|music|playback))\b", q_lower):
+        # 3b. Media controls (resume, skip, next track)
+        if (
+            re.search(r"\b(?:resume\s+(?:the\s+)?(?:track|song|music|playback))\b", q_lower) or
+            re.search(r"\b(?:skip|next|hop\s+to(?:\s+the)?\s+next|jump\s+to(?:\s+the)?\s+next|play\s+next)\s+(?:track|song|music)\b", q_lower) or
+            q_lower.strip(" .!?") in ["next song", "skip to next song", "next track", "skip track", "skip", "next", "hop to the next song"]
+        ):
             goal = "control_media"
             intent = "media_control"
             action = "exec_media_change"
@@ -371,6 +511,13 @@ class UnderstandingNormalizer:
             goal = "resume_active_project"
             intent = "project_manage"
             action = "exec_project_action"
+
+        # 9. Human Conversational, Empathetic & Problem-Solving Dialogue
+        if _DIALOGUE_ENGINE and _DIALOGUE_ENGINE.is_conversational_or_problem(q_lower):
+            goal = "dialogue"
+            intent = "chitchat"
+            action = "respond_dialogue"
+            confidence = 0.99
 
         # Check for corrections and cancellations
         is_correction = any(w in q_lower for w in [

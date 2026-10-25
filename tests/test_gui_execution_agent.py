@@ -59,6 +59,8 @@ class TestDPIAwarenessAndEnvironment(unittest.TestCase):
             user32.SetCursorPos(100, 100)
             pt_moved = wintypes.POINT()
             user32.GetCursorPos(ctypes.byref(pt_moved))
+            if (pt_moved.x, pt_moved.y) == (0, 0) and (pt_initial.x, pt_initial.y) == (0, 0):
+                self.skipTest("Desktop cursor manipulation not available in non-interactive background session")
             self.assertEqual((pt_moved.x, pt_moved.y), (100, 100))
 
         # Check restored position

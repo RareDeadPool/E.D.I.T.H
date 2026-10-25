@@ -88,6 +88,14 @@ except ImportError:
     except ImportError:
         PermissionGuard = None
 
+try:
+    from engine.human_dialogue import EdithDialogueEngine
+except ImportError:
+    try:
+        from human_dialogue import EdithDialogueEngine
+    except ImportError:
+        EdithDialogueEngine = None
+
 
 
 APP_NAMES = {
@@ -121,10 +129,23 @@ ACTION_PATTERNS = [
     r"^(?:check|show|display|view|inspect|scan|read|ping)\b",
     r"^(?:lock|sleep|empty)\b",
     r"^(?:minimize|show\s+desktop)\b",
+    r"^(?:maximize|unmaximize|restore\s+window|snap\s+(?:window\s+)?(?:left|right)|tile\s+(?:window\s+)?(?:left|right)|switch\s+to|focus\s+(?:on\s+)?|bring\s+(?:to\s+front)?|close\s+window)\b",
+    r"^(?:set\s+a?\s*timer|set\s+timer|timer\s+for|countdown|remind\s+me|check\s+timers?|cancel\s+timer)\b",
+    r"^(?:take\s+a?\s*note|add\s+note|create\s+note|save\s+note|note:|show\s+notes|read\s+my\s+notes|list\s+notes|clear\s+notes)\b",
+    r"^(?:what\s+is\s+the\s+weather|weather\s+in|check\s+weather|temperature\s+in|how\s+is\s+the\s+weather)\b",
+    r"^(?:convert\s+\d+|how\s+many\s+[a-zA-Z]+\s+in)\b",
+    r"^(?:what\s+apps\s+are\s+(?:open|running)|list\s+running\s+apps|is\s+[a-zA-Z0-9_\-]+\s+running)\b",
+    r"^(?:what\s+is\s+my\s+ip|check\s+internet\s+speed)\b",
     r"^(?:increase|decrease|raise|lower|turn\s+up|turn\s+down|set|mute|unmute)\b",
     r"^(?:volume\s+up|volume\s+down|brightness\s+up|brightness\s+down)\b",
     r"^(?:tell|report|inform|notify|let\s+me\s+know)\b",
     r"^(?:save|store|export)\b",
+    r"^(?:zip|compress|unzip|extract)\b",
+    r"^(?:append)\b",
+    r"^(?:write\s+the\s+stats|put\s+the\s+stats|write\s+the\s+result|put\s+the\s+result|write\s+the\s+summary|put\s+the\s+summary|save\s+the\s+summary)\b",
+    r"^(?:copy\s+(?:that|it|the\s+result|the\s+summary)?\s+to\s+clipboard|read\s+clipboard|get\s+clipboard)\b",
+    r"^(?:read\s+(?:and\s+summarize|the\s+contents?\s+of|file)?)\b",
+    r"^(?:check\s+battery|battery\s+status|battery)\b",
 ]
 
 
@@ -152,8 +173,17 @@ def split_multi_step_command(cmd: str) -> List[str]:
     if re.match(r"^(?:type|write|enter|input)\s+(?:the\s+following|this|exactly\s+this|exactly)?(?:\s+(?:in|into|on)\s+[a-zA-Z0-9_\-]+)?\s*:\s*", text_clean, re.IGNORECASE):
         return [text]
 
-    # 1. Replace explicit sequential delimiters with ' ||| '
-    t_seq = re.sub(r"\s+(?:then|and\s+then|after\s+that|afterwards|followed\s+by)\s+", " ||| ", text, flags=re.IGNORECASE)
+    # Check for numbered list structures: e.g. "1. Check battery 2. Write the stats in notepad" or "1) ... 2) ..." or "Step 1: ... Step 2: ..."
+    num_matches = re.findall(r"(?:^|\s+)(?:step\s*)?\d+[\.\:\)]\s+", text_clean, flags=re.IGNORECASE)
+    if len(num_matches) >= 2 or (re.search(r"(?:^|\s+)(?:step\s*)?1[\.\:\)]\s+", text_clean, flags=re.IGNORECASE) and re.search(r"(?:^|\s+)(?:step\s*)?2[\.\:\)]\s+", text_clean, flags=re.IGNORECASE)):
+        num_steps = [s.strip() for s in re.split(r"(?:^|\s+)(?:step\s*)?\d+[\.\:\)]\s+", text_clean, flags=re.IGNORECASE) if s.strip()]
+        if len(num_steps) >= 2:
+            return num_steps
+
+    # Normalize sequential transition phrases like "First ..., next ..., finally ..." or "Firstly ..., secondly ..."
+    text_seq_clean = re.sub(r"^(?:first|firstly)\s*,?\s*", "", text, flags=re.IGNORECASE)
+    t_seq = re.sub(r"\s*,\s*(?:then|and\s+then|after\s+that|afterwards|followed\s+by|next|secondly|thirdly|subsequently|finally|lastly)\s*,?\s*", " ||| ", text_seq_clean, flags=re.IGNORECASE)
+    t_seq = re.sub(r"\s+(?:then|and\s+then|after\s+that|afterwards|followed\s+by|and\s+next|next,\s+|secondly|thirdly|subsequently|finally|lastly)\s+", " ||| ", t_seq, flags=re.IGNORECASE)
     t_seq = re.sub(r";\s*", " ||| ", t_seq)
 
     # 2. Split app launches followed immediately by action clauses without explicit conjunctions:
@@ -547,8 +577,17 @@ def _resolve_step_context(step: str, context: Dict[str, Any]) -> str:
     if ref:
         s = re.sub(r"\b(it|that|the file|the folder|the screenshot)\b", f"'{ref}'", s, count=1, flags=re.IGNORECASE).strip()
 
+    # 1b. Resolve calculation / summary / stats references
+    if context.get("last_calculation") and any(p in s_lower for p in ["the result", "the answer", "that number"]):
+        calc_val = str(context["last_calculation"].get("result", ""))
+        s = re.sub(r"\b(the\s+result|the\s+answer|that\s+number)\b", calc_val, s, flags=re.IGNORECASE).strip()
+
+    if context.get("last_summary") and any(p in s_lower for p in ["the summary", "that summary"]):
+        sum_val = str(context["last_summary"])
+        s = re.sub(r"\b(the\s+summary|that\s+summary)\b", f"'{sum_val}'", s, flags=re.IGNORECASE).strip()
+
     # 2. Implicit typing: "type hello world" when last_app is known
-    m_type_bare = re.match(r"^(?:type|write|enter)\s+(.+)$", s, re.IGNORECASE)
+    m_type_bare = re.match(r"^(?:type|write|enter|put|insert)\s+(.+)$", s, re.IGNORECASE)
     if m_type_bare and not re.search(r"\b(?:in|into)\b", s_lower):
         if context.get("last_app"):
             s = f"{s} into {context['last_app']}"
@@ -623,6 +662,7 @@ class EdithBrain:
         self.trace_logger = ExecutionTraceLogger() if ExecutionTraceLogger is not None else None
         self.contact_resolver = ContactResolver() if ContactResolver is not None else None
         self.permission_guard = PermissionGuard() if PermissionGuard is not None else None
+        self.dialogue_engine = EdithDialogueEngine() if EdithDialogueEngine is not None else None
         self._gui_agent = None
 
     @property
@@ -991,6 +1031,46 @@ class EdithBrain:
             self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
             return res
 
+        # Pending message text follow-up (user previously specified recipient and was asked for message body)
+        if self.context and getattr(self.context, "pending_message_recipient", None):
+            target_name = self.context.pending_message_recipient
+            self.context.pending_message_recipient = None
+            c_obj = reg.contact_resolver.get_exact_contact(target_name) if reg else None
+            phone = c_obj.phone if c_obj else None
+            is_group = c_obj.is_group if c_obj else False
+
+            exec_res, ver = reg.execute("whatsapp_send", {
+                "recipient": target_name,
+                "phone": phone,
+                "content": user_command,
+                "is_exact": False,
+                "authorized": False,
+                "is_group": is_group
+            }) if reg else ({"status": "needs_confirmation", "message": f"Please confirm message to {target_name}"}, None)
+            stat = "NEEDS_CONFIRMATION" if exec_res.get("status") == "needs_confirmation" else "OPERATIONAL"
+            res = {
+                "query": user_command,
+                "intent": "communication",
+                "action": "send_whatsapp",
+                "entities": {"RECIPIENT": target_name},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": stat,
+                "directive": {
+                    "can_execute": (exec_res.get("status") == "success"),
+                    "needs_confirmation": (exec_res.get("status") == "needs_confirmation"),
+                    "message": exec_res.get("message", ""),
+                    "handler": "whatsapp_send",
+                    "parameters": {"recipient": target_name, "content": user_command}
+                },
+                "execution": exec_res
+            }
+            if exec_res.get("status") == "needs_confirmation":
+                self.context.pending_confirmation = exec_res
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
         # Contact Disambiguation Turn (user answering a clarification question like "Rahul Sharma")
         if self.context and getattr(self.context, "pending_clarification", None):
             pend = self.context.pending_clarification
@@ -1002,6 +1082,29 @@ class EdithBrain:
                 self.context.set_selected_recipient(contact.name, contact.phone, contact.is_group)
                 pending_act = pend.get("action_type", "send")
                 pending_text = pend.get("pending_text", "")
+
+                if not pending_text:
+                    self.context.pending_message_recipient = contact.name
+                    res = {
+                        "query": user_command,
+                        "intent": "communication",
+                        "action": "send_whatsapp",
+                        "entities": {"RECIPIENT": contact.name},
+                        "intent_confidence": 1.0,
+                        "action_confidence": 1.0,
+                        "operational_confidence": 1.0,
+                        "status": "NEEDS_CLARIFICATION",
+                        "directive": {
+                            "can_execute": False,
+                            "needs_clarification": True,
+                            "message": f"What message would you like to send to {contact.name}?",
+                            "handler": "clarification",
+                            "parameters": {"recipient": contact.name}
+                        }
+                    }
+                    self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                    return res
+
                 if pending_act == "draft":
                     exec_res, ver = reg.execute("whatsapp_draft", {
                         "recipient": contact.name,
@@ -1137,6 +1240,9 @@ class EdithBrain:
         # Synthesize natural response and execution directive
         directive = self._synthesize_directive(result, context=ctx_dict)
         result["directive"] = directive
+        if directive.get("handler") == "draft_content" or result.get("action") == "exec_draft_content":
+            result["intent"] = "communication_drafting"
+            result["action"] = "exec_draft_content"
 
         # Execute on operating system if requested and possible
         if execute and self.executor and directive.get("can_execute", False):
@@ -1202,6 +1308,37 @@ class EdithBrain:
                             subject=d_params.get("subject", ""),
                             recipient=d_params.get("recipient", "")
                         )
+
+                # Context setters for multi-step entity tracking
+                if exec_res.get("result") or exec_res.get("calc_result"):
+                    if hasattr(self.context, "set_last_calculation"):
+                        self.context.set_last_calculation(
+                            expr=directive.get("parameters", {}).get("expr") or user_command,
+                            result=exec_res.get("result") or exec_res.get("calc_result"),
+                            formatted=exec_res.get("message", "")
+                        )
+                if exec_res.get("summary"):
+                    if hasattr(self.context, "set_last_summary"):
+                        self.context.set_last_summary(
+                            summary=exec_res.get("summary"),
+                            source=exec_res.get("source") or exec_res.get("url") or exec_res.get("path") or "summary"
+                        )
+                if exec_res.get("action") == "screenshot" or exec_res.get("screenshot_path") or directive.get("handler") == "system_screenshot":
+                    ss_p = exec_res.get("path") or exec_res.get("screenshot_path")
+                    if ss_p and hasattr(self.context, "set_last_screenshot"):
+                        self.context.set_last_screenshot(ss_p)
+                if exec_res.get("metrics") or exec_res.get("action") == "system_metrics" or directive.get("handler") == "system_metrics":
+                    if hasattr(self.context, "set_last_metrics"):
+                        self.context.set_last_metrics(exec_res.get("metrics") or exec_res)
+                if exec_res.get("action") in ["clipboard_read", "clipboard_copy"] or directive.get("handler") in ["system_clipboard_read", "system_clipboard_copy"]:
+                    if hasattr(self.context, "set_last_clipboard"):
+                        self.context.set_last_clipboard(exec_res.get("content") or "")
+                if exec_res.get("action") == "file_create" or directive.get("handler") == "file_create":
+                    if hasattr(self.context, "set_last_created_file"):
+                        self.context.set_last_created_file(exec_res.get("path") or exec_res.get("file") or "")
+                if exec_res.get("url") or directive.get("handler") in ["web_navigation", "browser_read_page"]:
+                    if hasattr(self.context, "set_last_url"):
+                        self.context.set_last_url(exec_res.get("url") or directive.get("parameters", {}).get("url") or "")
 
             # Track suggestions if execution offered suggestions or succeeded with music
             if exec_res.get("status") in ["suggestions_available", "needs_confirmation"]:
@@ -1334,7 +1471,11 @@ class EdithBrain:
     def _parse_typing_command(text: str, default_app: str = "") -> Optional[Dict[str, Any]]:
         """Parse typing or text input instructions targeting applications or active windows."""
         t = text.strip()
-        m_verb = re.match(r"^(?:type|write|enter|input)\s+", t, re.IGNORECASE)
+        low = t.lower()
+        if low.startswith("put on ") or low.startswith("put some ") or low.startswith("put pc ") or low.startswith("put computer "):
+            return None
+
+        m_verb = re.match(r"^(?:type|write|enter|input|put|insert)\s+", t, re.IGNORECASE)
         if not m_verb:
             return None
 
@@ -1599,6 +1740,32 @@ class EdithBrain:
                 "parameters": {"command": cmd_text, "safety_gated": True}
             }
 
+        # 0a. Human Dialogue, Empathy & Problem Solving Subsystem
+        action = prediction.get("action", "")
+        if (
+            action == "respond_dialogue" or
+            prediction.get("goal") == "dialogue" or
+            prediction.get("intent") in ["chitchat", "dialogue"] or
+            (self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(cmd_lower))
+        ):
+            if self.dialogue_engine:
+                dialogue_res = self.dialogue_engine.respond(cmd_text, context=self.context, executor=self.executor)
+                prediction["intent"] = "chitchat"
+                prediction["action"] = "respond_dialogue"
+                prediction["operational_confidence"] = 1.0
+                return {
+                    "can_execute": True,
+                    "message": dialogue_res.get("message", "I am here to assist you."),
+                    "handler": "dialogue",
+                    "parameters": dialogue_res.get("parameters", {})
+                }
+            return {
+                "can_execute": True,
+                "message": "Hello! I am E.D.I.T.H., your custom-trained neural task handler. All systems operational.",
+                "handler": "dialogue",
+                "parameters": {}
+            }
+
         # 0a-0. WhatsApp & Direct Communication Subsystem
         reg = self.executor.action_registry if self.executor else None
         resolver = reg.contact_resolver if reg else (self.contact_resolver or ContactResolver())
@@ -1606,25 +1773,58 @@ class EdithBrain:
         parsed_comm = resolver.extract_intent_and_entities(cmd_text)
         action_type = parsed_comm.get("action_type", "send")
 
-        is_msg_ping = bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway)(?:my\s+)?[a-zA-Z]+", cmd_lower))
+        is_msg_ping = bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway|google|127\.)(?:my\s+)?[a-zA-Z]+", cmd_lower))
         is_msg_make = bool(re.search(r"\bmake\s+(?:the\s+message|it|that|the\s+draft)\s+(?:sound\s+)?(?:more\s+)?(?:polite|formal|casual|professional|shorter|concise|brief)", cmd_lower))
-        is_explicit_send = any(w in cmd_lower for w in ["send the message we just drafted", "send the revised version", "send the revised message", "send it", "send message"])
+        is_explicit_send = any(w in cmd_lower for w in [
+            "send the message we just drafted", "send the revised version", "send the revised message",
+            "send the message", "send it", "send message", "send that"
+        ])
+
+        # Check for setting / updating default messaging route
+        m_def_route = re.search(
+            r"^(?:change|set|update|make)\s+(?:the\s+)?default\s+(?:route|messaging\s+route|number|phone(?:\s+number)?)\s+(?:to\s+)?([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)$",
+            cmd_lower
+        )
+        if m_def_route:
+            new_target = m_def_route.group(1).strip()
+            prediction["intent"] = "communication"
+            prediction["action"] = "set_default_route"
+            prediction["operational_confidence"] = 1.0
+            if reg and hasattr(reg, "whatsapp_adapter"):
+                res = reg.whatsapp_adapter.set_default_route(new_target)
+                msg = res.get("message", f"Default messaging route updated to: {new_target}")
+            else:
+                msg = f"Default messaging route set to: {new_target}"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"default_route": new_target}
+            }
+
+        has_wa_active = bool(reg and hasattr(reg, "whatsapp_adapter") and reg.whatsapp_adapter.active_draft and reg.whatsapp_adapter.active_draft.content)
+        has_doc_active = bool(self.context and hasattr(self.context, "has_draft") and self.context.has_draft())
 
         is_comm = False
         if "whatsapp" in cmd_lower:
             is_comm = True
-        elif is_msg_ping or any(cmd_lower.startswith(w) for w in ["ping ", "can you ping "]):
+        elif is_msg_ping:
             is_comm = True
         elif is_msg_make:
-            is_comm = True
-        elif any(cmd_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "draft a message", "draft a polite message", "draft a quick message", "draft a short message"]):
-            if not ("email" in cmd_lower or "mail" in cmd_lower or "@" in cmd_lower):
+            if has_wa_active or not has_doc_active:
                 is_comm = True
+        elif any(cmd_lower.startswith(w) for w in ["send ", "text ", "message ", "tell ", "draft a message", "draft a polite message", "draft a quick message", "draft a short message", "can you message ", "can you text ", "can you whatsapp "]):
+            if not ("email" in cmd_lower or "mail" in cmd_lower or "@" in cmd_lower or "notepad" in cmd_lower):
+                if not any(cmd_lower.startswith(w) for w in ["tell me a joke", "tell me about yourself", "tell me a story", "tell me time", "tell me how", "tell me what", "tell me why"]):
+                    is_comm = True
         elif is_explicit_send or any(p in cmd_lower for p in [
             "send it to", "use the group chat", "not that rahul", "the other rahul",
             "show me the message first", "keep it as a draft", "don't send it yet"
         ]):
             is_comm = True
+
+        if action_type == "edit" and has_doc_active and not has_wa_active:
+            is_comm = False
 
         if is_comm:
             # Handle Keep Draft
@@ -1650,44 +1850,30 @@ class EdithBrain:
 
             # Handle In-Place Revision
             if action_type == "edit":
-                prediction["intent"] = "communication"
-                prediction["action"] = "edit_whatsapp_draft"
-                prediction["operational_confidence"] = 1.0
-                return {
-                    "can_execute": True,
-                    "message": f"Revising message draft: '{cmd_text}'.",
-                    "handler": "whatsapp_revise",
-                    "parameters": {"instruction": cmd_text}
-                }
-
-            # If user said "Send the message we just drafted" or "Send the revised version"
-            if is_explicit_send and reg and reg.whatsapp_adapter.active_draft:
-                draft_obj = reg.whatsapp_adapter.active_draft
-                prediction["intent"] = "communication"
-                prediction["action"] = "send_whatsapp"
-                prediction["operational_confidence"] = 1.0
-                return {
-                    "can_execute": True,
-                    "message": f"Sending approved WhatsApp message to {draft_obj.recipient}.",
-                    "handler": "whatsapp_send",
-                    "parameters": {
-                        "recipient": draft_obj.recipient,
-                        "phone": draft_obj.phone,
-                        "content": draft_obj.content,
-                        "is_exact": True,
-                        "authorized": True,
-                        "is_group": draft_obj.is_group
+                has_wa_draft = bool(reg and hasattr(reg, "whatsapp_adapter") and reg.whatsapp_adapter.active_draft and reg.whatsapp_adapter.active_draft.content)
+                has_doc_draft = bool(self.context and hasattr(self.context, "has_draft") and self.context.has_draft())
+                if has_wa_draft or not has_doc_draft:
+                    prediction["intent"] = "communication"
+                    prediction["action"] = "edit_whatsapp_draft"
+                    prediction["operational_confidence"] = 1.0
+                    return {
+                        "can_execute": True,
+                        "message": f"Revising message draft: '{cmd_text}'.",
+                        "handler": "whatsapp_revise",
+                        "parameters": {"instruction": cmd_text}
                     }
-                }
+                # Fall through to general document / email draft revision below
 
             recip_query = parsed_comm.get("recipient_raw")
-            if not recip_query:
+            if not recip_query or recip_query.lower() in ["same person", "the same person", "same contact"]:
                 if "group chat" in cmd_lower or "the group" in cmd_lower:
                     recip_query = "group chat"
-                elif "the same person" in cmd_lower or "same person" in cmd_lower or "revised message" in cmd_lower:
+                elif "the same person" in cmd_lower or "same person" in cmd_lower or "revised message" in cmd_lower or is_explicit_send:
                     recip_query = getattr(self.context, "last_person", None) or (
                         reg.whatsapp_adapter.active_draft.recipient if (reg and reg.whatsapp_adapter.active_draft) else None
                     )
+                elif reg and getattr(reg, "whatsapp_adapter", None) and reg.whatsapp_adapter.default_route_phone:
+                    recip_query = reg.whatsapp_adapter.default_route_phone
 
             res_cont = resolver.resolve(recip_query, context=self.context, raw_query=cmd_text)
             
@@ -1727,12 +1913,39 @@ class EdithBrain:
             is_exact = parsed_comm.get("is_exact", False)
             msg_text = parsed_comm.get("message_text")
 
-            # If user said "send it to Rahul instead", reuse active draft message
-            if not msg_text and ("instead" in cmd_lower or "send it to" in cmd_lower) and reg and reg.whatsapp_adapter.active_draft:
+            attachment_path = parsed_comm.get("attachment_path")
+            if not attachment_path:
+                m_att = re.search(r"\b(?:send|share|attach)\s+(?:file\s+|screenshot\s+|document\s+)?['\"]([^'\"]+?\.[a-zA-Z0-9]{2,5})['\"]", cmd_text, re.IGNORECASE)
+                if m_att:
+                    attachment_path = m_att.group(1).strip()
+                elif self.context and "screenshot" in cmd_lower and getattr(self.context, "last_screenshot", None):
+                    attachment_path = self.context.last_screenshot
+
+            if not msg_text and attachment_path:
+                msg_text = f"Here is the file: {os.path.basename(attachment_path)}"
+
+            # If user said "send the revised message" or "send it to Rahul instead", reuse active draft message
+            if not msg_text and ("revised message" in cmd_lower or is_explicit_send or "instead" in cmd_lower or "send it to" in cmd_lower) and reg and reg.whatsapp_adapter.active_draft:
                 msg_text = reg.whatsapp_adapter.active_draft.content
-                reg.whatsapp_adapter.active_draft.recipient = target_name
-                reg.whatsapp_adapter.active_draft.phone = target_phone
-                reg.whatsapp_adapter.active_draft.is_group = is_group
+                if target_name:
+                    reg.whatsapp_adapter.active_draft.recipient = target_name
+                    reg.whatsapp_adapter.active_draft.phone = target_phone
+                    reg.whatsapp_adapter.active_draft.is_group = is_group
+
+            # If recipient is identified but message body is missing, ask what they would like to say
+            if not msg_text and not (is_explicit_send and reg and reg.whatsapp_adapter.active_draft):
+                prediction["intent"] = "communication"
+                prediction["action"] = "send_whatsapp"
+                prediction["operational_confidence"] = 1.0
+                if self.context:
+                    self.context.pending_message_recipient = target_name
+                return {
+                    "can_execute": False,
+                    "needs_clarification": True,
+                    "message": f"What message would you like to send to {target_name}?",
+                    "handler": "clarification",
+                    "parameters": {"recipient": target_name}
+                }
 
             prediction["intent"] = "communication"
             prediction["action"] = "draft_whatsapp" if action_type == "draft" else "send_whatsapp"
@@ -1747,15 +1960,15 @@ class EdithBrain:
                         "recipient": target_name,
                         "phone": target_phone,
                         "content": msg_text,
+                        "attachment_path": attachment_path,
                         "is_group": is_group
                     }
                 }
             else:
                 # Send message:
                 # Exact dictation to unambiguous contact is pre-authorized.
-                # "send the revised message" or "send the message we just drafted" is explicit authorization.
-                # Substantive assistant-generated content requires confirmation.
-                is_authorized = is_exact or is_explicit_send
+                # "send the revised message" or explicit send is explicit authorization.
+                is_authorized = is_exact or is_explicit_send or ("send the revised message" in cmd_lower)
                 return {
                     "can_execute": True,
                     "message": f"Preparing WhatsApp message for {target_name}.",
@@ -1764,6 +1977,7 @@ class EdithBrain:
                         "recipient": target_name,
                         "phone": target_phone,
                         "content": msg_text,
+                        "attachment_path": attachment_path,
                         "is_exact": is_exact,
                         "authorized": is_authorized,
                         "is_group": is_group
@@ -1953,6 +2167,21 @@ class EdithBrain:
                     "parameters": {"url": s_url, "service": s_name, "command": cmd_text}
                 }
 
+        # Precision YouTube Search Dispatch (precedes generic web search)
+        m_yt = re.match(r"^(?:search\s+youtube\s+for|search\s+on\s+youtube\s+for|youtube\s+search)\s+(.+)$", cmd_lower)
+        if m_yt:
+            yt_query = m_yt.group(1).strip()
+            yt_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(yt_query)}"
+            prediction["intent"] = "web_navigation"
+            prediction["action"] = "exec_web_navigation"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Searching YouTube for '{yt_query}'.",
+                "handler": "web_navigation",
+                "parameters": {"url": yt_url, "service": "youtube", "command": cmd_text}
+            }
+
         # Explicit web search check (prevents single-step queries from being misrouted)
         m_web = re.match(r"^(?:search\s+(?:web|google|online)\s+for|search\s+for|google\s+for|google|search)\s+(.+)$", cmd_lower)
         if m_web and not re.search(r"\b(?:in|into)\s+[a-zA-Z0-9_\-]+$", cmd_lower):
@@ -1990,7 +2219,11 @@ class EdithBrain:
             }
 
         # 2. Next track / skip
-        elif cmd_lower in ["next", "skip", "next song", "next track", "skip song", "skip track", "play next", "play next song"] or any(cmd_lower.startswith(k) for k in ["next song", "next track", "skip this song", "skip track"]):
+        elif (
+            cmd_lower in ["next", "skip", "next song", "next track", "skip song", "skip track", "play next", "play next song", "skip to next song", "hop to next song", "hop to the next song"] or
+            any(cmd_lower.startswith(k) for k in ["next song", "next track", "skip this song", "skip track", "skip to next", "skip to the next", "hop to next", "hop to the next", "play next song"]) or
+            bool(re.search(r"\b(?:skip\s+to|hop\s+to|jump\s+to)\s+(?:the\s+)?next\s+(?:song|track|music)\b", cmd_lower))
+        ):
             prediction["intent"] = "media_control"
             prediction["action"] = "exec_media_change"
             prediction["operational_confidence"] = 1.0
@@ -2179,7 +2412,12 @@ class EdithBrain:
             }
 
         # 12. System Performance Metrics
-        elif any(k in cmd_lower for k in ["system metrics", "system status", "system specs", "cpu usage", "ram usage", "memory usage", "battery status", "system info", "device metrics", "system performance", "take a peek at my current cpu usage"]):
+        elif any(k in cmd_lower for k in [
+            "system metrics", "system status", "system specs", "cpu usage", "ram usage",
+            "memory usage", "battery status", "check battery", "battery level", "power status",
+            "system info", "device metrics", "system performance", "check system metrics",
+            "take a peek at my current cpu usage"
+        ]) or cmd_lower in ["battery", "battery status", "check battery", "system status", "system metrics"]:
             prediction["intent"] = "system_query"
             prediction["action"] = "exec_read_metrics"
             prediction["operational_confidence"] = 1.0
@@ -2224,6 +2462,348 @@ class EdithBrain:
                 "message": "Checking current date and time.",
                 "handler": "system_utility",
                 "parameters": {"utility": "datetime", "command": cmd_text}
+            }
+
+        # 15b. Clipboard Operations (Copy & Read)
+        m_clip_copy = re.match(r"^(?:copy|copy\s+text)\s+(?:'([^']+)'|\"([^\"]+)\"|(.+?))\s+(?:to|into)\s+(?:the\s+)?clipboard$", cmd_text, re.IGNORECASE)
+        if m_clip_copy:
+            raw_content = (m_clip_copy.group(1) or m_clip_copy.group(2) or m_clip_copy.group(3) or "").strip()
+            if raw_content.lower() in ["it", "that", "this", "the text", "the result", "that result", "result", "the summary", "that summary", "summary"]:
+                if raw_content.lower() in ["the result", "that result", "result"] and self.context and self.context.last_calculation:
+                    raw_content = str(self.context.last_calculation.get("result", ""))
+                elif raw_content.lower() in ["the summary", "that summary", "summary"] and self.context and self.context.last_summary:
+                    raw_content = str(self.context.last_summary)
+                elif self.context:
+                    raw_content = getattr(self.context, "last_clipboard", None) or (getattr(self.context, "last_summary", None) or raw_content)
+            prediction["intent"] = "system_utility"
+            prediction["action"] = "system_clipboard_copy"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Copying text to clipboard.",
+                "handler": "system_clipboard_copy",
+                "parameters": {"content": raw_content, "command": cmd_text}
+            }
+
+        if any(cmd_lower == p or cmd_lower.startswith(p + " ") for p in [
+            "read clipboard", "get clipboard", "get clipboard content", "read the clipboard",
+            "check clipboard", "what is on my clipboard", "what is on clipboard", "what's on my clipboard", "what's in my clipboard"
+        ]):
+            prediction["intent"] = "system_utility"
+            prediction["action"] = "system_clipboard_read"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Reading clipboard content.",
+                "handler": "system_clipboard_read",
+                "parameters": {"command": cmd_text}
+            }
+
+        # 15b-1. Window Control & Management
+        m_win_snap = re.match(r"^(?:snap|tile)\s+(?:window\s+)?(left|right)$", cmd_lower)
+        if m_win_snap:
+            direction = m_win_snap.group(1).lower()
+            prediction["intent"] = "window_control"
+            prediction["action"] = f"window_snap_{direction}"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Snapping active window to the {direction}.",
+                "handler": "window_control",
+                "parameters": {"action": f"snap_{direction}", "command": cmd_text}
+            }
+
+        m_win_act = re.match(r"^(maximize|fullscreen|unmaximize|restore|minimize)\s+(?:the\s+)?(?:window|screen)?(?:\s+(?:for|of)\s+([a-zA-Z0-9_\-]+))?$", cmd_lower)
+        if m_win_act:
+            w_act = m_win_act.group(1).lower()
+            t_app = m_win_act.group(2)
+            act_name = "maximize" if w_act in ["maximize", "fullscreen"] else ("restore" if w_act in ["restore", "unmaximize"] else "minimize")
+            prediction["intent"] = "window_control"
+            prediction["action"] = f"window_{act_name}"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"{act_name.capitalize()}ing window{' for ' + t_app if t_app else ''}.",
+                "handler": "window_control",
+                "parameters": {"action": act_name, "app_name": t_app, "command": cmd_text}
+            }
+
+        m_win_switch = re.match(r"^(?:switch\s+to|focus\s+(?:on\s+)?)([a-zA-Z0-9_\-\s]+?)(?:\s+window)?$", cmd_lower) or re.match(r"^bring\s+(?:up\s+)?([a-zA-Z0-9_\-\s]+?)\s+window$", cmd_lower)
+        if m_win_switch and m_win_switch.group(1).strip() in APP_NAMES:
+            t_app = m_win_switch.group(1).strip()
+            prediction["intent"] = "window_control"
+            prediction["action"] = "window_switch"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Switching focus to {t_app}.",
+                "handler": "window_control",
+                "parameters": {"action": "switch", "app_name": t_app, "command": cmd_text}
+            }
+
+        if cmd_lower in ["close window", "close active window", "close current window", "exit window"]:
+            prediction["intent"] = "window_control"
+            prediction["action"] = "window_close"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Closing active window.",
+                "handler": "window_control",
+                "parameters": {"action": "close", "command": cmd_text}
+            }
+
+        # 15b-2. Timers & Reminders
+        if any(cmd_lower == p for p in ["cancel timer", "cancel timers", "stop timer", "cancel the timer"]):
+            prediction["intent"] = "system_timer"
+            prediction["action"] = "cancel_timer"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Cancelling active timers.",
+                "handler": "system_timer",
+                "parameters": {"subaction": "cancel", "command": cmd_text}
+            }
+
+        if any(cmd_lower == p for p in ["check timer", "check timers", "list timers", "show timers", "active timers"]):
+            prediction["intent"] = "system_timer"
+            prediction["action"] = "list_timers"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Checking active countdown timers.",
+                "handler": "system_timer",
+                "parameters": {"subaction": "list", "command": cmd_text}
+            }
+
+        m_remind = re.match(r"^remind\s+me\s+(?:in\s+)?(.+?)\s+to\s+(.+)$", cmd_lower)
+        if m_remind:
+            dur_raw = m_remind.group(1).strip()
+            reminder_text = m_remind.group(2).strip()
+            prediction["intent"] = "system_timer"
+            prediction["action"] = "set_reminder"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Setting reminder in {dur_raw} to {reminder_text}.",
+                "handler": "system_timer",
+                "parameters": {"subaction": "set", "duration": dur_raw, "label": reminder_text, "command": cmd_text}
+            }
+
+        m_timer = re.match(r"^(?:set\s+a?\s*timer|set\s+timer|timer|countdown)\s+(?:for\s+)?(.+?)(?:\s+(?:called|labeled|for)\s+(.+))?$", cmd_lower)
+        if m_timer:
+            dur_raw = m_timer.group(1).strip()
+            lbl = (m_timer.group(2) or "Timer").strip()
+            prediction["intent"] = "system_timer"
+            prediction["action"] = "set_timer"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Setting timer for {dur_raw}.",
+                "handler": "system_timer",
+                "parameters": {"subaction": "set", "duration": dur_raw, "label": lbl, "command": cmd_text}
+            }
+
+        # 15b-3. Quick Notes & Scratchpad Store
+        if any(cmd_lower == p for p in ["show notes", "show my notes", "read my notes", "read notes", "list notes", "my notes"]):
+            prediction["intent"] = "notes_manager"
+            prediction["action"] = "list_notes"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Retrieving your saved notes.",
+                "handler": "notes_manager",
+                "parameters": {"action": "list", "command": cmd_text}
+            }
+
+        if any(cmd_lower == p for p in ["clear notes", "clear all notes", "delete notes", "delete all notes"]):
+            prediction["intent"] = "notes_manager"
+            prediction["action"] = "clear_notes"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Clearing all saved notes.",
+                "handler": "notes_manager",
+                "parameters": {"action": "clear", "command": cmd_text}
+            }
+
+        m_note_add = re.match(r"^(?:take\s+a?\s*note|add\s+note|create\s+note|save\s+note|note)\s*[:\-]?\s*(.+)$", cmd_text, re.IGNORECASE)
+        if m_note_add:
+            note_content = m_note_add.group(1).strip()
+            prediction["intent"] = "notes_manager"
+            prediction["action"] = "add_note"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Saving note: \"{note_content}\".",
+                "handler": "notes_manager",
+                "parameters": {"action": "add", "content": note_content, "command": cmd_text}
+            }
+
+        # 15b-4. Real-Time Weather Queries
+        m_weather = re.match(r"^(?:what\s+is\s+the\s+weather|what\'s\s+the\s+weather|weather|check\s+weather|how\s+is\s+the\s+weather|temperature)(?:\s+(?:in|for|at|of)\s+(.+))?$", cmd_lower)
+        if m_weather:
+            loc = (m_weather.group(1) or "").strip()
+            prediction["intent"] = "system_weather"
+            prediction["action"] = "check_weather"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Checking weather{' for ' + loc if loc else ''}.",
+                "handler": "system_weather",
+                "parameters": {"location": loc, "command": cmd_text}
+            }
+
+        # 15b-5. Unit & Currency Conversion
+        m_conv = re.match(r"^(?:convert\s+)?(\d+(?:\.\d+)?)\s*([a-zA-Z°]+)\s+(?:to|in|into)\s+([a-zA-Z°]+)$", cmd_lower)
+        if m_conv:
+            amt = float(m_conv.group(1))
+            u1 = m_conv.group(2).strip()
+            u2 = m_conv.group(3).strip()
+            prediction["intent"] = "unit_convert"
+            prediction["action"] = "convert_units"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Converting {amt} {u1} to {u2}.",
+                "handler": "unit_convert",
+                "parameters": {"amount": amt, "from_unit": u1, "to_unit": u2, "command": cmd_text}
+            }
+
+        # 15b-6. Running Apps & Network IP Inspection
+        if any(cmd_lower == p for p in ["what apps are open", "what apps are running", "list running apps", "running apps", "list open windows", "open windows"]):
+            prediction["intent"] = "system_processes"
+            prediction["action"] = "list_apps"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Inspecting active desktop applications.",
+                "handler": "system_processes",
+                "parameters": {"subaction": "list_apps", "command": cmd_text}
+            }
+
+        m_is_running = re.match(r"^(?:is|check\s+if)\s+([a-zA-Z0-9_\-]+)\s+(?:running|open)$", cmd_lower)
+        if m_is_running:
+            target_app = m_is_running.group(1).strip()
+            prediction["intent"] = "system_processes"
+            prediction["action"] = "check_app_running"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Checking if '{target_app}' is running.",
+                "handler": "system_processes",
+                "parameters": {"subaction": "is_running", "app_name": target_app, "command": cmd_text}
+            }
+
+        if any(cmd_lower == p for p in ["what is my ip", "my ip", "what's my ip", "public ip", "check my ip", "network info"]):
+            prediction["intent"] = "system_processes"
+            prediction["action"] = "network_info"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Retrieving host and public IP address.",
+                "handler": "system_processes",
+                "parameters": {"subaction": "network", "command": cmd_text}
+            }
+
+        # 15b-7. Precision YouTube Search Dispatch
+        m_yt = re.match(r"^(?:search\s+youtube\s+for|search\s+on\s+youtube\s+for|youtube\s+search)\s+(.+)$", cmd_lower)
+        if m_yt:
+            yt_query = m_yt.group(1).strip()
+            yt_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(yt_query)}"
+            prediction["intent"] = "web_navigation"
+            prediction["action"] = "exec_web_navigation"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Searching YouTube for '{yt_query}'.",
+                "handler": "web_navigation",
+                "parameters": {"url": yt_url, "service": "youtube", "command": cmd_text}
+            }
+
+        # 15c. Zip & Unzip Operations
+        m_zip = re.match(r"^(?:zip|compress)\s+(?:folder\s+|file\s+|directory\s+)?(?:'([^']+)'|\"([^\"]+)\"|([^\s]+))(?:\s+(?:to|into|as)\s+(.+))?$", cmd_text, re.IGNORECASE)
+        if m_zip:
+            src = (m_zip.group(1) or m_zip.group(2) or m_zip.group(3) or "").strip().strip("'\"")
+            dst = (m_zip.group(4) or "").strip().strip("'\"")
+            prediction["intent"] = "file_operation"
+            prediction["action"] = "file_zip"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Compressing '{src}' into zip archive.",
+                "handler": "file_zip",
+                "parameters": {"source": src, "destination": dst, "command": cmd_text}
+            }
+
+        m_unzip = re.match(r"^(?:unzip|extract)\s+(?:archive\s+|file\s+|zip\s+)?(?:'([^']+)'|\"([^\"]+)\"|([^\s]+))(?:\s+(?:to|into)\s+(.+))?$", cmd_text, re.IGNORECASE)
+        if m_unzip:
+            src = (m_unzip.group(1) or m_unzip.group(2) or m_unzip.group(3) or "").strip().strip("'\"")
+            dst = (m_unzip.group(4) or "").strip().strip("'\"")
+            prediction["intent"] = "file_operation"
+            prediction["action"] = "file_unzip"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Extracting zip archive '{src}'.",
+                "handler": "file_unzip",
+                "parameters": {"source": src, "destination": dst, "command": cmd_text}
+            }
+
+        # 15d. Explicit File Read & Append
+        m_file_read = re.match(r"^(?:read\s+file|read\s+the\s+contents?\s+of|read\s+the\s+file|read)\s+(?:file\s+)?(?:'([^']+)'|\"([^\"]+)\"|([^\s]+))$", cmd_text, re.IGNORECASE)
+        if m_file_read and not any(k in cmd_lower for k in ["clipboard", "screen", "metrics", "status", "http", "www."]):
+            f_path = (m_file_read.group(1) or m_file_read.group(2) or m_file_read.group(3) or "").strip().strip("'\"")
+            prediction["intent"] = "file_operation"
+            prediction["action"] = "file_read"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Reading file '{f_path}'.",
+                "handler": "file_read",
+                "parameters": {"path": f_path, "command": cmd_text}
+            }
+
+        m_append = re.match(r"^append\s+(?:text\s+|content\s+)?(?:'([^']+)'|\"([^\"]+)\"|(.+?))\s+(?:to|into)\s+(?:'([^']+)'|\"([^\"]+)\"|([^\s]+))$", cmd_text, re.IGNORECASE)
+        if m_append:
+            content = (m_append.group(1) or m_append.group(2) or m_append.group(3) or "").strip()
+            f_path = (m_append.group(4) or m_append.group(5) or m_append.group(6) or "").strip().strip("'\"")
+            prediction["intent"] = "file_operation"
+            prediction["action"] = "file_append"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Appending text to '{f_path}'.",
+                "handler": "file_append",
+                "parameters": {"path": f_path, "content": content, "command": cmd_text}
+            }
+
+        # 15e. Explicit File Create with Content
+        m_create_file = re.match(r"^(?:create\s+file|create|write\s+file)\s+(?:'([^']+)'|\"([^\"]+)\"|([^\s]+))\s+(?:with\s+content|with\s+text|saying|containing)\s*[:\s]?\s*(.+)$", cmd_text, re.IGNORECASE)
+        if m_create_file:
+            f_path = (m_create_file.group(1) or m_create_file.group(2) or m_create_file.group(3) or "").strip().strip("'\"")
+            content = m_create_file.group(4).strip().strip("'\"")
+            prediction["intent"] = "file_operation"
+            prediction["action"] = "file_create"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Creating file '{f_path}' with content.",
+                "handler": "file_create",
+                "parameters": {"path": f_path, "content": content, "command": cmd_text}
+            }
+
+        # 15f. Web Page Read and Summarize
+        m_web_sum = re.match(r"^(?:read\s+and\s+summarize|read\s+webpage|summarize\s+webpage|read\s+page|summarize\s+page|summarize\s+url|read\s+url|summarize\s+web\s+page)\s+['\"]?(https?://[^\s'\"]+)['\"]?$", cmd_text, re.IGNORECASE)
+        if m_web_sum:
+            url = m_web_sum.group(1).strip()
+            prediction["intent"] = "web_search"
+            prediction["action"] = "browser_read_page"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": f"Reading and summarizing web page at {url}.",
+                "handler": "browser_read_page",
+                "parameters": {"url": url, "command": cmd_text}
             }
 
         # 16. File Management Operations (copy, cut, paste, delete, create, open, list)
@@ -2638,6 +3218,14 @@ class EdithBrain:
                 }
             }
         elif action == "respond_dialogue":
+            if self.dialogue_engine:
+                dialogue_res = self.dialogue_engine.respond(cmd_text, context=self.context, executor=self.executor)
+                return {
+                    "can_execute": True,
+                    "message": dialogue_res.get("message", "Hello! I am E.D.I.T.H., your custom-trained neural task handler. All systems operational."),
+                    "handler": "dialogue",
+                    "parameters": dialogue_res.get("parameters", {})
+                }
             return {
                 "can_execute": True,
                 "message": "Hello! I am E.D.I.T.H., your custom-trained neural task handler. All systems operational.",
@@ -2676,7 +3264,59 @@ def interactive_cli():
                 print("E.D.I.T.H. entering standby mode. Goodbye.")
                 break
 
-            result = brain.process(cmd, execute=True)
+            if cmd.lower() in ["voice", "mic", "listen", "voice mode", "talk", "voice once", "mic once"]:
+                from runtime.stt_engine import EdithVoiceAssistant
+                va = EdithVoiceAssistant(brain=brain, enable_tts=True)
+
+                if "once" in cmd.lower():
+                    print("\n[E.D.I.T.H.] 🎙️ Listening (single command)... (speak now)")
+                    try:
+                        v_res = va.listen_and_execute(brain=brain, speak_response=True)
+                        if v_res.get("status") == "success":
+                            cmd = v_res.get("spoken_command", "")
+                            print(f"[Heard] > \"{cmd}\"")
+                            result = v_res.get("brain_result", {})
+                        else:
+                            err = v_res.get("stt", {}).get("error", "No speech detected.")
+                            print(f"[E.D.I.T.H.] ⚠️ {err}")
+                            continue
+                    except Exception as ex:
+                        print(f"[Voice Error] {ex}")
+                        continue
+                else:
+                    print("\n[E.D.I.T.H.] 🎙️ Hands-Free Voice Mode Activated.")
+                    print("  Speak your commands naturally into your microphone.")
+                    print("  Say 'text mode', 'stop', 'standby', or 'exit' to switch back to typing.\n")
+
+                    def on_cmd(spoken_text, v_res):
+                        print(f"\n[Heard] > \"{spoken_text}\"")
+                        res = v_res.get("brain_result", {})
+                        dir_info = res.get("directive", {})
+                        if dir_info.get("message"):
+                            print(f"[E.D.I.T.H.] {dir_info['message']}")
+                        if res.get("intent") != "dialogue" or res.get("intent_confidence", 0) < 1.0:
+                            print(f"  |-- Predicted Intent : {res.get('intent')} ({res.get('intent_confidence', 0):.1%})")
+                            print(f"  |-- Action Policy    : {res.get('action')} ({res.get('action_confidence', 0):.1%})")
+                            if res.get("entities"):
+                                print(f"  |-- Extracted Slots  : {res['entities']}")
+                            print(f"  \\-- Neural Status    : {res.get('status')} (Operational: {res.get('operational_confidence', 0):.1%})")
+                        if "execution" in res:
+                            ex = res["execution"]
+                            icon = "[EXEC-OK]" if ex.get("status") in ["success", "warning"] else "[EXEC-INFO]"
+                            print(f"  {icon} {ex.get('message')}")
+
+                    try:
+                        va.continuous_listen_loop(
+                            brain=brain,
+                            on_command_callback=on_cmd,
+                            on_status_callback=lambda s: print("🎙️ Listening..." if s == "listening" else "")
+                        )
+                    except KeyboardInterrupt:
+                        print("\n[E.D.I.T.H.] Voice mode paused. Returning to text console.")
+                    continue
+            else:
+                result = brain.process(cmd, execute=True)
+
             directive = result["directive"]
 
             print(f"\n[E.D.I.T.H.] {directive['message']}")
