@@ -224,6 +224,7 @@ def export_and_verify_onnx(
     print(f"\nExporting candidate model to ONNX: {onnx_path} ...", flush=True)
     model.eval()
     wrapper = EdithOnnxWrapper(model)
+    wrapper.eval()
 
     dummy_input_ids = torch.ones((1, max_seq_len), dtype=torch.long)
     dummy_attention_mask = torch.ones((1, max_seq_len), dtype=torch.long)
@@ -353,7 +354,13 @@ def train():
         "duplicate", "java", "git", "status", "error", "explain", "why", "choose", "misunderstood",
         "wrong", "approach", "bored", "rough", "interesting", "disagree", "overwhelmed", "recommendation",
         "assignment", "compiler", "diagnostic", "storage", "cleanup", "visible", "multitask",
-        "organize", "organization", "revert", "rollback"
+        "organize", "organization", "revert", "rollback",
+        # V10 Expanded Cognitive, Profiling & Systems Seed Words
+        "dating", "ghost", "ghosted", "closure", "scarcity", "mindset", "pedestal", "boundary", "boundaries",
+        "consensus", "distributed", "cache", "stampede", "pool", "exhaustion", "latency", "throughput", "monolith",
+        "microservices", "consciousness", "sentience", "qualia", "subjective", "solitude", "resilience", "stoic",
+        "stoicism", "negotiation", "salary", "equity", "dopamine", "hyperfocus", "burnout", "procrastination",
+        "masterpiece", "builder", "journey", "profile", "profiling", "judge", "roast", "describe", "personality"
     ]
     tokenizer.build_vocab(all_texts, min_freq=1, seed_words=domain_seed_words)
     candidate_tokenizer_path = os.path.join(checkpoint_dir, "tokenizer_v8_candidate.json")

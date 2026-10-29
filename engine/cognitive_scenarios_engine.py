@@ -136,7 +136,20 @@ class CognitiveScenarioEngine:
             r"\b(?:it's\s+late\s+and\s+quiet,\s+i'm\s+just\s+coding\s+alone|keep\s+me\s+company\s+for\s+a\s+bit)\b",
         ]
         q_low = q.lower()
-        return any(re.search(pat, q_low) for pat in patterns)
+        if any(re.search(pat, q_low) for pat in patterns):
+            return True
+
+        # Check dynamic enriched scenarios (Scenarios 76-150 across Domains 9-15)
+        for s in self.scenarios_data:
+            s_patterns = s.get("patterns", [])
+            for pat in s_patterns:
+                if re.search(pat, q_low):
+                    return True
+            p = s.get("prompt", "").lower().strip(" .!?")
+            if p and (p in q_low or q_low in p):
+                return True
+
+        return False
 
     def handle_scenario(
         self,
@@ -540,7 +553,7 @@ class CognitiveScenarioEngine:
                 topic="task_prioritization"
             )
 
-        if "doomscrolling" in q_low:
+        if "waste 4 hours every night doomscrolling" in q_low or ("doomscrolling" in q_low and "morning" not in q_low and "bed" not in q_low):
             return self._format_response(
                 f"Doomscrolling is an engineered addiction, {user_name}. Social media algorithms are designed by teams of PhD neuroscientists to exploit your brain's dopamine loops.\n\n"
                 f"Willpower alone fails. You need physical friction:\n"
@@ -953,6 +966,28 @@ class CognitiveScenarioEngine:
                 topic="late_night_companionship",
                 suggested_action="play_relaxing_music"
             )
+
+        # Check dynamic enriched scenarios (Scenarios 76-150 across Domains 9-15)
+        for s in self.scenarios_data:
+            s_patterns = s.get("patterns", [])
+            matches = any(re.search(pat, q_low) for pat in s_patterns)
+            if not matches:
+                p = s.get("prompt", "").lower().strip(" .!?")
+                if p and (p in q_low or q_low in p):
+                    matches = True
+
+            if matches:
+                resp_template = s.get("response_template", "")
+                if resp_template:
+                    if "{user_name}" in resp_template:
+                        msg = resp_template.format(user_name=user_name)
+                    else:
+                        msg = f"{user_name}, " + resp_template[0].lower() + resp_template[1:]
+                    return self._format_response(
+                        msg,
+                        topic=s.get("expected_topic", "cognitive_scenario"),
+                        suggested_action=s.get("suggested_action")
+                    )
 
         return None
 
