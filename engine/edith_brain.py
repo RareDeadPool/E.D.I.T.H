@@ -1341,6 +1341,102 @@ class EdithBrain:
         # Pending message text follow-up (user previously specified recipient and was asked for message body)
         if self.context and getattr(self.context, "pending_message_recipient", None):
             target_name = self.context.pending_message_recipient
+
+            # 1. Cancellation check
+            if re.search(r"\b(?:cancel|stop|never\s*mind|leave\s*it|forget\s*it|don\'?t\s*send|abort|chodo|rehnde|mat\s*bhejo)\b", cmd_clean, re.IGNORECASE):
+                self.context.pending_message_recipient = None
+                self.context.pending_confirmation = None
+                res = {
+                    "query": user_command,
+                    "intent": "communication",
+                    "action": "cancel_whatsapp",
+                    "entities": {"RECIPIENT": target_name},
+                    "intent_confidence": 1.0,
+                    "action_confidence": 1.0,
+                    "operational_confidence": 1.0,
+                    "status": "OPERATIONAL",
+                    "directive": {
+                        "can_execute": True,
+                        "message": f"Cancelled message to {target_name}. What would you like to do instead?",
+                        "handler": "dialogue",
+                        "parameters": {}
+                    },
+                    "execution": {"status": "success", "message": f"Cancelled message to {target_name}."}
+                }
+                self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                return res
+
+            # 2. Recipient Correction / Redirection check
+            # e.g. "No I don't want to message any of our, I want to message Sakshi"
+            # or "and sakshi, whatsapp message, what time is it"
+            # or "not our, message Sakshi"
+            resolver = reg.contact_resolver if reg else (self.contact_resolver or ContactResolver())
+            parsed_followup = resolver.extract_intent_and_entities(cmd_clean)
+            new_candidate = parsed_followup.get("recipient_raw")
+            if new_candidate and (new_candidate.lower() != target_name.lower() or any(w in cmd_clean.lower() for w in ["not ", "instead", "don't want", "dont want", "meant"])):
+                res_new = resolver.resolve(new_candidate, context=self.context, raw_query=cmd_clean)
+                new_target = res_new.recipient_name or new_candidate
+                new_msg = parsed_followup.get("message_text")
+
+                if not new_msg:
+                    self.context.pending_message_recipient = new_target
+                    res = {
+                        "query": user_command,
+                        "intent": "communication",
+                        "action": "send_whatsapp",
+                        "entities": {"RECIPIENT": new_target},
+                        "intent_confidence": 1.0,
+                        "action_confidence": 1.0,
+                        "operational_confidence": 1.0,
+                        "status": "NEEDS_CLARIFICATION",
+                        "directive": {
+                            "can_execute": False,
+                            "needs_clarification": True,
+                            "message": f"Understood! What message would you like to send to {new_target}?",
+                            "handler": "clarification",
+                            "parameters": {"recipient": new_target}
+                        }
+                    }
+                    self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                    return res
+                else:
+                    self.context.pending_message_recipient = None
+                    c_new_obj = res_new.resolved_contact
+                    new_phone = c_new_obj.phone if c_new_obj else None
+                    new_group = res_new.is_group
+                    exec_res, ver = reg.execute("whatsapp_send", {
+                        "recipient": new_target,
+                        "phone": new_phone,
+                        "content": new_msg,
+                        "is_exact": parsed_followup.get("is_exact", False),
+                        "authorized": False,
+                        "is_group": new_group
+                    }) if reg else ({"status": "needs_confirmation", "message": f"Please confirm message to {new_target}"}, None)
+                    stat = "NEEDS_CONFIRMATION" if exec_res.get("status") == "needs_confirmation" else "OPERATIONAL"
+                    res = {
+                        "query": user_command,
+                        "intent": "communication",
+                        "action": "send_whatsapp",
+                        "entities": {"RECIPIENT": new_target},
+                        "intent_confidence": 1.0,
+                        "action_confidence": 1.0,
+                        "operational_confidence": 1.0,
+                        "status": stat,
+                        "directive": {
+                            "can_execute": (exec_res.get("status") == "success"),
+                            "needs_confirmation": (exec_res.get("status") == "needs_confirmation"),
+                            "message": exec_res.get("message", ""),
+                            "handler": "whatsapp_send",
+                            "parameters": {"recipient": new_target, "content": new_msg}
+                        },
+                        "execution": exec_res
+                    }
+                    if exec_res.get("status") == "needs_confirmation":
+                        self.context.pending_confirmation = exec_res
+                    self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                    return res
+
+            # 3. Normal follow-up: message content provided for target_name
             self.context.pending_message_recipient = None
             c_obj = reg.contact_resolver.get_exact_contact(target_name) if reg else None
             phone = c_obj.phone if c_obj else None
@@ -2184,10 +2280,25 @@ class EdithBrain:
         is_organize_rollback = any(p in cmd_lower for p in [
             "undo file organization", "rollback file organization", "revert file organization", "restore organized files"
         ])
-        is_organize_query = any(p in cmd_lower for p in [
-            "organize these files", "organize my downloads", "organize files", "propose file organization",
-            "sort these files", "organize folder"
-        ])
+        is_organize_query = (
+            any(p in cmd_lower for p in [
+                "organize these files", "organize my downloads", "organize files", "propose file organization",
+                "sort these files", "organize folder", "organize the folder", "organize downloads",
+                "sort files", "sort downloads", "arrange files", "arrange downloads"
+            ]) or
+            bool(re.search(
+                r"\b(?:organize|sort|arrange|clean\s+up|categorize|load|group)\s+(?:the\s+|my\s+)?(?:downloaded|downloading|downloads?|recent)?\s*(?:files?|documents?|folder)?\s*(?:into\s+folders?|by\s+usage|by\s+date|by\s+type|in\s+folders?)\b",
+                cmd_lower
+            )) or
+            bool(re.search(
+                r"\b(?:folder\s+should\s+be\s+named|folders?\s+named|name\s+the\s+folders?|create\s+folders?\s+named)\b",
+                cmd_lower
+            )) or
+            bool(re.search(
+                r"\b(?:files?|downloads?|folder)\s+(?:ko\s+)?(?:organize|sort|arrange|clean)\s*(?:karo|kar\s+do|kijiye)\b",
+                cmd_lower
+            ))
+        )
         if is_organize_rollback:
             prediction["intent"] = "file_organization"
             prediction["action"] = "file_organize_rollback"
@@ -2380,8 +2491,27 @@ class EdithBrain:
                     recip_query = getattr(self.context, "last_person", None) or (
                         reg.whatsapp_adapter.active_draft.recipient if (reg and reg.whatsapp_adapter.active_draft) else None
                     )
-                elif reg and getattr(reg, "whatsapp_adapter", None) and reg.whatsapp_adapter.default_route_phone:
-                    recip_query = reg.whatsapp_adapter.default_route_phone
+                elif any(w in cmd_lower for w in ["default route", "default number", "default phone", "test number"]):
+                    if reg and getattr(reg, "whatsapp_adapter", None) and reg.whatsapp_adapter.default_route_phone:
+                        recip_query = reg.whatsapp_adapter.default_route_phone
+
+            if not recip_query:
+                prediction["intent"] = "communication"
+                prediction["action"] = "send_whatsapp"
+                prediction["operational_confidence"] = 1.0
+                if self.context:
+                    self.context.pending_clarification = {
+                        "action_type": action_type,
+                        "pending_text": parsed_comm.get("message_text", ""),
+                        "is_exact": parsed_comm.get("is_exact", False)
+                    }
+                return {
+                    "can_execute": False,
+                    "needs_clarification": True,
+                    "message": "Who would you like to send this WhatsApp message to?",
+                    "handler": "clarification",
+                    "parameters": {"pending_action": "get_recipient"}
+                }
 
             res_cont = resolver.resolve(recip_query, context=self.context, raw_query=cmd_text)
             

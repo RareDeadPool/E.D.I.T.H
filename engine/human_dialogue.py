@@ -101,23 +101,43 @@ class EdithDialogueEngine:
         """Determine if a query is a conversational query, greeting, emotion, or problem-solving prompt."""
         q = query.lower().strip(" .!?\t\r\n")
 
-        # Guard against explicit communication commands with recipients
-        if any(q.startswith(w) for w in ["send ", "text ", "message ", "whatsapp ", "draft a message", "draft a quick message", "compose "]):
-            return False
-
-        # Guard against explicit app launches or terminations
-        if any(q.startswith(w) for w in ["open ", "launch ", "start ", "close ", "kill ", "quit ", "exit ", "shut down "]):
-            if any(app in q for app in ["notepad", "calculator", "chrome", "spotify", "vscode", "terminal", "powershell"]):
-                return False
-
-        # Guard against standard music playback commands
-        if (q.startswith("play ") or q.startswith("listen to ")) and not any(w in q for w in ["relaxing", "calm", "chill", "music to relax"]):
-            return False
-
-        # Cognitive Scenarios Engine check across 75 real-world human scenarios
+        # 1. Cognitive Scenarios Engine check across 75 real-world human scenarios
         if hasattr(self, "cognitive_scenarios") and self.cognitive_scenarios:
             if self.cognitive_scenarios.matches_scenario(q):
                 return True
+
+        # 2. Guard against explicit operational commands (English & Hinglish)
+        operational_signals = [
+            # WhatsApp & messaging commands
+            r"\bwhatsapp\b",
+            r"\b(?:send|draft|write|compose)\s+(?:a\s+)?(?:message|text)\b",
+            r"\bmessage\s+(?:to\s+)?[a-zA-Z0-9_\-]+",
+            r"\b(?:ko\s+)?(?:message|whatsapp|text)\s+(?:bhejo|karo|kar\s+do|daalo)\b",
+            r"\b(?:bhejo|send\s+karo)\s+(?:message|whatsapp|text)\b",
+            # Music commands
+            r"\bspotify\b",
+            r"\b(?:play|listen\s+to|bajao|chalao)\s+(?:music|song|track|gaana|gana)\b",
+            r"\b(?:gaana|gana|music|song)\s+(?:bajao|chalao|lagao)\b",
+            r"\b(?:pause|resume|skip|next\s+track|next\s+song)\b",
+            # File organization commands
+            r"\b(?:organize|sort|arrange)\s+(?:the\s+|my\s+)?(?:downloaded\s+|downloading\s+|recent\s+)?(?:files|downloads|folder)\b",
+            r"\bload\s+downloading\s+files\b",
+            r"\b(?:folder\s+should\s+be\s+named|folders?\s+named|create\s+folders?\s+named)\b",
+            r"\b(?:files?|downloads?|folder)\s+(?:ko\s+)?(?:organize|sort|arrange|clean)\s*(?:karo|kar\s+do)\b",
+            # App commands
+            r"^(?:open|launch|start|close|kill|quit|exit|shut\s+down)\s+(?:the\s+)?(?:notepad|calculator|chrome|spotify|vscode|terminal|powershell|window)\b",
+            r"\b(?:chrome|notepad|spotify|vscode|calculator)\s+(?:kholo|band\s+karo|chalao|close\s+kar\s+do)\b",
+            # System utilities
+            r"\b(?:set\s+(?:a\s+)?timer|cancel\s+timer|check\s+timer|set\s+reminder)\b",
+            r"\b(?:what\s+time|current\s+time|today\'?s\s+date|time\s+kya\s+hua|kya\s+time\s+hai)\b",
+            r"\b(?:volume|sound|awaaz)\s+(?:badhao|tez\s+karo|kam\s+karo|mute\s+karo|dheeme\s+karo|up|down)\b",
+            r"\b(?:battery\s+percentage|battery\s+kitni\s+hai|cpu\s+usage|ram\s+usage)\b",
+            r"\b(?:screen|screenshot)\b"
+        ]
+        if any(re.search(pat, q) for pat in operational_signals):
+            self.last_problem_category = None
+            self.last_dialogue_topic = None
+            return False
 
         # Active dialogue continuity check (keep conversation flowing without false tool classification)
         if (
@@ -130,9 +150,10 @@ class EdithDialogueEngine:
                 conv_cues = [
                     "i think", "i feel", "i don't think", "i dont think", "miss her", "miss him",
                     "missed her", "missed him", "miss them", "changed", "she has", "he has",
-                    "she", "her", "he", "him", "it hurts", "i know", "why", "what if", "too much", "still"
+                    "it hurts", "i know", "why", "what if", "too much", "still hurts", "breakup",
+                    "usne", "uski", "yaad aa rahi", "mann nahi lag raha", "dukh ho raha"
                 ]
-                if any(c in q for c in conv_cues) or len(q.split()) > 2:
+                if any(c in q for c in conv_cues):
                     return True
 
         # 1. Direct social & identity triggers
@@ -142,6 +163,7 @@ class EdithDialogueEngine:
             r"\bhow\s+are\s+you(?:\s+doing)?\b",
             r"\bhow(?:\'s|\s+is)\s+it\s+going\b",
             r"\bwhat(?:\'s|\s+is)\s+up\b",
+            r"\b(?:kya\s+chal\s+raha\s+hai|kya\s+haal\s+hai|kaise\s+ho|kaisi\s+ho|sab\s+theek|kya\s+kar\s+rahi\s+ho)\b",
             r"\bwho\s+are\s+you\b",
             r"\bwhat\s+are\s+you\b",
             r"\bwhat\s+does\s+edith\s+stand\s+for\b",

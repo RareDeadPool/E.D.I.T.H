@@ -79,7 +79,48 @@ class SpeechNormalizer:
         r"\b(?:fire\s*fox|firefx)\b": "firefox",
         r"\b(?:google\s*chrome|chorme|crome)\b": "chrome",
         r"\b(?:power\s*shell|powershl)\b": "powershell",
+        # Indian names and misheard phonetic variants
+        r"\b(?:suxie|saksi|sucks\s*you|suction|sekshi|shakshi|suxy)\b": "sakshi",
+        r"\b(?:adit|adithya|adity)\b": "aditya",
+        r"\b(?:rahool|raahul)\b": "rahul",
     }
+
+    @classmethod
+    def assemble_spelled_words(cls, text: str) -> str:
+        """Reconstruct spelled-out letter sequences (e.g. 's-a-k-s-h-i' -> 'sakshi', 's e k s h i' -> 'sekshi')."""
+        if not text:
+            return text
+
+        # 1. Hyphenated letters (e.g. s-a-k-s-h-i or s - a - k - s - h - i or S-S-A-K-S-H-I)
+        def repl_hyphen(m):
+            token = m.group(0)
+            letters = re.findall(r"[a-zA-Z]", token)
+            word = "".join(letters).lower()
+            # Deduplicate consecutive identical leading letters caused by speech stutter (e.g. ssakshi -> sakshi)
+            word = re.sub(r"^([a-zA-Z])\1+", r"\1", word)
+            return word
+
+        text = re.sub(r"\b[a-zA-Z](?:\s*-\s*[a-zA-Z]){2,}\b", repl_hyphen, text)
+
+        # 2. Spaced single letters after keywords like 'spelled', 'spelt', 'spelling'
+        def repl_spelled(m):
+            prefix = m.group(1)
+            letters = re.findall(r"\b[a-zA-Z]\b", m.group(2))
+            word = "".join(letters).lower()
+            word = re.sub(r"^([a-zA-Z])\1+", r"\1", word)
+            return f"{prefix} {word}"
+
+        text = re.sub(r"\b(spelled|spelt|spelling)\s+((?:[a-zA-Z]\s+){2,}[a-zA-Z])\b", repl_spelled, text, flags=re.IGNORECASE)
+
+        # 3. Trailing or standalone spaced single letters of length >= 3 (e.g. 's a k s h i')
+        def repl_spaced_letters(m):
+            letters = re.findall(r"\b[a-zA-Z]\b", m.group(0))
+            word = "".join(letters).lower()
+            word = re.sub(r"^([a-zA-Z])\1+", r"\1", word)
+            return word
+
+        text = re.sub(r"(?<![a-zA-Z])([a-zA-Z](?:\s+[a-zA-Z]){2,})(?![a-zA-Z])", repl_spaced_letters, text)
+        return text
 
     # Leading conversational filler phrases
     FILLER_PREFIXES = [
@@ -138,8 +179,11 @@ class SpeechNormalizer:
         text = raw_text.strip()
         has_wake_word, _, _ = cls.extract_wake_word(text)
 
+        # 0. Reconstruct spelled-out words (e.g. 's-a-k-s-h-i' -> 'sakshi', 'spelled s-s-a-k-s-h-i' -> 'spelled sakshi')
+        text_assembled = cls.assemble_spelled_words(text)
+
         # 1. Phonetic entity correction
-        text_corrected = text
+        text_corrected = text_assembled
         for pat, repl in cls.PHONETIC_CORRECTIONS.items():
             text_corrected = re.sub(pat, repl, text_corrected, flags=re.IGNORECASE)
 
@@ -378,7 +422,9 @@ class EdithSTTEngine:
     """
 
     DESKTOP_PROMPT = (
-        "E.D.I.T.H., open notepad, open spotify, open calculator, open chrome, "
+        "E.D.I.T.H., Sakshi, Aditya, Rahul, send whatsapp message to Sakshi, "
+        "kholo, bhejo, karo, band karo, chalao, gaana, bajao, screen pe kya hai, "
+        "open notepad, open spotify, open calculator, open chrome, "
         "open vscode, open terminal, command prompt, play music, what time is it, "
         "turn volume up, turn volume down, mute, take screenshot, type text, "
         "send whatsapp message, system status, wifi, battery, write notes."

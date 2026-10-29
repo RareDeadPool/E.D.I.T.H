@@ -371,7 +371,8 @@ class UnderstandingNormalizer:
             "what is going on on my screen", "what's on my screen", "what is on my screen",
             "what do you think of this", "explain what i'm looking at", "explain what i am looking at",
             "why isn't this working", "why is this not working", "can you fix this error",
-            "what does this chart tell us", "read my screen", "inspect active window", "inspect screen"
+            "what does this chart tell us", "read my screen", "inspect active window", "inspect screen",
+            "screen pe kya hai", "screen dekh kar batao", "screen read karo", "dekho screen", "screen pe kya chal raha hai"
         ]):
             goal = "screen_understanding"
             intent = "screen_understanding"
@@ -404,10 +405,25 @@ class UnderstandingNormalizer:
             intent = "file_organization"
             action = "file_organize_rollback"
             confidence = 0.99
-        elif any(p in q_lower for p in [
-            "organize these files", "organize my downloads", "organize files", "propose file organization",
-            "sort these files", "organize folder"
-        ]):
+        elif (
+            any(p in q_lower for p in [
+                "organize these files", "organize my downloads", "organize files", "propose file organization",
+                "sort these files", "organize folder", "organize the folder", "organize downloads",
+                "sort files", "sort downloads", "arrange files", "arrange downloads"
+            ]) or
+            bool(re.search(
+                r"\b(?:organize|sort|arrange|clean\s+up|categorize|load|group)\s+(?:the\s+|my\s+)?(?:downloaded|downloading|downloads?|recent)?\s*(?:files?|documents?|folder)?\s*(?:into\s+folders?|by\s+usage|by\s+date|by\s+type|in\s+folders?)\b",
+                q_lower
+            )) or
+            bool(re.search(
+                r"\b(?:folder\s+should\s+be\s+named|folders?\s+named|name\s+the\s+folders?|create\s+folders?\s+named)\b",
+                q_lower
+            )) or
+            bool(re.search(
+                r"\b(?:files?|downloads?|folder)\s+(?:ko\s+)?(?:organize|sort|arrange|clean)\s*(?:karo|kar\s+do|kijiye)\b",
+                q_lower
+            ))
+        ):
             goal = "semantic_file_organize"
             intent = "file_organization"
             action = "semantic_file_organize"
@@ -442,6 +458,8 @@ class UnderstandingNormalizer:
         # 00a. WhatsApp / Direct Messaging Normalization
         elif (
             "whatsapp" in q_lower or
+            bool(re.search(r"\b(?:ko\s+)?(?:message|whatsapp|text)\s+(?:bhejo|karo|kar\s+do|daalo|send\s+karo)\b", q_lower)) or
+            bool(re.search(r"\b(?:bhejo|send\s+karo)\s+(?:message|whatsapp|text)\b", q_lower)) or
             bool(re.search(r"\bping\s+(?!localhost\b|\d+\.\d+|[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}\b|the\s+server|gateway|google|127\.)(?:my\s+)?[a-zA-Z]+", q_lower)) or
             any(w in q_lower for w in ["make that message shorter", "make the message shorter", "shorten the message"]) or
             any(w in q_lower for w in ["show me the message", "show me the message first", "preview the message"]) or
@@ -490,17 +508,25 @@ class UnderstandingNormalizer:
 
         # Validate music playback: if predicted as music_playback but lacks music intent triggers
         elif intent == "music_playback":
-            music_triggers = ["play", "paly", "listen", "stream", "put on", "hear", "song", "track", "music", "spotify", "youtube", "album", "playlist", "tune", "sound", "queue"]
+            music_triggers = ["play", "paly", "listen", "stream", "put on", "hear", "song", "track", "music", "spotify", "youtube", "album", "playlist", "tune", "sound", "queue", "gaana", "gana", "bajao", "chalao", "lagao"]
             if not any(w in q_lower for w in music_triggers):
                 goal = "unsupported"
                 intent = "unsupported_ood"
                 action = "request_clarification"
 
-        # 1. Datetime / Clock
-        elif any(w in q_lower for w in ["what time", "current time", "what is the time", "tell me time", "today's date", "today date", "current date"]):
+        # 1. Datetime / Clock (English & Hinglish)
+        elif any(w in q_lower for w in ["what time", "current time", "what is the time", "tell me time", "today's date", "today date", "current date"]) or bool(re.search(r"\b(?:time\s+kya\s+hua|kya\s+time\s+hai|kitne\s+baje\s+hai|aaj\s+ki\s+date|aaj\s+kaun\s+sa\s+din\s+hai)\b", q_lower)):
             goal = "check_datetime"
             intent = "system_utility"
             action = "exec_system_utility"
+            confidence = 0.99
+
+        # 1b. Volume Control (English & Hinglish)
+        elif bool(re.search(r"\b(?:volume|sound|audio|awaaz)\s+(?:badhao|tez\s+karo|kam\s+karo|mute\s+karo|dheeme\s+karo|up|down|increase|decrease|mute|unmute)\b", q_lower)) or bool(re.search(r"\b(?:mute|unmute|increase|decrease|raise|lower)\s+(?:the\s+)?(?:volume|sound|audio|awaaz)\b", q_lower)):
+            goal = "control_volume"
+            intent = "system_utility"
+            action = "exec_system_utility"
+            confidence = 0.99
 
         # 2. Coding Environment / Dev IDE (use word boundaries to avoid matching 'president')
         if re.search(r"\b(?:coding\s+environment|dev\s+environment|ide|vscode|vs\s+code)\b", q_lower):
@@ -524,29 +550,31 @@ class UnderstandingNormalizer:
                 entities["FILE"] = "resume"
 
 
-        # 3b. Media controls (resume, skip, next track)
+        # 3b. Media controls (resume, skip, next track, Hinglish: gaana rok do, change karo)
         if (
             re.search(r"\b(?:resume\s+(?:the\s+)?(?:track|song|music|playback))\b", q_lower) or
             re.search(r"\b(?:skip|next|hop\s+to(?:\s+the)?\s+next|jump\s+to(?:\s+the)?\s+next|play\s+next)\s+(?:track|song|music)\b", q_lower) or
-            q_lower.strip(" .!?") in ["next song", "skip to next song", "next track", "skip track", "skip", "next", "hop to the next song"]
+            bool(re.search(r"\b(?:agla|next)\s+(?:gaana|gana|song|track)\b", q_lower)) or
+            bool(re.search(r"\b(?:gaana|gana|music|song)\s+(?:rok\s+do|pause\s+karo|band\s+karo|stop\s+karo|change\s+karo)\b", q_lower)) or
+            q_lower.strip(" .!?") in ["next song", "skip to next song", "next track", "skip track", "skip", "next", "hop to the next song", "pause music", "stop music", "gaana roko"]
         ):
             goal = "control_media"
             intent = "media_control"
             action = "exec_media_change"
 
-        # 4. App Dismissal / Termination
-        if re.search(r"\b(?:dismiss|shut\s+off|close\s+down|exit|quit)\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+(?:window|app|application))?$", q_lower):
-            m_term = re.search(r"\b(?:dismiss|shut\s+off|close\s+down|exit|quit)\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+(?:window|app|application))?$", q_lower)
-            if m_term:
-                t_cand = m_term.group(1).strip()
-                if t_cand not in ["process", "pid", "task"]:
-                    goal = "close_application"
-                    intent = "app_close"
-                    action = "exec_terminate_app"
-                    entities["APP"] = t_cand
+        # 4. App Dismissal / Termination (English & Hinglish)
+        m_term = re.search(r"\b(?:dismiss|shut\s+off|close\s+down|exit|quit)\s+(?:the\s+)?([a-zA-Z0-9_\-\s]+?)(?:\s+(?:window|app|application))?$", q_lower) or re.search(r"^([a-zA-Z0-9_\-\s]+?)\s+(?:band\s+karo|hatao|close\s+kar\s+do|exit\s+karo|band\s+kar\s+do)$", q_lower)
+        if m_term:
+            t_cand = m_term.group(1).strip()
+            if t_cand not in ["process", "pid", "task"]:
+                goal = "close_application"
+                intent = "app_close"
+                action = "exec_terminate_app"
+                entities["APP"] = t_cand
+                confidence = 0.99
 
         # 5. System Resource Metrics
-        if any(w in q_lower for w in ["cpu usage", "ram usage", "battery juice", "battery percentage", "free disk space", "storage space", "system metrics"]):
+        if any(w in q_lower for w in ["cpu usage", "ram usage", "battery juice", "battery percentage", "free disk space", "storage space", "system metrics"]) or bool(re.search(r"\b(?:battery\s+kitni\s+hai|battery\s+percentage|kitna\s+charge\s+hai)\b", q_lower)):
             goal = "query_system_metrics"
             intent = "system_query"
             action = "exec_read_metrics"
@@ -557,11 +585,29 @@ class UnderstandingNormalizer:
             intent = "web_search"
             action = "exec_browser_search"
 
-        # 7. Music Playback
-        if q_lower in ["play music", "stream music", "listen to music"] or (q_lower.startswith("play ") and not any(k in q_lower for k in ["pause", "resume", "skip", "next", "previous", "stop"])):
+        # 7. Music Playback (English & Hinglish)
+        if (
+            q_lower in ["play music", "stream music", "listen to music", "play song", "play songs", "put on music", "play something"] or
+            (q_lower.startswith("play ") and not any(k in q_lower for k in ["pause", "resume", "skip", "next", "previous", "stop"])) or
+            bool(re.search(r"\b(?:gaana|gana|music|song|track)\s+(?:bajao|chalao|play\s+karo|lagao|shuru\s+karo)\b", q_lower)) or
+            bool(re.search(r"\b(?:bajao|chalao|lagao)\s+(?:gaana|gana|music|song)\b", q_lower)) or
+            ("spotify" in q_lower and any(w in q_lower for w in ["play", "chalao", "bajao", "lagao", "song", "music", "gaana", "listen", "on spotify", "much eye"]))
+        ):
             goal = "play_music"
             intent = "music_playback"
             action = "exec_play_music"
+            confidence = 0.99
+
+        # 7b. App Launch (Hinglish: <APP> kholo / chalao / start karo / open karo)
+        m_app_launch = re.search(r"^([a-zA-Z0-9_\-\s]+?)\s+(?:kholo|chalao|start\s+karo|open\s+karo|shuru\s+karo)$", q_lower)
+        if m_app_launch:
+            cand_app = m_app_launch.group(1).strip()
+            if cand_app not in ["gaana", "gana", "music", "song", "video", "track"]:
+                goal = "launch_application"
+                intent = "app_launch"
+                action = "exec_launch_app"
+                entities["APP"] = cand_app
+                confidence = 0.99
 
         # 8. File Deletion
         if q_lower.startswith("delete ") and any(ext in q_lower for ext in [".png", ".pdf", ".txt", ".csv", ".docx"]):
@@ -580,17 +626,8 @@ class UnderstandingNormalizer:
             action = "exec_project_action"
 
         # 9. Human Conversational, Empathetic & Problem-Solving Dialogue
-        if _DIALOGUE_ENGINE and _DIALOGUE_ENGINE.is_conversational_or_problem(q_lower):
-            goal = "dialogue"
-            intent = "chitchat"
-            action = "respond_dialogue"
-            confidence = 0.99
-        elif ctx and ctx.get("current_topic") in [
-            "love_support", "love_text_ex", "love_breakup", "love_reflection",
-            "personal_relationship", "empathy", "emotional_support", "personal_advice", "chitchat", "problem_solving"
-        ]:
-            sys_metric_keys = ["cpu", "ram", "memory", "battery", "storage", "disk", "specs", "hardware", "power status", "system metrics"]
-            if not any(k in q_lower for k in sys_metric_keys) and not any(q_lower.startswith(v) for v in ["open ", "close ", "kill ", "delete ", "play "]):
+        if goal == cls.GOAL_MAP.get((intent, action), f"{intent}_{action}"):
+            if _DIALOGUE_ENGINE and _DIALOGUE_ENGINE.is_conversational_or_problem(q_lower):
                 goal = "dialogue"
                 intent = "chitchat"
                 action = "respond_dialogue"
