@@ -200,18 +200,18 @@ class AudioRecorder:
 
     def record_with_vad(
         self,
-        silence_duration: float = 1.4,
+        silence_duration: float = 0.70,
         max_duration: float = 15.0,
         timeout: float = 8.0,
         energy_threshold: Optional[float] = None,
-        chunk_duration: float = 0.05,
+        chunk_duration: float = 0.03,
         on_voice_start: Optional[Any] = None
     ) -> Optional[np.ndarray]:
         """
         Record audio from default microphone with dynamic Voice Activity Detection and AGC.
         - Automatically begins recording on voice trigger.
         - Triggers `on_voice_start` immediately on speech onset (enabling speech barge-in).
-        - Automatically terminates when trailing silence reaches `silence_duration`.
+        - Automatically terminates when trailing silence reaches `silence_duration` (default 0.70s).
         - Times out cleanly if no voice is detected within `timeout`.
         - Applies automatic gain peak normalization for optimal speech recognition SNR.
         Returns numpy float32 1D array at 16kHz, or None if timed out / failed.
@@ -220,7 +220,7 @@ class AudioRecorder:
             return None
 
         chunk_samples = int(self.sample_rate * chunk_duration)
-        pre_roll_chunks = int(0.45 / chunk_duration)  # Keep 0.45s pre-roll buffer to avoid clipping speech onset
+        pre_roll_chunks = int(0.25 / chunk_duration)  # Keep 0.25s pre-roll buffer to avoid clipping speech onset
         pre_roll_buffer: List[np.ndarray] = []
 
         recorded_chunks: List[np.ndarray] = []
@@ -245,7 +245,7 @@ class AudioRecorder:
                     now = time.time()
                     elapsed_total = now - start_time
 
-                    # 1. Ambient noise calibration phase (first ~0.25s)
+                    # 1. Ambient noise calibration phase (first ~0.15s)
                     if len(ambient_energies) < 5:
                         ambient_energies.append(rms)
                         pre_roll_buffer.append(chunk_flat)
@@ -253,7 +253,7 @@ class AudioRecorder:
 
                     # Determine voice detection threshold with ambient baseline clamp
                     ambient_baseline = min(float(np.mean(ambient_energies)), 0.005)
-                    active_threshold = energy_threshold or max(0.004, ambient_baseline * 1.4)
+                    active_threshold = energy_threshold or max(0.005, ambient_baseline * 1.5)
 
                     # 2. Waiting for voice onset
                     if not speech_started:
@@ -303,6 +303,56 @@ class AudioRecorder:
         except Exception as e:
             sys.stderr.write(f"[AudioRecorder Error] {e}\n")
             return None
+
+    def monitor_barge_in(
+        self,
+        is_speaking_fn: Any,
+        stop_tts_fn: Any,
+        barge_in_threshold: Optional[float] = None,
+        poll_interval: float = 0.03
+    ) -> bool:
+        """Monitor microphone while TTS is speaking. If deliberate user speech is detected,
+        immediately stop TTS (barge-in) and return True.
+        If speech finishes without interruption, return False.
+        """
+        if not self.is_microphone_available():
+            while is_speaking_fn():
+                time.sleep(poll_interval)
+            return False
+
+        chunk_samples = int(self.sample_rate * poll_interval)
+        consecutive_voice_chunks = 0
+        min_consecutive = 2  # Requires ~60ms of continuous voice to avoid false pops/clicks
+
+        try:
+            with sd.InputStream(
+                samplerate=self.sample_rate,
+                channels=self.channels,
+                dtype="float32"
+            ) as stream:
+                # Discard initial stale buffer
+                stream.read(chunk_samples)
+
+                while is_speaking_fn():
+                    chunk, overflowed = stream.read(chunk_samples)
+                    chunk_flat = chunk.flatten()
+                    rms = float(np.sqrt(np.mean(chunk_flat ** 2)))
+
+                    # Barge-in threshold: user speaking into mic is typically RMS > 0.025
+                    threshold = barge_in_threshold or 0.028
+                    if rms >= threshold:
+                        consecutive_voice_chunks += 1
+                        if consecutive_voice_chunks >= min_consecutive:
+                            stop_tts_fn()
+                            return True
+                    else:
+                        consecutive_voice_chunks = 0
+
+            return False
+        except Exception:
+            while is_speaking_fn():
+                time.sleep(poll_interval)
+            return False
 
     @staticmethod
     def audio_to_wav_bytes(audio_array: np.ndarray, sample_rate: int = 16000) -> bytes:
@@ -479,7 +529,7 @@ class EdithSTTEngine:
     def listen_and_transcribe(
         self,
         timeout: float = 8.0,
-        silence_duration: float = 1.4,
+        silence_duration: float = 0.70,
         max_duration: float = 15.0,
         on_voice_start: Optional[Any] = None
     ) -> Dict[str, Any]:
@@ -663,6 +713,7 @@ class EdithTTSEngine:
         self._stop_event.clear()
 
         if async_mode:
+            self._is_speaking = True
             thread = threading.Thread(target=self._synthesize_and_play, args=(clean_text,), daemon=True)
             thread.start()
         else:
@@ -831,6 +882,7 @@ class EdithVoiceAssistant:
 
         if self.tts:
             self.tts.speak("E.D.I.T.H. voice mode activated. I'm listening.", async_mode=False)
+            time.sleep(0.18)
 
         while self.is_listening_loop:
             if on_status_callback:
@@ -859,6 +911,28 @@ class EdithVoiceAssistant:
             v_res = self.listen_and_execute(brain=active_brain, speak_response=True, cmd_override=cmd)
             if on_command_callback:
                 on_command_callback(cmd, v_res)
+
+            # Turn-Taking & Barge-In Interruption:
+            # While E.D.I.T.H. speaks her spoken response, continuously monitor the microphone.
+            # If user speaks over her, immediately cut audio playback and listen for the new command.
+            if self.tts:
+                # Allow a tiny 60ms window for the async playback thread to start
+                time.sleep(0.06)
+                if self.tts.is_speaking():
+                    if on_status_callback:
+                        on_status_callback("speaking")
+                    interrupted = self.stt.recorder.monitor_barge_in(
+                        is_speaking_fn=lambda: self.tts.is_speaking(),
+                        stop_tts_fn=self.tts.stop,
+                        barge_in_threshold=0.032
+                    )
+                    if interrupted:
+                        if on_status_callback:
+                            on_status_callback("interrupted")
+                        print("\n[E.D.I.T.H.] (Interrupted)")
+                        continue
+                # If speech completed naturally without interruption, settle acoustic room reverberation
+                time.sleep(0.18)
 
         self.is_listening_loop = False
         if on_status_callback:

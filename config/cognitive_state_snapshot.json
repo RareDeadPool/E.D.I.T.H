@@ -1,9 +1,9 @@
 {
-  "version": 294,
-  "timestamp": 1793287754.1122618,
+  "version": 1960,
+  "timestamp": 1793293523.3487146,
   "session_id": "edith_v5_main",
   "perception": {
-    "current_interpretation": "system_utility -> exec_system_utility",
+    "current_interpretation": "chitchat -> respond_dialogue",
     "entities": {},
     "belief_confidence": 1.0,
     "competing_interpretations": [],
@@ -11,16 +11,16 @@
     "inferred_events": [],
     "prior_expectations": {
       "expected_outcome": true,
-      "calibrated_confidence": 0.72,
-      "action": "exec_system_utility"
+      "calibrated_confidence": 0.719,
+      "action": "respond_dialogue"
     },
     "detected_contradictions": []
   },
   "goals": {
-    "active_goal": "what time is it",
+    "active_goal": "Send the revised message to the same person",
     "desired_outcome": null,
     "intermediate_objectives": [],
-    "priority": 0.7,
+    "priority": 0.4,
     "urgency": 0.5,
     "progress": 1.0,
     "perceived_effort": 0.3,
@@ -36,7 +36,7 @@
     "task_complexity": 0.2,
     "unresolved_questions": [],
     "cognitive_load": 0.2,
-    "plan_confidence": 0.72,
+    "plan_confidence": 0.719,
     "prediction_error": 0.0,
     "error_accumulation": 0.0,
     "task_switching_cost": 0.1,
@@ -44,44 +44,44 @@
     "deep_reasoning_needed": false
   },
   "momentary_affect": {
-    "valence": 0.5264035373796725,
-    "arousal": 0.4732371975069937,
-    "dominance": 0.5741453726214714,
-    "uncertainty": 0.23732740997473942,
-    "frustration": 0.0,
-    "engagement": 0.7108200231461277,
-    "social_trust": 0.7952442734256698
+    "valence": 0.5334597545071933,
+    "arousal": 0.48940461238427685,
+    "dominance": 0.5908890228595205,
+    "uncertainty": 0.21347377959536898,
+    "frustration": 2.665808876252722e-31,
+    "engagement": 0.717642456668004,
+    "social_trust": 0.8376345099292134
   },
   "baseline_mood": {
-    "valence": 0.39232182683063693,
-    "arousal": 0.5048240755181667,
-    "dominance": 0.624041169887271,
-    "uncertainty": 0.24122828090033238,
+    "valence": 0.41664837852112013,
+    "arousal": 0.5081313195422023,
+    "dominance": 0.6398640091453279,
+    "uncertainty": 0.227930213234776,
     "frustration": 0.0,
-    "engagement": 0.7408279682742778,
-    "social_trust": 0.7999580889185672
+    "engagement": 0.7332263903704123,
+    "social_trust": 0.836432743847543
   },
   "user_estimate": {
-    "detected_user_mood": "operational_neutral",
+    "detected_user_mood": "relational_pain_or_isolation",
     "user_valence": 0.0,
     "user_arousal": 0.3,
-    "confidence_in_user_estimate": 0.6,
+    "confidence_in_user_estimate": 0.85,
     "perceived_user_goal": null,
-    "communicative_need": "collaborative_dialogue",
+    "communicative_need": "emotional_validation",
     "preferred_directness": 0.7,
     "prior_user_attempts": []
   },
   "operational": {
-    "cpu_percent": 51.7,
-    "memory_percent": 71.5,
+    "cpu_percent": 97.0,
+    "memory_percent": 57.4,
     "task_queue_depth": 0,
     "recent_latency_ms": 50.0,
     "retry_count": 0,
     "consecutive_failures": 0,
-    "available_compute_budget": 0.502
+    "available_compute_budget": 0.377
   },
   "in_flow_state": true,
-  "flow_intensity": 0.792,
+  "flow_intensity": 0.66,
   "last_appraisal_trace": {
     "novelty": 0.2,
     "goal_relevance": 0.55,
@@ -90,12 +90,12 @@
     "agency": "user",
     "controllability": 0.3,
     "coping_potential": 0.25,
-    "uncertainty": 0.28,
+    "uncertainty": 0.281,
     "effort_required": 0.4,
     "task_progress": 0.7,
     "social_significance": 0.3,
     "norm_consistency": 1.0,
-    "confidence": 0.72,
+    "confidence": 0.719,
     "provenance_notes": [
       "Task succeeded and was verified closed-loop: highly goal-congruent",
       "Outcome matched expectation",

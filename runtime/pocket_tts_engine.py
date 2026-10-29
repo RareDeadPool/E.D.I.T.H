@@ -209,6 +209,13 @@ class ConversationalSpeechNormalizer:
             text
         )
 
+        # Strip noisy IDE window parentheticals, e.g. "(E.D.I.T.H - Antigravity IDE - ...)"
+        text = re.sub(r"\((?:[^\)]*?(?:IDE|Antigravity|PowerShell|Command Prompt|Visual Studio)[^\)]*?)\)", "", text, flags=re.IGNORECASE)
+        # Strip markdown bold/italic/backtick artifacts before cleaner
+        text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+        text = re.sub(r"\*([^*]+)\*", r"\1", text)
+        text = re.sub(r"`([^`]+)`", r"\1", text)
+
         # 3. First pass through standard speech text cleaner (markdown/code stripping)
         clean = SpeechTextCleaner.clean(text, apply_contractions=True)
 
@@ -232,8 +239,90 @@ class ConversationalSpeechNormalizer:
 
         # Remove stray formatting characters
         clean = re.sub(r"[\{\}\[\]\(\)<>|~_`#*]", " ", clean)
+        clean = re.sub(r"\s+([,;.!?])", r"\1", clean)
         clean = re.sub(r"\s+", " ", clean).strip()
         return clean
+
+    @classmethod
+    def split_into_spoken_chunks(cls, text: str, max_words: int = 14) -> List[str]:
+        """Split text into bite-sized, natural spoken breath groups (<= 14 words each).
+        Strictly prevents Pocket TTS internal token overflow (>50 tokens) which causes
+        skipped words, clipped phrases, and mumbling/gibberish.
+        """
+        if not text:
+            return []
+
+        import re
+        clean = cls.normalize(text)
+        if not clean:
+            return []
+
+        # Split by sentence terminators
+        raw_sentences = re.split(r'(?<=[.!?\n])\s+', clean)
+        chunks: List[str] = []
+
+        for sent in raw_sentences:
+            sent = sent.strip()
+            if not sent:
+                continue
+
+            words = sent.split()
+            if len(words) <= max_words:
+                chunks.append(sent)
+                continue
+
+            # Sentence is longer than max_words. Split on clause punctuation (, ; : — -)
+            clauses = re.split(r'(?<=[,;:—\-])\s+', sent)
+            current_chunk: List[str] = []
+
+            for clause in clauses:
+                clause = clause.strip()
+                if not clause:
+                    continue
+                clause_words = clause.split()
+
+                if len(current_chunk) + len(clause_words) <= max_words:
+                    current_chunk.extend(clause_words)
+                else:
+                    if current_chunk:
+                        chunks.append(" ".join(current_chunk))
+                        current_chunk = []
+
+                    if len(clause_words) <= max_words:
+                        current_chunk.extend(clause_words)
+                    else:
+                        # Clause itself exceeds max_words: split at conjunctions
+                        conj_parts = re.split(r'\s+(?=(?:and|but|because|so|while|when|or)\s+)', clause)
+                        for part in conj_parts:
+                            p_words = part.strip().split()
+                            if len(current_chunk) + len(p_words) <= max_words:
+                                current_chunk.extend(p_words)
+                            else:
+                                if current_chunk:
+                                    chunks.append(" ".join(current_chunk))
+                                    current_chunk = []
+                                # Word-level slice fallback
+                                for i in range(0, len(p_words), max_words):
+                                    slice_w = p_words[i:i + max_words]
+                                    if len(slice_w) == max_words:
+                                        chunks.append(" ".join(slice_w))
+                                    else:
+                                        current_chunk.extend(slice_w)
+
+            if current_chunk:
+                chunks.append(" ".join(current_chunk))
+
+        # Format chunks with terminal punctuation for optimal prosody
+        formatted_chunks = []
+        for ch in chunks:
+            ch = ch.strip().strip(",;:-— ")
+            if not ch:
+                continue
+            if ch[-1] not in ".!?":
+                ch += "."
+            formatted_chunks.append(ch)
+
+        return formatted_chunks
 
 
 class PocketTTSEngine:
@@ -357,6 +446,8 @@ class PocketTTSEngine:
 
     def is_speaking(self) -> bool:
         """Return True if speech synthesis or playback is actively running."""
+        if self._stop_event.is_set():
+            return False
         if pygame is not None and pygame.mixer.get_init():
             try:
                 if pygame.mixer.music.get_busy():
@@ -394,6 +485,7 @@ class PocketTTSEngine:
             return {"status": "empty", "text": text}
 
         self._stop_event.clear()
+        self._is_speaking = True
         with self._lock:
             self._delivered_text_parts = []
 
@@ -433,17 +525,36 @@ class PocketTTSEngine:
                     model = PocketTTSEngine._shared_model
                     voice = PocketTTSEngine._shared_voice_state
 
-                    # Generate PCM audio tensor
+                    # Generate PCM audio tensor chunk-by-chunk (each <= 14 words / ~25 tokens)
+                    # This prevents the Pocket TTS 50-token overflow ceiling and eliminates skipped words/gibberish
                     t_gen_start = time.time()
-                    audio_tensor = model.generate_audio(voice, text)
+                    chunks = ConversationalSpeechNormalizer.split_into_spoken_chunks(text, max_words=14)
+                    if not chunks:
+                        chunks = [text]
+
+                    audio_segments = []
+                    for ch in chunks:
+                        if self._stop_event.is_set():
+                            metrics["status"] = "cancelled"
+                            return metrics
+                        ch_tensor = model.generate_audio(voice, ch)
+                        ch_np = ch_tensor.detach().cpu().numpy().squeeze()
+                        audio_segments.append(ch_np)
+                        # Add a natural micro-pause (60ms) between spoken clauses
+                        pause_len = int(self.sample_rate * 0.06)
+                        audio_segments.append(np.zeros(pause_len, dtype=ch_np.dtype))
+
+                    if not audio_segments:
+                        metrics["status"] = "empty"
+                        return metrics
+
+                    audio_np = np.concatenate(audio_segments)
                     t_gen = time.time() - t_gen_start
 
                     if self._stop_event.is_set():
                         metrics["status"] = "cancelled"
                         return metrics
 
-                    # Convert PyTorch tensor to numpy int16 PCM
-                    audio_np = audio_tensor.detach().cpu().numpy().squeeze()
                     duration = len(audio_np) / self.sample_rate
                     rtf = t_gen / duration if duration > 0 else 1.0
 
