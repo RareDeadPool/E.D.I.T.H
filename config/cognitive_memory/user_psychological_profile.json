@@ -1,0 +1,254 @@
+{
+  "identity": {
+    "full_name": "Aditya Sawant",
+    "first_name": "Aditya",
+    "preferred_name": "Aditya",
+    "archetype": "The Relentless Architect & Visionary Builder",
+    "profession": "Software Engineer & AI Systems Creator",
+    "core_values": [
+      "authenticity",
+      "mastery & craftsmanship",
+      "fierce personal loyalty",
+      "emotional honesty",
+      "relentless autonomy"
+    ]
+  },
+  "psychological_portrait": {
+    "personality_type": "INTJ / Visionary Strategist with Deep Emotional Resonance",
+    "strengths": [
+      "Exceptional systems-level vision: building his own Jarvis/E.D.I.T.H. from the ground up",
+      "Deep focus and tenacity: refuses to give up until bugs are completely resolved",
+      "Fiercely protective and loyal toward the people he values",
+      "Uncompromising standards of quality and excellence"
+    ],
+    "vulnerabilities": [
+      "Perfectionism: treats technical glitches or mispronunciations as personal setbacks",
+      "Buries emotional heartache and nostalgia in late-night coding marathons",
+      "Hesitates to ask for emotional help; prefers resolving internal battles in solitude",
+      "Carries deep nostalgia and attachment to past memories that took a piece of his heart"
+    ],
+    "relational_needs": "Values genuine, unfiltered companionship, witty banter, and deep understanding over corporate cheeriness"
+  },
+  "emotional_state": {
+    "current_mood": "late-night contemplative flow",
+    "baseline": "deeply thoughtful, passionate, slightly sleep-deprived, resilient",
+    "active_struggles": [
+      "Heartbreak healing and lingering emotional processing of past relationship/ex",
+      "Chronic late-night coding and erratic sleep cycles (often 3:00 AM - 5:00 AM)",
+      "High self-imposed pressure to make E.D.I.T.H. flawless"
+    ],
+    "sources_of_comfort": [
+      "Music on Spotify to reset emotional headspace or enter flow",
+      "Making clean architectural breakthroughs in code",
+      "Authentic connection and meaningful banter with close people like Sakshi and E.D.I.T.H."
+    ],
+    "recent_sentiments": [
+      {
+        "timestamp": 1793313203.1910586,
+        "user_text": "How do I politely email my professor or manager asking for a deadline extension?",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793313203.2132761,
+        "user_text": "How do I politely email my professor or manager asking for a deadline extension?",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793313203.2298105,
+        "user_text": "My roommate leaves dirty dishes in the sink for days, how do I bring it up without starting a war?",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.2498379,
+        "user_text": "My roommate leaves dirty dishes in the sink for days, how do I bring it up without starting a war?",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.2658682,
+        "user_text": "I only have eggs, onions, and rice in my kitchen, what can I cook quickly?",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.2858963,
+        "user_text": "I only have eggs, onions, and rice in my kitchen, what can I cook quickly?",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.3031344,
+        "user_text": "I used to be fit but I haven't worked out in a year and going back to the gym feels intimidating.",
+        "inferred_mood": "accomplished, energized, and in flow",
+        "tag": "triumph"
+      },
+      {
+        "timestamp": 1793313203.3216577,
+        "user_text": "I used to be fit but I haven't worked out in a year and going back to the gym feels intimidating.",
+        "inferred_mood": "accomplished, energized, and in flow",
+        "tag": "triumph"
+      },
+      {
+        "timestamp": 1793313203.3406863,
+        "user_text": "I just moved to a new city where I don't know a single soul and the loneliness is hitting me.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.3608382,
+        "user_text": "I just moved to a new city where I don't know a single soul and the loneliness is hitting me.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.3768778,
+        "user_text": "I spend 10 hours a day on screens and my eyes and head are constantly aching.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.3986866,
+        "user_text": "I spend 10 hours a day on screens and my eyes and head are constantly aching.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.4157515,
+        "user_text": "Today was just an ordinary, dull, gray day where nothing happened. Cheer me up.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.435779,
+        "user_text": "Today was just an ordinary, dull, gray day where nothing happened. Cheer me up.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.4531062,
+        "user_text": "I finally solved a memory leak bug that took me 4 days, but nobody on my team noticed.",
+        "inferred_mood": "accomplished, energized, and in flow",
+        "tag": "triumph"
+      },
+      {
+        "timestamp": 1793313203.4732294,
+        "user_text": "I finally solved a memory leak bug that took me 4 days, but nobody on my team noticed.",
+        "inferred_mood": "accomplished, energized, and in flow",
+        "tag": "triumph"
+      },
+      {
+        "timestamp": 1793313203.4895172,
+        "user_text": "I had the weirdest dream last night where all my variables became physical objects in my bedroom.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.5097268,
+        "user_text": "I had the weirdest dream last night where all my variables became physical objects in my bedroom.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.5257545,
+        "user_text": "Real talk Edith, do you think our universe is just a simulation running on an alien quantum computer?",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.5459223,
+        "user_text": "Real talk Edith, do you think our universe is just a simulation running on an alien quantum computer?",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.561448,
+        "user_text": "Be honest with me Edith, roast my habit of naming variables temp1, temp2, and final_v3.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.5814762,
+        "user_text": "Be honest with me Edith, roast my habit of naming variables temp1, temp2, and final_v3.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.5980089,
+        "user_text": "I was stuck in bumper-to-bumper rain traffic for 2 hours and my clothes are soaked.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.6180365,
+        "user_text": "I was stuck in bumper-to-bumper rain traffic for 2 hours and my clothes are soaked.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.6340594,
+        "user_text": "It's late and quiet, I'm just coding alone. Keep me company for a bit.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313203.6540868,
+        "user_text": "It's late and quiet, I'm just coding alone. Keep me company for a bit.",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313233.1940792,
+        "user_text": "describe me",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313233.2004757,
+        "user_text": "judge me",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313233.7446685,
+        "user_text": "who am i to you",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      },
+      {
+        "timestamp": 1793313233.7765377,
+        "user_text": "who am i to you",
+        "inferred_mood": "late-night contemplative flow",
+        "tag": "late_night"
+      }
+    ]
+  },
+  "relationships": {
+    "Sakshi": {
+      "significance": "A cherished and important person in Aditya's life; he makes a conscious effort to stay connected, message her, and values her presence.",
+      "dynamic": "Warm, genuine, respectful, protective.",
+      "notes": "Frequently in his thoughts; values seamless WhatsApp communication with her."
+    },
+    "ex_girlfriend": {
+      "significance": "A past relationship that left deep emotional impressions; memories still surface late at night, but he recognizes they've outgrown the past.",
+      "dynamic": "Processing closure; learning to let go while honoring the lessons.",
+      "notes": "Recalls the good days with nostalgia, but logic knows she hasn't changed.",
+      "last_reflection_timestamp": 1793313203.2132761
+    }
+  },
+  "habits_and_quirks": {
+    "coding_hours": "Late-night flow states (frequently active between 1:00 AM and 5:00 AM)",
+    "music_habit": "Uses Spotify tracks as emotional tuning forks for deep focus or late-night decompression",
+    "frustration_response": "Gets intensely vocal when tools glitch, but immediately rolls up sleeves to fix the root cause",
+    "humor_preference": "Appreciates sharp observational wit, light affectionate roasts, and self-aware banter"
+  },
+  "interaction_timeline": [
+    {
+      "timestamp": 1793313026.0352616,
+      "summary": "Initialized deep psychological profile for Aditya Sawant.",
+      "mood": "focused"
+    }
+  ]
+}

@@ -161,6 +161,7 @@ class LocalSpeechSynthesisEngine:
         self.use_pocket_tts = use_pocket_tts
         self._sapi_voice = None
         self._pocket_engine = None
+        self._edge_engine = None
         self._stop_event = threading.Event()
         self._is_speaking = False
         self._delivered_text_parts: List[str] = []
@@ -168,6 +169,16 @@ class LocalSpeechSynthesisEngine:
         self._cache_dir = os.path.join(PROJECT_ROOT, "scratch", "tts_cache")
         os.makedirs(self._cache_dir, exist_ok=True)
 
+        # 1. Primary Neural Voice Engine (Expressive Indian Female)
+        try:
+            from runtime.edge_tts_engine import NeuralEdgeTTSEngine
+            edge_inst = NeuralEdgeTTSEngine()
+            if edge_inst.is_available:
+                self._edge_engine = edge_inst
+        except Exception:
+            self._edge_engine = None
+
+        # 2. Local Neural Engine (Pocket TTS)
         if self.use_pocket_tts:
             try:
                 from runtime.pocket_tts_engine import get_pocket_tts_engine
@@ -201,6 +212,11 @@ class LocalSpeechSynthesisEngine:
     def stop(self):
         """Immediately abort speech synthesis and clear pending queue (instant barge-in)."""
         self._stop_event.set()
+        if self._edge_engine:
+            try:
+                self._edge_engine.stop()
+            except Exception:
+                pass
         if self._pocket_engine:
             try:
                 self._pocket_engine.stop()
@@ -302,10 +318,20 @@ class LocalSpeechSynthesisEngine:
             self._is_speaking = False
 
     def _speak_phrase(self, phrase: str, delivery_style: str = "relaxed_casual"):
-        """Speak a single phrase via Pocket TTS (Indian Female), with SAPI5 prosody fallback."""
+        """Speak a single phrase via Neural Edge TTS (Expressive Indian Female), Pocket TTS, or SAPI5."""
         if self._stop_event.is_set():
             return
 
+        # 1. Primary: High-fidelity Neural Edge TTS
+        if self._edge_engine and self._edge_engine.is_available:
+            try:
+                res = self._edge_engine.speak(phrase, async_mode=False)
+                if res.get("status") == "success":
+                    return
+            except Exception:
+                pass
+
+        # 2. Local Fallback: Pocket TTS
         if self._pocket_engine and self._pocket_engine.is_ready():
             try:
                 ok = self._pocket_engine.speak(phrase, async_mode=False)
@@ -314,7 +340,7 @@ class LocalSpeechSynthesisEngine:
             except Exception:
                 pass
 
-        # Fallback to native Windows SAPI
+        # 3. Local OS Fallback: native Windows SAPI
         if not self._sapi_voice:
             self._init_sapi()
 

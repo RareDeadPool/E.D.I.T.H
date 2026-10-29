@@ -5,11 +5,11 @@
     "action_sequence": [
       "launch_app"
     ],
-    "success_count": 126,
+    "success_count": 129,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793293438.2469234
+    "last_used": 1793301788.9631016
   },
   "exec_workflow_script": {
     "skill_name": "exec_workflow_script",
@@ -17,11 +17,11 @@
     "action_sequence": [
       "exec_workflow_script"
     ],
-    "success_count": 54,
+    "success_count": 56,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793293438.3147418
+    "last_used": 1793301400.5915382
   },
   "safety_gate": {
     "skill_name": "safety_gate",
@@ -85,11 +85,11 @@
     "action_sequence": [
       "system_metrics"
     ],
-    "success_count": 23,
+    "success_count": 25,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793223789.4571097
+    "last_used": 1793301788.998256
   },
   "network_task": {
     "skill_name": "network_task",
@@ -97,11 +97,11 @@
     "action_sequence": [
       "network_task"
     ],
-    "success_count": 8,
+    "success_count": 10,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793218701.6116447
+    "last_used": 1793301402.8898566
   },
   "system_control": {
     "skill_name": "system_control",
@@ -109,11 +109,11 @@
     "action_sequence": [
       "system_control"
     ],
-    "success_count": 13,
+    "success_count": 15,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793218701.9144285
+    "last_used": 1793311897.4339619
   },
   "web_search": {
     "skill_name": "web_search",
@@ -207,11 +207,11 @@
     "action_sequence": [
       "dialogue"
     ],
-    "success_count": 920,
+    "success_count": 1657,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793293523.346199
+    "last_used": 1793313233.750582
   },
   "ffmpeg_transcode": {
     "skill_name": "ffmpeg_transcode",
@@ -274,11 +274,11 @@
     "action_sequence": [
       "close_app"
     ],
-    "success_count": 0,
+    "success_count": 1,
     "failure_count": 1,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793217543.8066247
+    "last_used": 1793301400.2535858
   },
   "context_control": {
     "skill_name": "context_control",
@@ -287,10 +287,12 @@
       "context_control"
     ],
     "success_count": 6,
-    "failure_count": 0,
-    "common_failure_reasons": [],
-    "recovery_strategy": null,
-    "last_used": 1793223212.2087183
+    "failure_count": 5,
+    "common_failure_reasons": [
+      "Action handler 'context_control' is recognized by ANN but not yet bound in runtime."
+    ],
+    "recovery_strategy": "strategy_defect: abort_and_notify",
+    "last_used": 1793311908.6836488
   },
   "whatsapp_send": {
     "skill_name": "whatsapp_send",
@@ -298,15 +300,16 @@
     "action_sequence": [
       "whatsapp_send"
     ],
-    "success_count": 17,
-    "failure_count": 6,
+    "success_count": 23,
+    "failure_count": 13,
     "common_failure_reasons": [
       "I have prepared this WhatsApp message for Rahul Sharma:\n\"Hi Rahul Sharma, I will be about 15 minutes late.\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')",
       "I have prepared this WhatsApp message for Sakshi:\n\"a whatsapp message\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')",
-      "Duplicate send prevented: this exact message was already sent to Test Recipient less than 2 minutes ago."
+      "Duplicate send prevented: this exact message was already sent to Test Recipient less than 2 minutes ago.",
+      "I have prepared this WhatsApp message for Sakshi:\n\"i miss her\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')"
     ],
     "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793293495.2871575
+    "last_used": 1793301788.4329858
   },
   "storage_audit": {
     "skill_name": "storage_audit",
@@ -314,11 +317,11 @@
     "action_sequence": [
       "storage_audit"
     ],
-    "success_count": 8,
+    "success_count": 10,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793223789.9770696
+    "last_used": 1793301789.4697373
   },
   "screen_understanding": {
     "skill_name": "screen_understanding",
@@ -326,11 +329,11 @@
     "action_sequence": [
       "screen_understanding"
     ],
-    "success_count": 10,
+    "success_count": 12,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793291502.3173163
+    "last_used": 1793301789.4269323
   },
   "semantic_file_organize": {
     "skill_name": "semantic_file_organize",
@@ -338,11 +341,11 @@
     "action_sequence": [
       "semantic_file_organize"
     ],
-    "success_count": 6,
+    "success_count": 10,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793223790.1371331
+    "last_used": 1793311800.720749
   },
   "task_list": {
     "skill_name": "task_list",
@@ -350,11 +353,11 @@
     "action_sequence": [
       "task_list"
     ],
-    "success_count": 6,
+    "success_count": 8,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793223790.2111502
+    "last_used": 1793301789.6002626
   },
   "system_utility": {
     "skill_name": "system_utility",
@@ -374,11 +377,11 @@
     "action_sequence": [
       "whatsapp_draft"
     ],
-    "success_count": 10,
+    "success_count": 20,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793293478.6181893
+    "last_used": 1793301777.2192795
   },
   "clarification": {
     "skill_name": "clarification",
@@ -386,11 +389,11 @@
     "action_sequence": [
       "clarification"
     ],
-    "success_count": 6,
+    "success_count": 15,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793293478.151044
+    "last_used": 1793313088.6227448
   },
   "compute_math": {
     "skill_name": "compute_math",
@@ -578,10 +581,22 @@
     "action_sequence": [
       "workflow_script"
     ],
-    "success_count": 3,
+    "success_count": 8,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793292048.490232
+    "last_used": 1793301402.80655
+  },
+  "play_music": {
+    "skill_name": "play_music",
+    "goal_pattern": "45, 45 pay gaana bajao",
+    "action_sequence": [
+      "play_music"
+    ],
+    "success_count": 0,
+    "failure_count": 1,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793311933.1248844
   }
 }

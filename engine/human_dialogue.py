@@ -97,9 +97,25 @@ class EdithDialogueEngine:
             except ImportError:
                 self.cognitive_scenarios = None
 
+        # --- Psychological User Profile Engine ---
+        try:
+            from engine.user_profile import get_user_profile_manager
+            self.user_profile = get_user_profile_manager()
+        except ImportError:
+            try:
+                from user_profile import get_user_profile_manager
+                self.user_profile = get_user_profile_manager()
+            except ImportError:
+                self.user_profile = None
+
     def is_conversational_or_problem(self, query: str) -> bool:
         """Determine if a query is a conversational query, greeting, emotion, or problem-solving prompt."""
         q = query.lower().strip(" .!?\t\r\n")
+
+        # 0. User Profile Cognition (describe me / judge me / who am I)
+        if hasattr(self, "user_profile") and self.user_profile:
+            if self.user_profile.is_describe_query(q) or self.user_profile.is_judge_query(q):
+                return True
 
         # 1. Cognitive Scenarios Engine check across 75 real-world human scenarios
         if hasattr(self, "cognitive_scenarios") and self.cognitive_scenarios:
@@ -312,9 +328,50 @@ class EdithDialogueEngine:
         if self._is_follow_up_action(q):
             return self._humanize_result(self._handle_follow_up(q, context=context, executor=executor))
 
+        # 0a. Cognitive Scenarios Engine (75 Situations across Empathy, Heartbreak, Career, Engineering & Life)
+        if hasattr(self, "cognitive_scenarios") and self.cognitive_scenarios:
+            scenario_res = self.cognitive_scenarios.handle_scenario(q_raw, q, user_name=self.USER_NAME, personality=self.personality)
+            if scenario_res:
+                topic = scenario_res.get("parameters", {}).get("topic", "cognitive_scenario")
+                self.last_problem_category = "cognitive_scenario"
+                self.last_dialogue_topic = topic
+                self.last_suggested_action = scenario_res.get("parameters", {}).get("suggested_action")
+                if self.user_profile:
+                    self.user_profile.update_from_turn(q_raw, scenario_res.get("message", ""))
+                return self._humanize_result(scenario_res)
+
+        # 0b. User Profile: Describe Me ("describe me", "who am I", "tell me about myself")
+        if self.user_profile and self.user_profile.is_describe_query(q):
+            desc = self.user_profile.describe_user()
+            res = {
+                "can_execute": True,
+                "message": desc,
+                "handler": "dialogue",
+                "parameters": {"topic": "user_psychological_portrait", "user": self.USER_NAME}
+            }
+            self.last_dialogue_topic = "user_psychological_portrait"
+            self.user_profile.update_from_turn(q_raw, desc)
+            return self._humanize_result(res)
+
+        # 0c. User Profile: Judge Me ("judge me", "what's your judgment of me")
+        if self.user_profile and self.user_profile.is_judge_query(q):
+            judg = self.user_profile.judge_user()
+            res = {
+                "can_execute": True,
+                "message": judg,
+                "handler": "dialogue",
+                "parameters": {"topic": "user_psychological_judgment", "user": self.USER_NAME}
+            }
+            self.last_dialogue_topic = "user_psychological_judgment"
+            self.user_profile.update_from_turn(q_raw, judg)
+            return self._humanize_result(res)
+
         # 1. Social Greetings & Time-of-Day Aware pleasantries
         if self._is_greeting(q):
-            return self._humanize_result(self._respond_greeting(q))
+            res = self._respond_greeting(q)
+            if self.user_profile:
+                self.user_profile.update_from_turn(q_raw, res.get("message", ""))
+            return self._humanize_result(res)
 
         # 2. Identity, Creator, and Persona
         if self._is_identity_query(q):
@@ -331,16 +388,6 @@ class EdithDialogueEngine:
         # 5. Farewells & Standby
         if self._is_farewell(q):
             return self._humanize_result(self._respond_farewell())
-
-        # 6. Cognitive Scenarios Engine (75 Situations across Empathy, Heartbreak, Career, Engineering & Life)
-        if hasattr(self, "cognitive_scenarios") and self.cognitive_scenarios:
-            scenario_res = self.cognitive_scenarios.handle_scenario(q_raw, q, user_name=self.USER_NAME, personality=self.personality)
-            if scenario_res:
-                topic = scenario_res.get("parameters", {}).get("topic", "cognitive_scenario")
-                self.last_problem_category = "cognitive_scenario"
-                self.last_dialogue_topic = topic
-                self.last_suggested_action = scenario_res.get("parameters", {}).get("suggested_action")
-                return self._humanize_result(scenario_res)
 
         # 7. Love Life, Relationships & Heartbreak Empathy (High Priority Emotional Intelligence)
         love_res = self._check_love_life_and_relationships(q)
@@ -375,10 +422,11 @@ class EdithDialogueEngine:
         return self._humanize_result(self._respond_general_human(q_raw))
 
     def _humanize_result(self, result: Dict[str, Any]) -> Dict[str, Any]:
-        """Wrap any response through the personality engine for warmth and mood-awareness."""
+        """Wrap response through personality engine for warmth and mood-awareness."""
         if self.personality and "message" in result:
             topic = result.get("parameters", {}).get("topic", "")
-            result["message"] = self.personality.humanize_response(result["message"], topic=topic)
+            if topic not in ["user_psychological_portrait", "user_psychological_judgment"]:
+                result["message"] = self.personality.humanize_response(result["message"], topic=topic)
         return result
 
     # -------------------------------------------------------------------------
