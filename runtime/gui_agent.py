@@ -98,9 +98,19 @@ class GUIAgent:
         hwnd = self.find_app(app_name)
 
         if not hwnd and launch_if_missing:
+            if app_name.lower() == "spotify":
+                try:
+                    from runtime.spotify_adapter import SpotifyAdapter
+                    spot = SpotifyAdapter()
+                    ok, msg, spot_hwnd = spot.launch_desktop_app(timeout=8.0)
+                    if spot_hwnd:
+                        return spot_hwnd
+                except Exception:
+                    pass
+
             # Try launching the app
             _LAUNCH_CMDS = {
-                "spotify": "explorer.exe shell:AppsFolder\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0!Spotify",
+                "spotify": "start spotify:",
                 "chrome": 'start "" "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --profile-directory="Default"',
                 "edge": "start msedge.exe",
                 "notepad": "start notepad.exe",

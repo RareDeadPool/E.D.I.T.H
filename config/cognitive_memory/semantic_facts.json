@@ -1,0 +1,20 @@
+{
+  "user::preferred_ide": {
+    "subject": "user",
+    "predicate": "preferred_ide",
+    "target": "VS Code",
+    "confidence": 0.98,
+    "provenance": "user_correction",
+    "verified": true,
+    "updated_at": 1793223491.723323
+  },
+  "user::git_branch": {
+    "subject": "user",
+    "predicate": "git_branch",
+    "target": "main",
+    "confidence": 1.0,
+    "provenance": "user_correction",
+    "verified": true,
+    "updated_at": 1793223491.723323
+  }
+}

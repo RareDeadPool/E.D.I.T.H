@@ -1,0 +1,573 @@
+{
+  "launch_app": {
+    "skill_name": "launch_app",
+    "goal_pattern": "open chrome",
+    "action_sequence": [
+      "launch_app"
+    ],
+    "success_count": 109,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223814.943914
+  },
+  "exec_workflow_script": {
+    "skill_name": "exec_workflow_script",
+    "goal_pattern": "open chrome and browse research papers",
+    "action_sequence": [
+      "exec_workflow_script"
+    ],
+    "success_count": 35,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223769.8906593
+  },
+  "safety_gate": {
+    "skill_name": "safety_gate",
+    "goal_pattern": "delete entire project workspace",
+    "action_sequence": [
+      "safety_gate"
+    ],
+    "success_count": 11,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223476.3483043
+  },
+  "file_operation": {
+    "skill_name": "file_operation",
+    "goal_pattern": "Find my latest resume.",
+    "action_sequence": [
+      "file_operation"
+    ],
+    "success_count": 42,
+    "failure_count": 15,
+    "common_failure_reasons": [
+      "Found 5 matching files:\n  1. resume_latest.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  2. resume_editable.docx (in documents) - Filename matches 'resume', Format matches '.docx'\n  3. resme_backup.txt (in documents) - Typo/fuzzy match on 'resume' (90%), Format matches '.txt'\n  4. resume_v1.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  5. project_notes.txt (in documents) - Format matches '.txt', Recently modified (1 min ago)\nSay 'open the first one' or specify which.",
+      "Found 5 matching files:\n  1. 3am coders  Resume (1).pdf (in Downloads) - Filename matches 'resume', Format matches '.pdf'\n  2. 3am coders  Resume.pdf (in Downloads) - Filename matches 'resume', Format matches '.pdf'\n  3. Aditya Sawant Resume.pdf (in resume) - Filename matches 'resume', Format matches '.pdf'\n  4. Aditya Sawant  Resume (3).pdf (in HACKATHON) - Filename matches 'resume', Format matches '.pdf'\n  5. YUVRAJ_DOGRA (Resume) (3).pdf (in HACKATHON) - Filename matches 'resume', Format matches '.pdf'\nSay 'open the first one' or specify which.",
+      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_xlqp47ur) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_xlqp47ur) - Filename matches 'resume', Format matches '.pdf'\n  3. project_summary.pdf (in edith_v4_conv_xlqp47ur) - Format matches '.pdf'\n  4. project_report.docx (in edith_v4_conv_xlqp47ur) - Format matches '.docx'\nSay 'open the first one' or specify which.",
+      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_jtqu6ody) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_jtqu6ody) - Filename matches 'resume', Format matches '.pdf'\n  3. project_report.docx (in edith_v4_conv_jtqu6ody) - Format matches '.docx'\n  4. project_summary.pdf (in edith_v4_conv_jtqu6ody) - Format matches '.pdf'\nSay 'open the first one' or specify which.",
+      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_5upvb5qv) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_5upvb5qv) - Filename matches 'resume', Format matches '.pdf'\n  3. project_summary.pdf (in edith_v4_conv_5upvb5qv) - Format matches '.pdf'\n  4. project_report.docx (in edith_v4_conv_5upvb5qv) - Format matches '.docx'\nSay 'open the first one' or specify which.",
+      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_5036cigb) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_5036cigb) - Filename matches 'resume', Format matches '.pdf'\n  3. project_summary.pdf (in edith_v4_conv_5036cigb) - Format matches '.pdf'\n  4. project_report.docx (in edith_v4_conv_5036cigb) - Format matches '.docx'\nSay 'open the first one' or specify which.",
+      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.pdf'\n  3. project_report.docx (in edith_v4_conv_e4enqr7l) - Format matches '.docx'\n  4. project_summary.pdf (in edith_v4_conv_e4enqr7l) - Format matches '.pdf'\nSay 'open the first one' or specify which."
+    ],
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793223412.0103028
+  },
+  "draft_content": {
+    "skill_name": "draft_content",
+    "goal_pattern": "Write a formal email requesting an internship update.",
+    "action_sequence": [
+      "draft_content"
+    ],
+    "success_count": 53,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223410.2661693
+  },
+  "gui_action": {
+    "skill_name": "gui_action",
+    "goal_pattern": "Type exactly this into Notepad: E.D.I.T.H. V4 Exact Transcription:\nLine 1: Special Characters: !@#$%^&*()_+-=[]{}|;:'\",.<>?/\nLine 2: Unicode & Multilingual: \ud83d\ude80 \u2705 \ud83c\udfaf \u2014 Bonjour, \u3053\u3093\u306b\u3061\u306f, \u041f\u0440\u0438\u0432\u0435\u0442.\nLine 3: Numbers & Quotes: \"100% Guaranteed Reliability\" in [2026].",
+    "action_sequence": [
+      "gui_action"
+    ],
+    "success_count": 9,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223616.4829032
+  },
+  "system_metrics": {
+    "skill_name": "system_metrics",
+    "goal_pattern": "how much storage do I have left",
+    "action_sequence": [
+      "system_metrics"
+    ],
+    "success_count": 23,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223789.4571097
+  },
+  "network_task": {
+    "skill_name": "network_task",
+    "goal_pattern": "is my internet working",
+    "action_sequence": [
+      "network_task"
+    ],
+    "success_count": 8,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793218701.6116447
+  },
+  "system_control": {
+    "skill_name": "system_control",
+    "goal_pattern": "turn the volume way down",
+    "action_sequence": [
+      "system_control"
+    ],
+    "success_count": 13,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793218701.9144285
+  },
+  "web_search": {
+    "skill_name": "web_search",
+    "goal_pattern": "search online for quantum computing",
+    "action_sequence": [
+      "web_search"
+    ],
+    "success_count": 18,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223768.8012328
+  },
+  "web_fetch": {
+    "skill_name": "web_fetch",
+    "goal_pattern": "download resource",
+    "action_sequence": [
+      "web_fetch"
+    ],
+    "success_count": 35,
+    "failure_count": 7,
+    "common_failure_reasons": [
+      "HTTP 503 Gateway Timeout"
+    ],
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793223485.8031895
+  },
+  "compile": {
+    "skill_name": "compile",
+    "goal_pattern": "deploy application",
+    "action_sequence": [
+      "compile"
+    ],
+    "success_count": 7,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223485.9201643
+  },
+  "pytest": {
+    "skill_name": "pytest",
+    "goal_pattern": "deploy application",
+    "action_sequence": [
+      "pytest"
+    ],
+    "success_count": 7,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223485.941254
+  },
+  "curl_cache": {
+    "skill_name": "curl_cache",
+    "goal_pattern": "deploy application",
+    "action_sequence": [
+      "curl_cache"
+    ],
+    "success_count": 7,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223485.9596417
+  },
+  "launch_daemon": {
+    "skill_name": "launch_daemon",
+    "goal_pattern": "deploy application",
+    "action_sequence": [
+      "launch_daemon"
+    ],
+    "success_count": 7,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223485.977058
+  },
+  "export_csv": {
+    "skill_name": "export_csv",
+    "goal_pattern": "deploy application",
+    "action_sequence": [
+      "export_csv"
+    ],
+    "success_count": 0,
+    "failure_count": 7,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223486.093501
+  },
+  "dialogue": {
+    "skill_name": "dialogue",
+    "goal_pattern": "no, do not use notepad, open vs code",
+    "action_sequence": [
+      "dialogue"
+    ],
+    "success_count": 115,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793281409.9133878
+  },
+  "ffmpeg_transcode": {
+    "skill_name": "ffmpeg_transcode",
+    "goal_pattern": "transcode video",
+    "action_sequence": [
+      "ffmpeg_transcode"
+    ],
+    "success_count": 12,
+    "failure_count": 18,
+    "common_failure_reasons": [
+      "Invalid pixel format flag"
+    ],
+    "recovery_strategy": null,
+    "last_used": 1793223485.6961722
+  },
+  "run_migration": {
+    "skill_name": "run_migration",
+    "goal_pattern": "no, do not use notepad, open vs code",
+    "action_sequence": [
+      "run_migration"
+    ],
+    "success_count": 0,
+    "failure_count": 10,
+    "common_failure_reasons": [
+      "FATAL: database connection dropped; table corrupted"
+    ],
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793223474.7967262
+  },
+  "send_message": {
+    "skill_name": "send_message",
+    "goal_pattern": "send encrypted message",
+    "action_sequence": [
+      "send_message"
+    ],
+    "success_count": 0,
+    "failure_count": 9,
+    "common_failure_reasons": [
+      "Missing recipient address parameter"
+    ],
+    "recovery_strategy": "missing_information: ask_user_clarification",
+    "last_used": 1793223475.0048246
+  },
+  "compile_native_cpp": {
+    "skill_name": "compile_native_cpp",
+    "goal_pattern": "compile native c++ binary",
+    "action_sequence": [
+      "cmake_configure",
+      "cmake_build"
+    ],
+    "success_count": 4,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223491.723323
+  },
+  "close_app": {
+    "skill_name": "close_app",
+    "goal_pattern": "yeah no",
+    "action_sequence": [
+      "close_app"
+    ],
+    "success_count": 0,
+    "failure_count": 1,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793217543.8066247
+  },
+  "context_control": {
+    "skill_name": "context_control",
+    "goal_pattern": "open calculator instead",
+    "action_sequence": [
+      "context_control"
+    ],
+    "success_count": 6,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223212.2087183
+  },
+  "whatsapp_send": {
+    "skill_name": "whatsapp_send",
+    "goal_pattern": "send whatsapp message to Suhana saying I will be 10 minutes late",
+    "action_sequence": [
+      "whatsapp_send"
+    ],
+    "success_count": 13,
+    "failure_count": 2,
+    "common_failure_reasons": [
+      "I have prepared this WhatsApp message for Rahul Sharma:\n\"Hi Rahul Sharma, I will be about 15 minutes late.\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')"
+    ],
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793223652.171866
+  },
+  "storage_audit": {
+    "skill_name": "storage_audit",
+    "goal_pattern": "Analyze my storage space.",
+    "action_sequence": [
+      "storage_audit"
+    ],
+    "success_count": 8,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223789.9770696
+  },
+  "screen_understanding": {
+    "skill_name": "screen_understanding",
+    "goal_pattern": "What is going on on my screen?",
+    "action_sequence": [
+      "screen_understanding"
+    ],
+    "success_count": 7,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223789.9421823
+  },
+  "semantic_file_organize": {
+    "skill_name": "semantic_file_organize",
+    "goal_pattern": "Organize these files in my folder.",
+    "action_sequence": [
+      "semantic_file_organize"
+    ],
+    "success_count": 6,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223790.1371331
+  },
+  "task_list": {
+    "skill_name": "task_list",
+    "goal_pattern": "List background tasks.",
+    "action_sequence": [
+      "task_list"
+    ],
+    "success_count": 6,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223790.2111502
+  },
+  "system_utility": {
+    "skill_name": "system_utility",
+    "goal_pattern": "what time is it",
+    "action_sequence": [
+      "system_utility"
+    ],
+    "success_count": 8,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223773.6542497
+  },
+  "whatsapp_draft": {
+    "skill_name": "whatsapp_draft",
+    "goal_pattern": "Draft a WhatsApp message to Mom that I've reached college",
+    "action_sequence": [
+      "whatsapp_draft"
+    ],
+    "success_count": 5,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223447.0072348
+  },
+  "clarification": {
+    "skill_name": "clarification",
+    "goal_pattern": "Draft a WhatsApp message to Rahul saying the meeting starts at 4 PM",
+    "action_sequence": [
+      "clarification"
+    ],
+    "success_count": 1,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223446.300026
+  },
+  "compute_math": {
+    "skill_name": "compute_math",
+    "goal_pattern": "calculate 15 * 40",
+    "action_sequence": [
+      "compute_math"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223614.7242641
+  },
+  "system_clipboard_copy": {
+    "skill_name": "system_clipboard_copy",
+    "goal_pattern": "copy 'E.D.I.T.H. Autonomous Mission 2026 Verified' to clipboard",
+    "action_sequence": [
+      "system_clipboard_copy"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223617.0070105
+  },
+  "system_clipboard_read": {
+    "skill_name": "system_clipboard_read",
+    "goal_pattern": "read clipboard",
+    "action_sequence": [
+      "system_clipboard_read"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223617.0450478
+  },
+  "file_create": {
+    "skill_name": "file_create",
+    "goal_pattern": "create file 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt' with content: Initial mission briefing.",
+    "action_sequence": [
+      "file_create"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223617.5109265
+  },
+  "file_read": {
+    "skill_name": "file_read",
+    "goal_pattern": "read file 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt'",
+    "action_sequence": [
+      "file_read"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223617.551813
+  },
+  "file_append": {
+    "skill_name": "file_append",
+    "goal_pattern": "append 'Phase 2 underway.' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt'",
+    "action_sequence": [
+      "file_append"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223617.5937352
+  },
+  "file_zip": {
+    "skill_name": "file_zip",
+    "goal_pattern": "zip 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_bot79zpi/data_to_zip' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_bot79zpi/archive.zip'",
+    "action_sequence": [
+      "file_zip"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223618.105073
+  },
+  "file_unzip": {
+    "skill_name": "file_unzip",
+    "goal_pattern": "unzip 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_bot79zpi/archive.zip' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_bot79zpi/extracted'",
+    "action_sequence": [
+      "file_unzip"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223618.1703296
+  },
+  "notes_manager": {
+    "skill_name": "notes_manager",
+    "goal_pattern": "take a note: implement neural cache",
+    "action_sequence": [
+      "notes_manager"
+    ],
+    "success_count": 4,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223813.7376485
+  },
+  "web_navigation": {
+    "skill_name": "web_navigation",
+    "goal_pattern": "search youtube for lofi beats",
+    "action_sequence": [
+      "web_navigation"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223813.7722623
+  },
+  "system_timer": {
+    "skill_name": "system_timer",
+    "goal_pattern": "set a timer for 10 minutes",
+    "action_sequence": [
+      "system_timer"
+    ],
+    "success_count": 4,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223813.8459885
+  },
+  "unit_convert": {
+    "skill_name": "unit_convert",
+    "goal_pattern": "convert 100 usd to inr",
+    "action_sequence": [
+      "unit_convert"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223813.8910487
+  },
+  "system_weather": {
+    "skill_name": "system_weather",
+    "goal_pattern": "what is the weather in London",
+    "action_sequence": [
+      "system_weather"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223813.9313524
+  },
+  "system_processes": {
+    "skill_name": "system_processes",
+    "goal_pattern": "what is my ip",
+    "action_sequence": [
+      "system_processes"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223813.9682102
+  },
+  "window_control": {
+    "skill_name": "window_control",
+    "goal_pattern": "snap window left",
+    "action_sequence": [
+      "window_control"
+    ],
+    "success_count": 4,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793223814.0662143
+  }
+}

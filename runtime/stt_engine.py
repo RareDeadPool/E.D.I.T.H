@@ -44,6 +44,16 @@ try:
 except ImportError:
     comtypes = None
 
+try:
+    import edge_tts
+except ImportError:
+    edge_tts = None
+
+try:
+    import pygame
+except ImportError:
+    pygame = None
+
 
 class SpeechNormalizer:
     """Domain-specific acoustic and lexical normalization for desktop commands."""
@@ -88,6 +98,28 @@ class SpeechNormalizer:
         (r"\bpercent\b", "%"),
     ]
 
+    # Wake word patterns that start the AI
+    WAKE_WORD_PATTERNS = [
+        r"\b(?:hey\s+|hi\s+|hello\s+|yo\s+|ok\s+|okay\s+)?edith\b",
+        r"\bwake\s*up\s*(?:edith)?\b",
+        r"\bactivate\s*(?:edith)?\b",
+        r"\bstart\s+edith\b",
+    ]
+
+    @classmethod
+    def extract_wake_word(cls, raw_text: str) -> Tuple[bool, str, str]:
+        """Check for wake word and return (has_wake_word, wake_phrase, trailing_command)."""
+        if not raw_text:
+            return False, "", ""
+        t = raw_text.strip()
+        for pat in cls.WAKE_WORD_PATTERNS:
+            m = re.search(pat, t, re.IGNORECASE)
+            if m:
+                wake_phrase = m.group(0).strip()
+                trailing = t[m.end():].strip(" ,.-!?")
+                return True, wake_phrase, trailing
+        return False, "", t
+
     @classmethod
     def clean_spoken_command(cls, raw_text: str) -> Dict[str, Any]:
         """
@@ -104,7 +136,7 @@ class SpeechNormalizer:
             return {"raw_text": "", "cleaned_text": "", "has_wake_word": False, "detected_app": None}
 
         text = raw_text.strip()
-        has_wake_word = bool(re.search(r"\b(?:edith|hey edith|okay edith)\b", text, re.IGNORECASE))
+        has_wake_word, _, _ = cls.extract_wake_word(text)
 
         # 1. Phonetic entity correction
         text_corrected = text
@@ -172,11 +204,13 @@ class AudioRecorder:
         max_duration: float = 15.0,
         timeout: float = 8.0,
         energy_threshold: Optional[float] = None,
-        chunk_duration: float = 0.05
+        chunk_duration: float = 0.05,
+        on_voice_start: Optional[Any] = None
     ) -> Optional[np.ndarray]:
         """
         Record audio from default microphone with dynamic Voice Activity Detection and AGC.
         - Automatically begins recording on voice trigger.
+        - Triggers `on_voice_start` immediately on speech onset (enabling speech barge-in).
         - Automatically terminates when trailing silence reaches `silence_duration`.
         - Times out cleanly if no voice is detected within `timeout`.
         - Applies automatic gain peak normalization for optimal speech recognition SNR.
@@ -229,6 +263,11 @@ class AudioRecorder:
 
                         if rms >= active_threshold:
                             speech_started = True
+                            if on_voice_start:
+                                try:
+                                    on_voice_start()
+                                except Exception:
+                                    pass
                             # Commit pre-roll buffer so initial consonants are preserved
                             recorded_chunks.extend(pre_roll_buffer)
                             silence_elapsed = 0.0
@@ -441,7 +480,8 @@ class EdithSTTEngine:
         self,
         timeout: float = 8.0,
         silence_duration: float = 1.4,
-        max_duration: float = 15.0
+        max_duration: float = 15.0,
+        on_voice_start: Optional[Any] = None
     ) -> Dict[str, Any]:
         """
         Record from the active microphone with VAD and transcribe the utterance.
@@ -459,7 +499,8 @@ class EdithSTTEngine:
         audio_array = self.recorder.record_with_vad(
             silence_duration=silence_duration,
             max_duration=max_duration,
-            timeout=timeout
+            timeout=timeout,
+            on_voice_start=on_voice_start
         )
 
         if audio_array is None or len(audio_array) == 0:
@@ -476,28 +517,104 @@ class EdithSTTEngine:
 
 
 class EdithTTSEngine:
-    """Windows SAPI Text-to-Speech Engine with natural pacing and clean utterance pre-filtering."""
+    """ChatGPT-style Neural Voice Text-to-Speech Engine with natural pacing,
+    edge-tts high-fidelity neural voice synthesis, and offline Windows SAPI fallback.
+    """
 
-    def __init__(self, rate: int = 0, volume: int = 100):
+    NEURAL_VOICE = "en-US-AvaMultilingualNeural"  # Expressive, warm, ChatGPT Advanced Voice style
+    FALLBACK_NEURAL_VOICE = "en-US-JennyNeural"
+
+    def __init__(self, rate: int = 0, volume: int = 100, voice: Optional[str] = None):
         self.rate = rate
         self.volume = volume
-        self._voice = None
-        self._init_voice()
+        self.voice_name = voice or self.NEURAL_VOICE
+        self._sapi_voice = None
+        self._cache_dir = os.path.join(PROJECT_ROOT, "scratch", "tts_cache")
+        os.makedirs(self._cache_dir, exist_ok=True)
+        self._pygame_initialized = False
+        self._stop_event = threading.Event()
+        self._is_speaking = False
+        self._init_audio()
+        self._init_sapi()
 
-    def _init_voice(self):
-        """Initialize native Windows SAPI Voice."""
+    def _init_audio(self):
+        """Initialize pygame mixer for ultra-low latency, crisp audio playback."""
+        if pygame is not None:
+            try:
+                if not pygame.mixer.get_init():
+                    pygame.mixer.init()
+                self._pygame_initialized = True
+            except Exception:
+                self._pygame_initialized = False
+
+    def _init_sapi(self):
+        """Initialize native Windows SAPI Voice (preferring female voice Zira)."""
         if comtypes is not None:
             try:
-                self._voice = comtypes.client.CreateObject("SAPI.SpVoice")
-                if self._voice:
-                    self._voice.Rate = self.rate
-                    self._voice.Volume = self.volume
+                self._sapi_voice = comtypes.client.CreateObject("SAPI.SpVoice")
+                if self._sapi_voice:
+                    self._sapi_voice.Rate = self.rate
+                    self._sapi_voice.Volume = self.volume
+                    # Try to select Zira (female) if available
+                    voices = self._sapi_voice.GetVoices()
+                    for i in range(voices.Count):
+                        v = voices.Item(i)
+                        if "zira" in v.GetDescription().lower():
+                            self._sapi_voice.Voice = v
+                            break
             except Exception:
-                self._voice = None
+                self._sapi_voice = None
+
+    def stop(self):
+        """Immediately abort speech synthesis and audio playback (barge-in / interrupt)."""
+        self._stop_event.set()
+        if pygame is not None and pygame.mixer.get_init():
+            try:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
+            except Exception:
+                pass
+        if self._sapi_voice:
+            try:
+                # SVSFPurgeBeforeSpeak = 2 (purges pending speech queue)
+                self._sapi_voice.Speak("", 2)
+            except Exception:
+                pass
+        self._is_speaking = False
+
+    def is_speaking(self) -> bool:
+        """Check if audio playback or speech is currently active."""
+        if pygame is not None and pygame.mixer.get_init():
+            try:
+                if pygame.mixer.music.get_busy():
+                    return True
+            except Exception:
+                pass
+        return self._is_speaking
+
+    @staticmethod
+    def play_chime():
+        """Play a futuristic 2-tone wake chime when wake word is detected."""
+        if pygame is None:
+            return
+        try:
+            if not pygame.mixer.get_init():
+                pygame.mixer.init(frequency=44100, size=-16, channels=2)
+            sample_rate = 44100
+            t1 = np.linspace(0, 0.07, int(sample_rate * 0.07), False)
+            t2 = np.linspace(0, 0.14, int(sample_rate * 0.14), False)
+            w1 = 0.22 * np.sin(2 * np.pi * 659.25 * t1)  # E5
+            w2 = 0.32 * np.sin(2 * np.pi * 880.00 * t2) * np.linspace(1.0, 0.0, len(t2))  # A5
+            audio = np.concatenate([w1, w2])
+            audio_int16 = (audio * 32767).astype(np.int16)
+            sound = pygame.sndarray.make_sound(np.repeat(audio_int16[:, np.newaxis], 2, axis=1))
+            sound.play()
+        except Exception:
+            pass
 
     @staticmethod
     def clean_for_speech(text: str) -> str:
-        """Strip markdown fences, raw paths, emojis, and code blocks before synthesis."""
+        """Strip markdown fences, raw paths, emojis, code blocks, and format for natural speech."""
         t = text.strip()
         # Remove code blocks
         t = re.sub(r"```[\s\S]*?```", " Code snippet output omitted. ", t)
@@ -506,30 +623,102 @@ class EdithTTSEngine:
         t = re.sub(r"https?://\S+", "", t)
         # Remove markdown headers and hashes
         t = re.sub(r"#+\s*", "", t)
-        t = re.sub(r"^[\*\-]\s*", "", t, flags=re.MULTILINE)
-        # Remove emojis / non-ascii symbols that cause TTS glitches
-        t = t.encode("ascii", "ignore").decode("ascii")
+        # Remove markdown bullet points and blockquotes
+        t = re.sub(r"^[\*\->]\s*", "", t, flags=re.MULTILINE)
+        # Remove markdown bold/italics
+        t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
+        t = re.sub(r"\*([^*]+)\*", r"\1", t)
+        # Format acronym E.D.I.T.H. so it pronounces cleanly as 'Edith'
+        t = re.sub(r"\bE\.D\.I\.T\.H\.\b", "Edith", t, flags=re.IGNORECASE)
+        # Remove emojis and non-ascii symbols that glitch speech synthesis
+        t = re.sub(r"[^\x00-\x7F]+", " ", t)
         # Collapse whitespace
         t = re.sub(r"\s+", " ", t).strip()
         return t
 
     def speak(self, text: str, async_mode: bool = True):
-        """Synthesize text via Windows SAPI."""
+        """Synthesize and speak text.
+        
+        Tries high-fidelity Neural TTS (ChatGPT-style voice) first.
+        Falls back seamlessly to local Windows SAPI voice if offline.
+        """
         clean_text = self.clean_for_speech(text)
-        if not clean_text or not self._voice:
+        if not clean_text:
             return
 
-        flags = 1 if async_mode else 0  # SVSFlagsAsync = 1
+        # Reset stop event for new utterance
+        self._stop_event.clear()
+
+        if async_mode:
+            thread = threading.Thread(target=self._synthesize_and_play, args=(clean_text,), daemon=True)
+            thread.start()
+        else:
+            self._synthesize_and_play(clean_text)
+
+    def _synthesize_and_play(self, text: str):
+        """Synthesize using edge-tts and play via pygame, with fallback to SAPI."""
+        self._stop_event.clear()
+        self._is_speaking = True
         try:
-            self._voice.Speak(clean_text, flags)
-        except Exception:
-            # Reinitialize if COM connection dropped
-            self._init_voice()
-            if self._voice:
+            # 1. Try Neural Voice via edge-tts
+            if edge_tts is not None and pygame is not None and not self._stop_event.is_set():
                 try:
-                    self._voice.Speak(clean_text, flags)
+                    import asyncio
+                    import hashlib
+
+                    h = hashlib.md5(text.encode("utf-8")).hexdigest()[:12]
+                    out_path = os.path.join(self._cache_dir, f"speech_{h}.mp3")
+
+                    if not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
+                        async def _gen():
+                            communicate = edge_tts.Communicate(text, self.voice_name)
+                            await communicate.save(out_path)
+                        asyncio.run(_gen())
+
+                    if not self._stop_event.is_set() and os.path.exists(out_path) and os.path.getsize(out_path) > 0:
+                        self._play_audio_file(out_path)
+                        return
                 except Exception:
+                    # If network fails or edge-tts errors, fall back to SAPI
                     pass
+
+            # 2. Local Fallback via Windows SAPI
+            if not self._stop_event.is_set():
+                self._speak_sapi(text)
+        finally:
+            self._is_speaking = False
+
+    def _play_audio_file(self, file_path: str):
+        """Play audio file via pygame mixer smoothly with instant barge-in support."""
+        try:
+            if not self._pygame_initialized:
+                self._init_audio()
+            if pygame is not None and pygame.mixer.get_init():
+                pygame.mixer.music.load(file_path)
+                pygame.mixer.music.play()
+                self._is_speaking = True
+                while pygame.mixer.music.get_busy():
+                    if self._stop_event.is_set():
+                        pygame.mixer.music.stop()
+                        break
+                    time.sleep(0.03)
+                self._is_speaking = False
+                pygame.mixer.music.unload()
+        except Exception:
+            self._is_speaking = False
+
+    def _speak_sapi(self, text: str):
+        """Fallback synthesis using native Windows SAPI."""
+        if not self._sapi_voice:
+            self._init_sapi()
+        if self._sapi_voice and not self._stop_event.is_set():
+            try:
+                self._is_speaking = True
+                self._sapi_voice.Speak(text, 0)
+            except Exception:
+                pass
+            finally:
+                self._is_speaking = False
 
 
 class EdithVoiceAssistant:
@@ -540,6 +729,14 @@ class EdithVoiceAssistant:
         self.tts = EdithTTSEngine() if enable_tts else None
         self.brain = brain
         self.is_listening_loop = False
+        try:
+            from runtime.voice_state_machine import VoiceConversationStateMachine
+            self.state_machine = VoiceConversationStateMachine(
+                tts_engine=self.tts,
+                brain=self.brain
+            )
+        except Exception:
+            self.state_machine = None
 
     def listen_and_execute(
         self,
@@ -572,7 +769,8 @@ class EdithVoiceAssistant:
                 "latency_ms": 0.0
             }
         else:
-            stt_result = self.stt.listen_and_transcribe(timeout=timeout)
+            voice_start_cb = self.tts.stop if self.tts else None
+            stt_result = self.stt.listen_and_transcribe(timeout=timeout, on_voice_start=voice_start_cb)
 
         if not stt_result.get("success"):
             return {
@@ -638,7 +836,8 @@ class EdithVoiceAssistant:
             if on_status_callback:
                 on_status_callback("listening")
 
-            stt_res = self.stt.listen_and_transcribe(timeout=timeout)
+            voice_start_cb = self.tts.stop if self.tts else None
+            stt_res = self.stt.listen_and_transcribe(timeout=timeout, on_voice_start=voice_start_cb)
             if not stt_res.get("success"):
                 # Timeout or silence, loop back and keep listening
                 continue
@@ -664,3 +863,179 @@ class EdithVoiceAssistant:
         self.is_listening_loop = False
         if on_status_callback:
             on_status_callback("stopped")
+
+
+class EdithWakeWordDetector:
+    """Continuous passive wake-word detection engine for E.D.I.T.H.
+    
+    Listens passively in standby mode for:
+    - 'Hey Edith'
+    - 'Edith'
+    - 'Wake up Edith'
+    - 'Yo Edith'
+    - 'Hello Edith'
+
+    When detected:
+    1. Plays a futuristic wake chime.
+    2. Wakes up the AI and speaks a warm acknowledgment.
+    3. If a command was attached directly (e.g. 'Hey Edith, open Spotify'), executes immediately.
+    4. If just the wake word was spoken, prompts: "I'm here, Aditya! What do you need?",
+       listens for your command, executes, and speaks response.
+    5. Remains active for continuous conversation, then smoothly returns to standby after silence.
+    """
+
+    WAKE_RESPONSES = [
+        "I'm here, Aditya! What's on your mind?",
+        "Hey Aditya! What do you need?",
+        "Online and listening, boss!",
+        "Right here, Aditya! How can I help?",
+        "Yes, Aditya? Ready when you are!",
+    ]
+
+    def __init__(self, brain: Optional[Any] = None, enable_tts: bool = True):
+        self.assistant = EdithVoiceAssistant(brain=brain, enable_tts=enable_tts)
+        self.brain = self.assistant.brain
+        self.stt = self.assistant.stt
+        self.tts = self.assistant.tts
+        self.is_running = False
+
+    def listen_for_wake_word(
+        self,
+        on_wake_callback=None,
+        on_command_callback=None,
+        on_status_callback=None,
+        standby_chunk_timeout: float = 3.5,
+        session_idle_timeout: float = 12.0
+    ):
+        """Continuous passive wake-word listener loop.
+        
+        Runs indefinitely in standby mode until user stops it (Ctrl+C or 'exit' command).
+        """
+        import random
+        self.is_running = True
+
+        if on_status_callback:
+            on_status_callback("standby")
+
+        print("\n" + "="*65)
+        print("   ⚡ E.D.I.T.H. PASSIVE WAKE-WORD DETECTION ENGINE ONLINE")
+        print("   Listening passively in standby for: 'Hey Edith' / 'Edith'")
+        print("   Say 'Hey Edith, <command>' or just 'Hey Edith' to wake up!")
+        print("   Press Ctrl+C to stop.")
+        print("="*65 + "\n")
+
+        # Initial subtle chime
+        if self.tts:
+            self.tts.play_chime()
+
+        active_session = False
+        last_interaction_time = 0.0
+
+        while self.is_running:
+            try:
+                # -----------------------------------------------------------
+                # State 1: Active Session (recently woke up, listening for commands)
+                # -----------------------------------------------------------
+                if active_session:
+                    now = time.time()
+                    if now - last_interaction_time > session_idle_timeout:
+                        active_session = False
+                        print("\n[E.D.I.T.H.] 💤 Returning to standby mode. Say 'Hey Edith' to wake me.")
+                        if on_status_callback:
+                            on_status_callback("standby")
+                        continue
+
+                    if on_status_callback:
+                        on_status_callback("listening_active")
+
+                    voice_start_cb = self.tts.stop if self.tts else None
+                    stt_res = self.stt.listen_and_transcribe(timeout=6.0, silence_duration=1.2, on_voice_start=voice_start_cb)
+                    if not stt_res.get("success"):
+                        continue
+
+                    cmd = stt_res.get("cleaned_text", "").strip()
+                    if not cmd:
+                        continue
+
+                    # Interruption / Hold On Check
+                    if any(w in cmd.lower() for w in ["wait", "hold on", "hold up", "pause", "let me speak", "listen to me", "stop talking", "be quiet"]):
+                        active_session = True
+                        last_interaction_time = time.time()
+                        msg = "I'm listening, Aditya! Take your time, I'm all ears. 🎙️"
+                        print(f"\n[E.D.I.T.H.] {msg}")
+                        if self.tts:
+                            self.tts.speak(msg, async_mode=False)
+                        continue
+
+                    if cmd.lower() in ["go to sleep", "sleep", "standby", "stop listening", "cancel", "bye", "goodbye"]:
+                        active_session = False
+                        msg = "Going to standby. Just call my name when you need me! 💤"
+                        print(f"\n[E.D.I.T.H.] {msg}")
+                        if self.tts:
+                            self.tts.speak(msg, async_mode=False)
+                        continue
+
+                    if cmd.lower() in ["exit", "quit", "shutdown"]:
+                        self.is_running = False
+                        msg = "Shutting down voice listener. See you later, Aditya! 💙"
+                        print(f"\n[E.D.I.T.H.] {msg}")
+                        if self.tts:
+                            self.tts.speak(msg, async_mode=False)
+                        break
+
+                    # Execute command
+                    v_res = self.assistant.listen_and_execute(brain=self.brain, speak_response=True, cmd_override=cmd)
+                    last_interaction_time = time.time()
+                    if on_command_callback:
+                        on_command_callback(cmd, v_res)
+                    continue
+
+                # -----------------------------------------------------------
+                # State 2: Standby Mode (passively listening for wake word)
+                # -----------------------------------------------------------
+                stt_res = self.stt.listen_and_transcribe(
+                    timeout=standby_chunk_timeout,
+                    silence_duration=0.8,
+                    max_duration=4.0
+                )
+                if not stt_res.get("success"):
+                    continue
+
+                raw = stt_res.get("raw_text", "")
+                has_wake, wake_phrase, trailing_cmd = SpeechNormalizer.extract_wake_word(raw)
+
+                if has_wake:
+                    print(f"\n⚡ [WAKE DETECTED] Spoken: \"{raw}\" (Wake Word: \"{wake_phrase}\")")
+                    if self.tts:
+                        self.tts.play_chime()
+
+                    if on_wake_callback:
+                        on_wake_callback(wake_phrase, trailing_cmd)
+
+                    active_session = True
+                    last_interaction_time = time.time()
+
+                    # Case A: Wake word had a direct command attached (e.g. 'Hey Edith open spotify')
+                    if trailing_cmd.strip():
+                        norm = SpeechNormalizer.clean_spoken_command(trailing_cmd)
+                        clean_cmd = norm["cleaned_text"]
+                        print(f"[Command] > \"{clean_cmd}\"")
+                        v_res = self.assistant.listen_and_execute(brain=self.brain, speak_response=True, cmd_override=clean_cmd)
+                        if on_command_callback:
+                            on_command_callback(clean_cmd, v_res)
+                    # Case B: Just the wake word alone (e.g. 'Hey Edith' or 'Wake up')
+                    else:
+                        greeting = random.choice(self.WAKE_RESPONSES)
+                        print(f"[E.D.I.T.H.] {greeting}")
+                        if self.tts:
+                            self.tts.speak(greeting, async_mode=True)
+                        print("🎙️ Listening for your command...")
+
+            except KeyboardInterrupt:
+                print("\n[E.D.I.T.H.] Wake-word detection stopped by user.")
+                break
+            except Exception as e:
+                # Keep running resiliently
+                time.sleep(0.5)
+
+        self.is_running = False

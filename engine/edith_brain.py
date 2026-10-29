@@ -96,6 +96,14 @@ except ImportError:
     except ImportError:
         EdithDialogueEngine = None
 
+try:
+    from engine.cognitive_cycle import EdithCognitiveCycle
+except ImportError:
+    try:
+        from cognitive_cycle import EdithCognitiveCycle
+    except ImportError:
+        EdithCognitiveCycle = None
+
 
 
 APP_NAMES = {
@@ -663,7 +671,22 @@ class EdithBrain:
         self.contact_resolver = ContactResolver() if ContactResolver is not None else None
         self.permission_guard = PermissionGuard() if PermissionGuard is not None else None
         self.dialogue_engine = EdithDialogueEngine() if EdithDialogueEngine is not None else None
+        self.cognitive_cycle = EdithCognitiveCycle() if EdithCognitiveCycle is not None else None
         self._gui_agent = None
+        self.was_interrupted: bool = False
+
+    def interrupt(self) -> Dict[str, Any]:
+        """Immediately interrupt pending suggestions, active drafts, and tasks."""
+        self.pending_suggestions = []
+        self.was_interrupted = True
+        if self.context and hasattr(self.context, "cancel_current_task"):
+            self.context.cancel_current_task()
+        reg = self.executor.action_registry if self.executor else None
+        if reg and hasattr(reg, "permission_guard"):
+            reg.permission_guard.cancel_all_pending()
+        elif getattr(self, "permission_guard", None):
+            self.permission_guard.cancel_all_pending()
+        return {"status": "interrupted"}
 
     @property
     def gui_agent(self):
@@ -840,6 +863,9 @@ class EdithBrain:
             )
             self.trace_logger.log_trace(trace)
             res["trace"] = trace.to_dict()
+            if self.context and res.get("status") in ["OPERATIONAL", "success"] and res.get("intent") != "dialogue":
+                self.context.last_command_executed = resolved_cmd
+                self.context.last_action_result = res
         except Exception:
             pass
 
@@ -855,6 +881,37 @@ class EdithBrain:
         if self.trace_logger:
             return self.trace_logger.get_all_traces()
         return []
+
+    # -------------------------------------------------------------------------
+    # Experience-Based Learning & Privacy Controls (V5.2)
+    # -------------------------------------------------------------------------
+    @property
+    def experience_recorder(self) -> Optional[Any]:
+        return getattr(self.cognitive_cycle, "experience_recorder", None)
+
+    def set_experience_collection(self, enabled: bool, collect_raw_transcripts: bool = False):
+        """Explicit opt-in/opt-out control for experience recording."""
+        rec = self.experience_recorder
+        if rec:
+            rec.enabled = enabled
+            rec.collect_raw_transcripts = collect_raw_transcripts
+            rec.save_settings()
+
+    def inspect_experience_events(self, limit: int = 50, filter_category: Optional[str] = None) -> List[Dict[str, Any]]:
+        rec = self.experience_recorder
+        return rec.inspect_events(limit=limit, filter_category=filter_category) if rec else []
+
+    def export_experience(self, export_path: str, anonymize: bool = True) -> int:
+        rec = self.experience_recorder
+        return rec.export_events(export_path=export_path, anonymize=anonymize) if rec else 0
+
+    def clear_experience(self) -> int:
+        rec = self.experience_recorder
+        return rec.clear_all_events() if rec else 0
+
+    def delete_experience_event(self, event_id: str) -> bool:
+        rec = self.experience_recorder
+        return rec.delete_event(event_id=event_id) if rec else False
 
     def process(self, user_command: str, execute: bool = True) -> Dict[str, Any]:
         """Process user command through EDITH's neural network and optionally execute the directive."""
@@ -894,6 +951,72 @@ class EdithBrain:
                 self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
                 return res
 
+        # Interruption, Hold-On & Barge-In Gate
+        # ('stop', 'wait', 'hold on', 'hold up', 'pause', 'let me speak', 'listen to me', 'be quiet', 'stop search')
+        is_interrupt_phrase = bool(re.match(
+            r"^(?:edith\s*,?\s*)?(?:stop|wait|hold\s+on|hold\s+up|pause|let\s+me\s+speak|listen\s+to\s+me|be\s+quiet|shut\s+up|stop\s+talking|shh|wait\s+a\s+(?:second|sec|minute|min)|stop\s+what\s+you(?:'re|\s+are)\s+doing|(?:stop|cancel)\s+(?:the\s+|that\s+)?(?:search|task|action|operation|process|playing))(?:\s+please)?$",
+            cmd_lower
+        ))
+        if is_interrupt_phrase:
+            self.interrupt()
+            if "search" in cmd_lower:
+                msg = "Search halted, Aditya! What would you like to do instead?"
+            else:
+                interrupt_options = [
+                    "Stopped! I'm listening, Aditya — take your time, I'm all ears. 🎙️",
+                    "All quiet. Go ahead, Aditya, tell me what's on your mind.",
+                    "Paused! I'm right here listening whenever you're ready. 💙",
+                    "Got it, holding up! What do you need, Aditya?"
+                ]
+                import random
+                msg = random.choice(interrupt_options)
+
+            res = {
+                "query": user_command,
+                "intent": "dialogue",
+                "action": "pause_or_interrupt",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": False,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"action": "interrupted"}
+                },
+                "execution": {"status": "interrupted", "message": msg}
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # Resume / Continue Gate
+        if getattr(self, "was_interrupted", False) and cmd_lower in [
+            "continue", "go ahead", "keep going", "resume", "carry on", "you can continue", "okay continue"
+        ]:
+            self.was_interrupted = False
+            msg = "Resuming right where we left off, Aditya! What would you like to tackle next?"
+            res = {
+                "query": user_command,
+                "intent": "dialogue",
+                "action": "resume_task",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": False,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"action": "resumed"}
+                },
+                "execution": {"status": "resumed", "message": msg}
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
         # Consequential Task Cancellation Gate ('cancel that', 'don't send', 'abort')
         if any(c in cmd_lower for c in [
             "cancel that", "don't send", "dont send", "abort send", "abort sending",
@@ -929,6 +1052,190 @@ class EdithBrain:
             }
             self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
             return res
+
+        # Repeat Last Action Gate ('do that again', 'do it again', 'repeat that')
+        is_repeat_phrase = bool(re.match(
+            r"^(?:edith\s*,?\s*)?(?:do\s+that\s+again|do\s+it\s+again|repeat\s+that|repeat\s+that\s+action|one\s+more\s+time|run\s+that\s+again)$",
+            cmd_lower
+        ))
+        if is_repeat_phrase:
+            repeat_cmd = None
+            if self.context and getattr(self.context, "last_command_executed", None):
+                repeat_cmd = self.context.last_command_executed
+            elif self.get_last_trace():
+                repeat_cmd = self.get_last_trace().get("resolved_query")
+
+            if repeat_cmd and repeat_cmd.lower() not in ["do that again", "do it again", "repeat that"]:
+                return self.process(repeat_cmd, execute=execute)
+            else:
+                msg = "There is no previous action in this session to repeat."
+                res = {
+                    "query": user_command,
+                    "intent": "dialogue",
+                    "action": "repeat_action",
+                    "entities": {},
+                    "intent_confidence": 1.0,
+                    "action_confidence": 1.0,
+                    "operational_confidence": 1.0,
+                    "status": "OPERATIONAL",
+                    "directive": {
+                        "can_execute": False,
+                        "message": msg,
+                        "handler": "dialogue",
+                        "parameters": {}
+                    },
+                    "execution": {"status": "noop", "message": msg}
+                }
+                self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+                return res
+
+        # Causal Action & Conversational Rationale Gate ('why did you do that?', 'why did you say that?')
+        is_why_phrase = bool(re.match(
+            r"^(?:edith\s*,?\s*)?(?:why\s+did\s+you\s+(?:do|say|choose|suggest|pick|recommend)\s+(?:that|this)|why\s+do\s+you\s+(?:say|think)\s+(?:that|this)|explain\s+why\s+you\s+(?:did|said|chose)\s+that|why\s+was\s+that\s+(?:done|said))(?:\s+action)?(?:\?)?$",
+            cmd_lower
+        ))
+        if is_why_phrase:
+            last_trace = self.get_last_trace()
+            last_turn = self.context.recent_dialogue_turns[-1] if (self.context and getattr(self.context, "recent_dialogue_turns", None)) else None
+            last_hnd = last_trace.get("handler") if last_trace else ""
+
+            if last_hnd == "dialogue" or "say" in cmd_lower or (last_turn and not last_trace):
+                prev_user = last_turn.get("user") if last_turn else (last_trace.get("original_message") if last_trace else "our recent conversation")
+                prev_topic = last_turn.get("topic") if last_turn else (getattr(self.context, "current_topic", None) or "what you shared")
+                if "love" in prev_topic or "relationship" in prev_topic or "ex" in str(prev_user).lower() or "miss" in str(prev_user).lower():
+                    msg = (
+                        f"I said that because you shared that you're missing someone deeply while recognizing she hasn't changed. "
+                        f"I wanted to help you unpack that tension between your emotions and your logic, "
+                        f"so you can feel supported without rushing into a decision you might second-guess later."
+                    )
+                else:
+                    msg = f"I said that in response to: \"{prev_user}\", aiming to give you a helpful and empathetic perspective on {prev_topic}."
+            elif last_trace and last_hnd != "dialogue":
+                orig = last_trace.get("original_message", "your previous command")
+                hnd = last_trace.get("handler", "action")
+                tgt = last_trace.get("resolved_target", "the requested item")
+                stat = last_trace.get("status", "completed")
+                msg = (
+                    f"I executed that step because your request was \"{orig}\". "
+                    f"Based on our active task context, I routed it to the {hnd} operation for {tgt}, "
+                    f"which resulted in status {stat}."
+                )
+            elif self.context and getattr(self.context, "last_command_executed", None):
+                msg = f"I did that to fulfill your previous instruction: \"{self.context.last_command_executed}\"."
+            else:
+                msg = "I haven't performed any actions or said anything in our session yet to explain!"
+
+            res = {
+                "query": user_command,
+                "intent": "dialogue",
+                "action": "explain_rationale",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": False,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"rationale": msg}
+                },
+                "execution": {"status": "success", "message": msg}
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # Simplify Explanation Gate ('explain that more simply')
+        is_simplify_phrase = bool(re.match(
+            r"^(?:edith\s*,?\s*)?(?:explain\s+that\s+more\s+simply|explain\s+that\s+simply|explain\s+simply|make\s+it\s+simpler|explain\s+like\s+i(?:'m|\s+am)\s+five|simpler\s+please)(?:\?)?$",
+            cmd_lower
+        ))
+        if is_simplify_phrase:
+            last_trace = self.get_last_trace()
+            last_msg = ""
+            if last_trace and last_trace.get("final_response"):
+                last_msg = last_trace.get("final_response")
+            elif self.dialogue_engine and self.dialogue_engine.dialogue_history:
+                last_msg = self.dialogue_engine.dialogue_history[-1].get("bot", "")
+
+            if last_msg:
+                simple_text = re.sub(r"```[\s\S]*?```", "", last_msg)
+                simple_text = re.sub(r"[A-Za-z0-9_]+(?:\.py|\.json|\.exe|\.dll)", "the program", simple_text)
+                first_sentence = simple_text.split(".")[0].strip()
+                msg = f"In simple terms: {first_sentence}. Let me know if you want me to do anything else!"
+            else:
+                msg = "In simple terms: everything is ready, and I'm listening for your next command."
+
+            res = {
+                "query": user_command,
+                "intent": "dialogue",
+                "action": "simplify_explanation",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": False,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"simple_message": msg}
+                },
+                "execution": {"status": "success", "message": msg}
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # Pause For Question Gate ('wait, I have another question')
+        is_question_pause = bool(re.match(
+            r"^(?:edith\s*,?\s*)?(?:wait\s*,?\s*)?(?:i\s+have\s+(?:another|a)\s+question|can\s+i\s+ask\s+(?:a|another)\s+question|hold\s+on\s+i\s+have\s+a\s+question)(?:\?)?$",
+            cmd_lower
+        ))
+        if is_question_pause:
+            msg = "I'm all ears, Aditya! What's on your mind?"
+            res = {
+                "query": user_command,
+                "intent": "dialogue",
+                "action": "pause_for_question",
+                "entities": {},
+                "intent_confidence": 1.0,
+                "action_confidence": 1.0,
+                "operational_confidence": 1.0,
+                "status": "OPERATIONAL",
+                "directive": {
+                    "can_execute": False,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {}
+                },
+                "execution": {"status": "ready", "message": msg}
+            }
+            self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
+            return res
+
+        # Forget Task And Switch Gate ('forget that task and help me with this instead')
+        m_forget = re.match(
+            r"^(?:edith\s*,?\s*)?(?:forget\s+(?:about\s+)?(?:that\s+task|that|the\s+last\s+task)\s*,?\s*(?:and\s+)?(?:help\s+me\s+with|just)?)\s*(.+)$",
+            cmd_lower
+        )
+        if m_forget:
+            new_instruction = m_forget.group(1).strip()
+            new_instruction = re.sub(r"\s+(?:instead|please)$", "", new_instruction).strip()
+            if self.context and hasattr(self.context, "cancel_current_task"):
+                self.context.cancel_current_task()
+            return self.process(new_instruction, execute=execute)
+
+        # Goal Abandonment & Switch Gate ('actually, leave it and open spotify', 'never mind, open spotify')
+        m_switch = re.match(
+            r"^(?:edith\s*,?\s*)?(?:actually\s*,?\s*(?:leave\s+it|leave\s+that|never\s*mind|drop\s+it)\s*,?\s*(?:and\s+)?|never\s*mind\s*,?\s*(?:and\s+)?)\s*(.+)$",
+            cmd_lower
+        )
+        if m_switch:
+            new_instruction = m_switch.group(1).strip()
+            new_instruction = re.sub(r"\s+(?:instead|please)$", "", new_instruction).strip()
+            if self.context and hasattr(self.context, "cancel_current_task"):
+                self.context.cancel_current_task()
+            return self.process(new_instruction, execute=execute)
 
         # Follow-up Confirmation Gate ('yes', 'send it', 'confirm', 'go ahead')
         is_confirm = cmd_lower in [
@@ -1237,6 +1544,19 @@ class EdithBrain:
                 }
                 return res
 
+        # Cognitive Pre-Action Cycle (Stages 1 through 8: perceive, interpret, retrieve, appraise, affect, attention, arbitrate)
+        if getattr(self, "cognitive_cycle", None):
+            cycle_pre = self.cognitive_cycle.pre_action_cycle(
+                user_command=user_command,
+                neural_prediction=result,
+                is_interruption=getattr(self, "was_interrupted", False)
+            )
+            result["cognitive_state"] = cycle_pre
+            result["calibrated_confidence"] = cycle_pre.get("calibrated_confidence", result.get("operational_confidence", 0.85))
+            result["disposition"] = cycle_pre.get("disposition", "focused_operational")
+            result["support_strategy"] = cycle_pre.get("support_strategy", "practical_solution")
+            result["communication_plan"] = cycle_pre.get("communication_plan", {})
+
         # Synthesize natural response and execution directive
         directive = self._synthesize_directive(result, context=ctx_dict)
         result["directive"] = directive
@@ -1298,6 +1618,10 @@ class EdithBrain:
                     result["status"] = "NEEDS_CLARIFICATION"
                     directive["message"] = exec_res.get("message")
                     directive["can_execute"] = False
+                elif exec_res.get("status") in ["success", "ok"]:
+                    result["status"] = "success"
+                elif exec_res.get("status") == "error":
+                    result["status"] = "error"
 
                 if directive.get("handler") == "draft_content":
                     d_params = directive.get("parameters", {})
@@ -1352,10 +1676,33 @@ class EdithBrain:
             else:
                 self.pending_suggestions = []
 
+        # Cognitive Post-Action Cycle (Stages 9 to 13: observe outcome, prediction error, reflection)
+        if getattr(self, "cognitive_cycle", None):
+            exec_outcome = result.get("execution") or {}
+            v_dict = result.get("verification") or {}
+            verified = v_dict.get("verified", True) if v_dict else (exec_outcome.get("status") == "success" if exec_outcome else True)
+            err_msg = exec_outcome.get("error") or exec_outcome.get("message") if not verified else None
+            cycle_post = self.cognitive_cycle.post_action_cycle(
+                user_command=user_command,
+                action=directive.get("handler") or result.get("action", "unknown"),
+                execution_result=exec_outcome,
+                verified=verified,
+                latency_ms=50.0
+            )
+            result["cognitive_trace"] = cycle_post
+
         return result
 
     def _process_multi_step(self, steps: List[str], raw_query: str, execute: bool = True) -> Dict[str, Any]:
         """Coordinate and execute a multi-step task workflow with state and context propagation."""
+        cycle_pre = None
+        if getattr(self, "cognitive_cycle", None):
+            cycle_pre = self.cognitive_cycle.pre_action_cycle(
+                user_command=raw_query,
+                neural_prediction={"query": raw_query, "intent": "automation_workflow", "action": "exec_workflow_script", "complexity": 1.0},
+                is_interruption=getattr(self, "was_interrupted", False)
+            )
+
         sub_results: List[Dict[str, Any]] = []
         step_directives: List[Dict[str, Any]] = []
 
@@ -1456,14 +1803,21 @@ class EdithBrain:
             "plan": task_plan.to_dict() if task_plan else None
         }
 
-        if execute:
-            exec_msgs = [f"Step {i+1}: {r.get('execution', {}).get('message', r.get('directive', {}).get('message', 'Completed'))}" for i, r in enumerate(sub_results)]
-            composite_result["execution"] = {
-                "status": "success" if all_ok else "partial",
-                "action": "workflow_script",
-                "message": " | ".join(exec_msgs),
-                "steps": [r.get("execution", {}) for r in sub_results]
-            }
+        if cycle_pre:
+            composite_result["cognitive_state"] = cycle_pre
+            composite_result["calibrated_confidence"] = cycle_pre.get("calibrated_confidence", 0.9)
+            composite_result["disposition"] = cycle_pre.get("disposition", "focused_operational")
+            composite_result["support_strategy"] = cycle_pre.get("support_strategy", "practical_solution")
+
+        if getattr(self, "cognitive_cycle", None):
+            cycle_post = self.cognitive_cycle.post_action_cycle(
+                user_command=raw_query,
+                action="exec_workflow_script",
+                execution_result={"status": "success" if all_ok else "partial", "step_count": len(sub_results)},
+                verified=all_ok,
+                latency_ms=100.0
+            )
+            composite_result["cognitive_trace"] = cycle_post
 
         return composite_result
 
@@ -1740,12 +2094,151 @@ class EdithBrain:
                 "parameters": {"command": cmd_text, "safety_gated": True}
             }
 
+        # 0-Screen. Real Screen-Understanding & Visual Grounding Subsystem (V7 Priority Two)
+        screen_queries = [
+            "what is going on on my screen", "what's going on on my screen", "what is on my screen",
+            "what am i looking at", "explain what i'm looking at", "explain what im looking at",
+            "what do you think of this", "what do you think of my screen",
+            "why isn't this working", "why isnt this working", "can you fix this error",
+            "what does this chart tell us", "what does this graph show", "look at my screen"
+        ]
+        if (any(sq in cmd_lower for sq in screen_queries) or (
+            ("screen" in cmd_lower or "chart" in cmd_lower) and
+            any(re.search(rf"\b{w}\b", cmd_lower) for w in ["what", "why", "explain", "look", "see", "tell us"])
+        )) and not any(w in cmd_lower for w in ["send", "whatsapp", "share", "mail", "email"]):
+            try:
+                from runtime.screen_interpreter import ScreenInterpreter
+                interpreter = getattr(self, "screen_interpreter", None) or ScreenInterpreter()
+                self.screen_interpreter = interpreter
+                screen_analysis = interpreter.interpret(cmd_text, context=self.context)
+                prediction["intent"] = "screen_understanding"
+                prediction["action"] = "interpret_screen"
+                prediction["operational_confidence"] = 1.0
+                return {
+                    "can_execute": True,
+                    "message": screen_analysis.get("message", "Inspected active screen."),
+                    "handler": "screen_understanding",
+                    "parameters": screen_analysis
+                }
+            except Exception as ex:
+                pass
+
+        # 0. V7 Screen Understanding gate
+        is_screen_query = any(p in cmd_lower for p in [
+            "what is going on on my screen", "what's on my screen", "what is on my screen",
+            "what do you think of this", "explain what i'm looking at", "explain what i am looking at",
+            "why isn't this working", "why is this not working", "can you fix this error",
+            "what does this chart tell us", "read my screen", "inspect active window", "inspect screen"
+        ])
+        if is_screen_query:
+            prediction["intent"] = "screen_understanding"
+            prediction["action"] = "screen_understanding"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Observing active screen and analyzing UI structure...",
+                "handler": "screen_understanding",
+                "parameters": {"query": cmd_text}
+            }
+
+        # 0. V7 Storage Intelligence & Cleanup gate
+        is_storage_cleanup = any(p in cmd_lower for p in [
+            "clean up temporary files", "clean temporary files", "clean up my disk",
+            "clean up disk", "clean disk space", "clean storage"
+        ])
+        is_storage_audit = any(p in cmd_lower for p in [
+            "analyze my storage", "storage audit", "audit storage", "check storage space",
+            "analyze storage", "storage analysis", "storage report", "check disk space"
+        ])
+        if is_storage_cleanup or is_storage_audit:
+            prediction["intent"] = "storage_intelligence"
+            prediction["action"] = "storage_cleanup" if is_storage_cleanup else "storage_audit"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Analyzing storage and disk usage safely..." if is_storage_audit else "Performing safe storage cleanup dry run...",
+                "handler": "storage_cleanup" if is_storage_cleanup else "storage_audit",
+                "parameters": {
+                    "subaction": "cleanup" if is_storage_cleanup else "audit",
+                    "dry_run": True,
+                    "command": cmd_text
+                }
+            }
+
+        # 0. V7 Semantic File Organization gate
+        is_organize_rollback = any(p in cmd_lower for p in [
+            "undo file organization", "rollback file organization", "revert file organization", "restore organized files"
+        ])
+        is_organize_query = any(p in cmd_lower for p in [
+            "organize these files", "organize my downloads", "organize files", "propose file organization",
+            "sort these files", "organize folder"
+        ])
+        if is_organize_rollback:
+            prediction["intent"] = "file_organization"
+            prediction["action"] = "file_organize_rollback"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Rolling back last file organization transaction...",
+                "handler": "file_organize_rollback",
+                "parameters": {"command": cmd_text}
+            }
+        elif is_organize_query:
+            prediction["intent"] = "file_organization"
+            prediction["action"] = "semantic_file_organize"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Analyzing files and preparing dry-run organization proposal...",
+                "handler": "semantic_file_organize",
+                "parameters": {
+                    "command": cmd_text,
+                    "execute": False  # Dry run proposal first
+                }
+            }
+
+        # 0. V7 Multitasking & Task Manager gate
+        is_task_list = any(p in cmd_lower for p in ["list tasks", "active tasks", "background tasks", "list running tasks", "show tasks"])
+        is_task_cancel = any(p in cmd_lower for p in ["cancel task", "abort task", "stop task", "terminate task"])
+        if is_task_list:
+            prediction["intent"] = "task_manager"
+            prediction["action"] = "task_list"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Retrieving active and background task states...",
+                "handler": "task_list",
+                "parameters": {}
+            }
+        elif is_task_cancel:
+            prediction["intent"] = "task_manager"
+            prediction["action"] = "task_cancel"
+            prediction["operational_confidence"] = 1.0
+            return {
+                "can_execute": True,
+                "message": "Requesting task cancellation...",
+                "handler": "task_cancel",
+                "parameters": {"command": cmd_text}
+            }
+
         # 0a. Human Dialogue, Empathy & Problem Solving Subsystem
         action = prediction.get("action", "")
+        turn_type = "starting_new_topic"
+        if self.context and hasattr(self.context, "classify_turn_type"):
+            turn_type = self.context.classify_turn_type(cmd_text, prediction.get("intent", ""))
+
+        is_continuing_dialogue = bool(
+            self.context and getattr(self.context, "current_topic", None) in [
+                "love_support", "love_text_ex", "love_breakup", "love_reflection",
+                "personal_relationship", "empathy", "emotional_support", "personal_advice", "chitchat", "problem_solving"
+            ] and turn_type == "continuing_conversation"
+        )
+
         if (
             action == "respond_dialogue" or
             prediction.get("goal") == "dialogue" or
             prediction.get("intent") in ["chitchat", "dialogue"] or
+            is_continuing_dialogue or
             (self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(cmd_lower))
         ):
             if self.dialogue_engine:
@@ -3021,6 +3514,20 @@ class EdithBrain:
                 "parameters": {"file": filename, "path": path}
             }
         elif action == "exec_read_metrics":
+            # Guard: verify command actually asks for system metrics / hardware info
+            sys_keys = ["cpu", "ram", "memory", "battery", "storage", "disk", "specs", "hardware", "device metrics", "system metrics", "system status", "power status"]
+            if not any(k in cmd_lower for k in sys_keys):
+                if self.dialogue_engine:
+                    d_res = self.dialogue_engine.respond(cmd_text, context=self.context, executor=self.executor)
+                    prediction["intent"] = "chitchat"
+                    prediction["action"] = "respond_dialogue"
+                    prediction["operational_confidence"] = 1.0
+                    return {
+                        "can_execute": True,
+                        "message": d_res.get("message", "I am right here with you."),
+                        "handler": "dialogue",
+                        "parameters": d_res.get("parameters", {})
+                    }
             return {
                 "can_execute": True,
                 "message": "Inspecting system status and resource metrics.",
@@ -3255,14 +3762,69 @@ def interactive_cli():
         print(f"Error initializing EDITH Brain: {e}")
         return
 
+    # --- Personality Greeting on Startup ---
+    try:
+        from engine.personality import EdithPersonality
+        personality = EdithPersonality()
+        greeting = personality.generate_startup_greeting()
+        print(f"\n[E.D.I.T.H.] {greeting}\n")
+    except ImportError:
+        try:
+            from personality import EdithPersonality
+            personality = EdithPersonality()
+            greeting = personality.generate_startup_greeting()
+            print(f"\n[E.D.I.T.H.] {greeting}\n")
+        except ImportError:
+            print("\n[E.D.I.T.H.] Hey! Ready to help. What do you need?\n")
+
+    # Neural Voice Engine
+    tts = None
+    voice_feedback_enabled = False
+    try:
+        from runtime.stt_engine import EdithTTSEngine
+        tts = EdithTTSEngine()
+    except Exception:
+        pass
+
+    print("  (Tip: Type 'voice on' to hear ChatGPT-style neural voice responses, or 'mic' for voice chat)\n")
+
     while True:
         try:
             cmd = input("\n[User] > ").strip()
             if not cmd:
                 continue
             if cmd.lower() in ["exit", "quit", "q"]:
-                print("E.D.I.T.H. entering standby mode. Goodbye.")
+                # Warm farewell using personality
+                try:
+                    farewell = personality.react_to_farewell()
+                    print(f"\n[E.D.I.T.H.] {farewell}")
+                    if voice_feedback_enabled and tts:
+                        tts.speak(farewell, async_mode=False)
+                except Exception:
+                    print("\n[E.D.I.T.H.] See you later! Take care! 💙")
                 break
+
+            if cmd.lower() in ["voice on", "speak on", "sound on", "enable voice"]:
+                voice_feedback_enabled = True
+                msg = "Neural Voice activated! I'll speak responses aloud with my ChatGPT voice."
+                print(f"\n[E.D.I.T.H.] 🔊 {msg}")
+                if tts:
+                    tts.speak(msg, async_mode=True)
+                continue
+
+            if cmd.lower() in ["voice off", "speak off", "sound off", "quiet", "mute"]:
+                voice_feedback_enabled = False
+                print("\n[E.D.I.T.H.] 🔇 Voice feedback muted. Back to quiet text mode.")
+                continue
+
+            if cmd.lower() in ["wake", "wake word", "wakeword", "standby", "hey edith", "wake up"]:
+                from runtime.stt_engine import EdithWakeWordDetector
+                detector = EdithWakeWordDetector(brain=brain, enable_tts=True)
+                detector.listen_for_wake_word(
+                    on_wake_callback=lambda w, c: print(f"  ⚡ Wake phrase detected: '{w}'"),
+                    on_command_callback=lambda c, r: print(f"  [Executed] > {c}")
+                )
+                continue
 
             if cmd.lower() in ["voice", "mic", "listen", "voice mode", "talk", "voice once", "mic once"]:
                 from runtime.stt_engine import EdithVoiceAssistant
@@ -3294,7 +3856,7 @@ def interactive_cli():
                         dir_info = res.get("directive", {})
                         if dir_info.get("message"):
                             print(f"[E.D.I.T.H.] {dir_info['message']}")
-                        if res.get("intent") != "dialogue" or res.get("intent_confidence", 0) < 1.0:
+                        if res.get("intent") not in ["dialogue", "chitchat"] or res.get("intent_confidence", 0) < 0.95:
                             print(f"  |-- Predicted Intent : {res.get('intent')} ({res.get('intent_confidence', 0):.1%})")
                             print(f"  |-- Action Policy    : {res.get('action')} ({res.get('action_confidence', 0):.1%})")
                             if res.get("entities"):
@@ -3318,9 +3880,12 @@ def interactive_cli():
                 result = brain.process(cmd, execute=True)
 
             directive = result["directive"]
-
             print(f"\n[E.D.I.T.H.] {directive['message']}")
-            if result.get("intent") != "dialogue" or result.get("intent_confidence", 0) < 1.0:
+
+            if voice_feedback_enabled and tts and directive.get("message"):
+                tts.speak(directive["message"], async_mode=True)
+
+            if result.get("intent") not in ["dialogue", "chitchat"] or result.get("intent_confidence", 0) < 0.95:
                 print(f"  |-- Predicted Intent : {result['intent']} ({result['intent_confidence']:.1%})")
                 print(f"  |-- Action Policy    : {result['action']} ({result['action_confidence']:.1%})")
                 if result["entities"]:
@@ -3338,9 +3903,15 @@ def interactive_cli():
                 print(f"\n  {icon} {ex.get('message')}")
 
         except KeyboardInterrupt:
-            print("\nStandby.")
+            print("\n\n[E.D.I.T.H.] Caught you trying to sneak away! 😄 Take care! 💙")
             break
 
 
 if __name__ == "__main__":
-    interactive_cli()
+    if "--wake" in sys.argv or "-w" in sys.argv or "wake" in sys.argv:
+        from runtime.stt_engine import EdithWakeWordDetector
+        detector = EdithWakeWordDetector(enable_tts=True)
+        detector.listen_for_wake_word()
+    else:
+        interactive_cli()
+

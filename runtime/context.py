@@ -94,6 +94,19 @@ class StructuredTaskContext:
         self.last_clipboard: Optional[str] = None
         self.last_created_file: Optional[str] = None
 
+        # 11. Contextual Dialogue-State Tracking & Conversational Continuity (V7)
+        self.current_topic: Optional[str] = None
+        self.current_user_goal: Optional[str] = None
+        self.active_task: Optional[str] = None
+        self.previous_assistant_response: Optional[str] = None
+        self.relevant_entities: Dict[str, Any] = {}
+        self.explicit_corrections: List[Dict[str, Any]] = []
+        self.unresolved_questions: List[str] = []
+        self.user_preferences: Dict[str, Any] = {}
+        self.emotional_state: Dict[str, Any] = {"emotion": "neutral", "confidence": 0.5, "valence": 0.0}
+        self.task_execution_status: str = "idle"
+        self.recent_dialogue_turns: List[Dict[str, Any]] = []
+
     def set_last_summary(self, summary: str, source: str = ""):
         """Store latest extractive summary from files or web search."""
         self.touch()
@@ -274,7 +287,142 @@ class StructuredTaskContext:
         self.last_url = None
         self.last_clipboard = None
         self.last_created_file = None
+        self.current_topic = None
+        self.current_user_goal = None
+        self.active_task = None
+        self.previous_assistant_response = None
+        self.relevant_entities = {}
+        self.explicit_corrections = []
+        self.unresolved_questions = []
+        self.emotional_state = {"emotion": "neutral", "confidence": 0.5, "valence": 0.0}
+        self.task_execution_status = "idle"
+        self.recent_dialogue_turns = []
         self.touch()
+
+    def update_dialogue_state(
+        self,
+        topic: Optional[str] = None,
+        goal: Optional[str] = None,
+        assistant_response: Optional[str] = None,
+        emotional_state: Optional[Dict[str, Any]] = None,
+        active_task: Optional[str] = None,
+        execution_status: Optional[str] = None
+    ):
+        """Update structured conversation dialogue tracking state."""
+        self.touch()
+        if topic is not None:
+            self.current_topic = topic
+        if goal is not None:
+            self.current_user_goal = goal
+        if assistant_response is not None:
+            self.previous_assistant_response = assistant_response
+        if emotional_state is not None:
+            self.emotional_state = emotional_state
+        if active_task is not None:
+            self.active_task = active_task
+        if execution_status is not None:
+            self.task_execution_status = execution_status
+
+    def record_dialogue_turn(
+        self,
+        user_text: str,
+        assistant_text: str,
+        topic: str = "",
+        intent: str = "dialogue",
+        emotional_state: Optional[Dict[str, Any]] = None,
+        turn_type: str = "continuing_conversation"
+    ):
+        """Record high-fidelity dialogue turn in conversational memory."""
+        self.touch()
+        turn_entry = {
+            "user": user_text,
+            "assistant": assistant_text,
+            "topic": topic or self.current_topic or "general",
+            "intent": intent,
+            "turn_type": turn_type,
+            "emotional_state": emotional_state or self.emotional_state,
+            "timestamp": time.time()
+        }
+        self.recent_dialogue_turns.append(turn_entry)
+        if len(self.recent_dialogue_turns) > 20:
+            self.recent_dialogue_turns = self.recent_dialogue_turns[-20:]
+        self.previous_assistant_response = assistant_text
+        if topic:
+            self.current_topic = topic
+
+    def classify_turn_type(self, user_utterance: str, predicted_intent: str = "") -> str:
+        """
+        Explicitly classify turn type into 8 structured categories:
+        1. continuing_conversation
+        2. answering_follow_up
+        3. correcting_interpretation
+        4. changing_goal
+        5. starting_new_topic
+        6. asking_computer_question
+        7. requesting_action
+        8. cancelling_or_revising
+        """
+        t = user_utterance.strip().lower()
+
+        # 8. Cancelling or revising a request
+        if any(c in t for c in [
+            "cancel that", "don't send", "dont send", "abort send", "abort sending",
+            "abort message", "stop sending", "cancel the message", "cancel message", "do not send"
+        ]) or t in ["cancel", "abort", "never mind", "nevermind"]:
+            return "cancelling_or_revising"
+
+        # 4. Changing current goal midway through a task
+        if any(g in t for g in [
+            "actually, leave it", "actually leave it", "leave that", "leave it and",
+            "forget that task", "forget about that", "instead of that"
+        ]) or re.search(r"\b(?:actually\s*,?\s*leave\s+it\s+and|forget\s+(?:that|the\s+last)\s+task\s+and)\b", t):
+            return "changing_goal"
+
+        # 3. Correcting previous interpretation
+        if any(corr in t for corr in [
+            "no, i meant", "no i meant", "not that one", "no, the other", "not that file",
+            "that's not what i meant", "you misunderstood", "no, that's wrong",
+            "wrong file", "wrong person", "wrong song", "i didn't mean that"
+        ]) or re.search(r"^(?:no\s*,?\s*(?:i\s+meant|not\s+that|the\s+other))\b", t):
+            return "correcting_interpretation"
+
+        # 2. Answering a follow-up (answering clarification or confirmation)
+        if getattr(self, "pending_clarification", None) or getattr(self, "pending_confirmation", None) or self.unresolved_questions:
+            if t in ["yes", "no", "sure", "yep", "nope", "confirm", "send it", "go ahead"] or len(t.split()) <= 4:
+                return "answering_follow_up"
+
+        # 6. Asking a question about the computer / rationale / screen
+        if any(q in t for q in [
+            "why did you do that", "why did you choose that", "explain why you did",
+            "why isn't this working", "why is my computer slow", "what is my cpu",
+            "how much ram", "how much disk", "battery level", "check battery",
+            "what is going on on my screen", "explain what i'm looking at",
+            "what does this chart tell us", "can you fix this error"
+        ]):
+            return "asking_computer_question"
+
+        # 7. Requesting real computer action
+        action_verbs = [
+            "open ", "launch ", "start ", "play ", "close ", "kill ", "terminate ",
+            "delete ", "remove ", "create file", "copy ", "move ", "type ",
+            "send whatsapp", "send email", "take a screenshot", "empty recycle bin"
+        ]
+        if any(t.startswith(v) for v in action_verbs):
+            return "requesting_action"
+
+        # 1. Continuing conversation (when recent topic is active dialogue or empathy)
+        if self.current_topic in ["love_support", "love_breakup", "love_text_ex", "personal_relationship", "empathy", "emotional_support", "personal_advice", "chitchat", "problem_solving"]:
+            conv_cues = [
+                "i think", "i feel", "i don't think", "i dont think", "miss her", "miss him",
+                "miss them", "missed her", "missed him", "still miss", "changed", "she has",
+                "he has", "she", "her", "he", "him", "because", "and", "but", "what if",
+                "it hurts", "i know", "i mean", "sometimes", "maybe", "why does", "too much"
+            ]
+            if any(cue in t for cue in conv_cues) or (not any(t.startswith(v) for v in action_verbs) and len(t.split()) > 1):
+                return "continuing_conversation"
+
+        # 5. Starting new topic
+        return "starting_new_topic"
 
     def record_turn(self, query: str, intent: str, action: str, result: Dict[str, Any]):
         """Record turn outcome into history."""
@@ -483,7 +631,23 @@ class StructuredTaskContext:
             t = t[m_disc.end():].strip()
             t_lower = t.lower()
 
-        # 0. Check for alternative resolution ("find the other version", "not that one")
+        # Check explicit action repetition ("do that again", "repeat that")
+        if re.match(r"^(?:do\s+that\s+again|do\s+it\s+again|repeat\s+that|one\s+more\s+time)$", t_lower):
+            if self.last_command_executed:
+                return self.last_command_executed
+
+        # Check explicit cancellation ("actually, leave it", "leave it")
+        if re.match(r"^(?:actually\s*,?\s*)?(?:leave\s+it|nevermind\s+leave\s+it)$", t_lower):
+            self.cancel_current_task()
+            return "cancel"
+
+        # Check explicit task switch ("forget that task and help me with this instead")
+        m_forget = re.match(r"^(?:forget\s+(?:about\s+)?(?:that\s+task|that|the\s+last\s+task)\s*,?\s*(?:and\s+)?(?:help\s+me\s+with|just)?)\s*(.+)$", t, re.IGNORECASE)
+        if m_forget:
+            self.cancel_current_task()
+            return m_forget.group(1).strip()
+
+        # 0. Check for alternative resolution ("find the other version", "not that one", "no, the other one")
         if self.search_candidates and len(self.search_candidates) > 1:
             alt = self.resolve_alternative(t)
             if alt:
@@ -491,6 +655,17 @@ class StructuredTaskContext:
                 if alt_path:
                     clean_alt = str(alt_path).replace("\\", "/")
                     return f"open '{clean_alt}'"
+
+        # Check ordinal option query ("what about the second option?", "what about option 2?")
+        if self.search_candidates:
+            m_opt = re.search(r"\b(?:what\s+about\s+(?:the\s+)?|how\s+about\s+(?:the\s+)?|try\s+(?:the\s+)?)(first|second|third|fourth|fifth|1st|2nd|3rd|4th|5th|#?\d+)\s+(?:option|result|candidate|one)\b", t, re.IGNORECASE)
+            if m_opt:
+                resolved = self.resolve_ordinal(m_opt.group(1))
+                if resolved:
+                    target_path = resolved.get("path") or resolved.get("name")
+                    if target_path:
+                        clean_path = str(target_path).replace("\\", "/")
+                        return f"open '{clean_path}'"
 
         # 1. First check ordinal resolution if we have prior search results
         if self.search_candidates:
@@ -689,9 +864,14 @@ class StructuredTaskContext:
         if re.match(r"^(?:find\s+file|find|search\s+for\s+file|search\s+file|search\s+for|locate\s+file|locate|look\s+for|where\s+did\s+i\s+save|where\s+is)\b", query.strip(), re.IGNORECASE):
             return resolved_query, [], False
 
-        # Check if query contains non-referential dummy pronoun idioms
-        idiom_pattern = r"\b(?:what time is it|is it\b|who are you|how is it|check it|check that|test it|run it|do it|tell me about it|what about it|make it (?:louder|quieter|brighter|dimmer|quick)|cut it out|leave it|step on it|take it easy|forget it)\b"
+        # Check if query contains non-referential dummy pronoun idioms or intra-sentence antecedents
+        idiom_pattern = r"\b(?:what time is it|is it\b|who are you|how is it|check it|check that|test it|run it|do it|tell me about it|what about it|make it (?:louder|quieter|brighter|dimmer|quick)|cut it out|leave it|step on it|take it easy|forget it|fix it|debug it|solve it|look at it|sort it out)\b"
         if re.search(idiom_pattern, resolved_query, re.IGNORECASE):
+            return resolved_query, [], False
+
+        # If sentence already names the subject (e.g. 'my python script has failed... fix it'), it's not a dangling reference
+        has_internal_antecedent = bool(re.search(r"\b(?:python\s+script|script|code|file|application|program)\b", resolved_query, re.IGNORECASE))
+        if has_internal_antecedent:
             return resolved_query, [], False
 
         # Check if query still contains unresolved references without prior context
@@ -781,6 +961,10 @@ class StructuredTaskContext:
             "last_url": self.last_url,
             "turn_count": len(self.turn_history),
             "undo_available": len(self.undo_stack) > 0,
+            "current_topic": self.current_topic,
+            "current_user_goal": self.current_user_goal,
+            "emotional_state": self.emotional_state,
+            "dialogue_turns_count": len(self.recent_dialogue_turns),
         }
 
 

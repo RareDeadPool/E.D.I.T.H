@@ -1,0 +1,1702 @@
+[
+  {
+    "episode_id": "ep_1793189462416",
+    "timestamp": 1793189462.416739,
+    "goal": "Left",
+    "user_input": "Left",
+    "action_taken": "system_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793189672373",
+    "timestamp": 1793189672.3730657,
+    "goal": "Left",
+    "user_input": "i miss my ex",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218236500",
+    "timestamp": 1793218236.5008998,
+    "goal": "open calculator instead",
+    "user_input": "my python script has failed three times. can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218249392",
+    "timestamp": 1793218249.3928537,
+    "goal": "open calculator instead",
+    "user_input": "my python script has failed three times. can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218426566",
+    "timestamp": 1793218426.5660288,
+    "goal": "open calculator instead",
+    "user_input": "My Python script has failed three times. Can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218505662",
+    "timestamp": 1793218505.6621966,
+    "goal": "open calculator",
+    "user_input": "My Python script has failed three times. Can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218639217",
+    "timestamp": 1793218639.2172613,
+    "goal": "open calculator",
+    "user_input": "My Python script has failed three times. Can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218661001",
+    "timestamp": 1793218661.0010452,
+    "goal": null,
+    "user_input": "fetch user data",
+    "action_taken": "web_fetch",
+    "outcome_status": "failure",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "web_fetch",
+      "failure"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218661273",
+    "timestamp": 1793218661.2739904,
+    "goal": null,
+    "user_input": "export user analytics report",
+    "action_taken": "export_csv",
+    "outcome_status": "success",
+    "verified": false,
+    "prediction_error": 0.6,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "export_csv",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218661660",
+    "timestamp": 1793218661.6609676,
+    "goal": null,
+    "user_input": "run urgent database migration",
+    "action_taken": "run_migration",
+    "outcome_status": "failure",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "run_migration",
+      "failure"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218680440",
+    "timestamp": 1793218680.4400709,
+    "goal": "Find my latest resume.",
+    "user_input": "Find my latest resume.",
+    "action_taken": "file_operation",
+    "outcome_status": "needs_clarification",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "file_operation",
+      "needs_clarification"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218680996",
+    "timestamp": 1793218680.9963279,
+    "goal": "Find the report about the project.",
+    "user_input": "Find the report about the project.",
+    "action_taken": "file_operation",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_operation",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218689289",
+    "timestamp": 1793218689.2891762,
+    "goal": "Find my resume.",
+    "user_input": "Find my resume.",
+    "action_taken": "file_operation",
+    "outcome_status": "needs_clarification",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "file_operation",
+      "needs_clarification"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218692249",
+    "timestamp": 1793218692.249554,
+    "goal": "Write a formal email requesting an internship update.",
+    "user_input": "Write a formal email requesting an internship update.",
+    "action_taken": "draft_content",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "draft_content",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218697893",
+    "timestamp": 1793218697.8931305,
+    "goal": "Find my resume.",
+    "user_input": "Find my resume.",
+    "action_taken": "file_operation",
+    "outcome_status": "needs_clarification",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "file_operation",
+      "needs_clarification"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218698160",
+    "timestamp": 1793218698.1608207,
+    "goal": "open 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_v4_conv_5036cigb/resume.docx'",
+    "user_input": "open 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_v4_conv_5036cigb/resume.docx'",
+    "action_taken": "file_operation",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_operation",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218879161",
+    "timestamp": 1793218879.1619544,
+    "goal": "search google for python tips",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793218918996",
+    "timestamp": 1793218918.9960005,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much",
+    "action_taken": "system_metrics",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_metrics",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219374235",
+    "timestamp": 1793219374.2351968,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219374320",
+    "timestamp": 1793219374.320267,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "system_metrics",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_metrics",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219400803",
+    "timestamp": 1793219400.8039534,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219400888",
+    "timestamp": 1793219400.8883321,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "system_metrics",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_metrics",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219543058",
+    "timestamp": 1793219543.0589054,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "I feel really stressed today with all this work",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219544147",
+    "timestamp": 1793219544.147578,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "how do I fix my wifi connection",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219544802",
+    "timestamp": 1793219544.8020253,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "yes check it",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219545297",
+    "timestamp": 1793219545.2977386,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "how do I fix my wifi connection",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219547573",
+    "timestamp": 1793219547.5732322,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "ModuleNotFoundError: No module named requests",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219547609",
+    "timestamp": 1793219547.6097438,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "how do I fix git merge conflicts",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219548599",
+    "timestamp": 1793219548.5998223,
+    "goal": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "user_input": "how should I prioritize my tasks today",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219556616",
+    "timestamp": 1793219556.616885,
+    "goal": "open calculator",
+    "user_input": "My Python script has failed three times. Can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219584214",
+    "timestamp": 1793219584.2142477,
+    "goal": "open notepad and type hello",
+    "user_input": "I feel really stressed today with all this work",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219585341",
+    "timestamp": 1793219585.3416538,
+    "goal": "open notepad and type hello",
+    "user_input": "how do I fix my wifi connection",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219586151",
+    "timestamp": 1793219586.1516361,
+    "goal": "open notepad and type hello",
+    "user_input": "yes check it",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219586585",
+    "timestamp": 1793219586.5857122,
+    "goal": "open notepad and type hello",
+    "user_input": "how do I fix my wifi connection",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219589241",
+    "timestamp": 1793219589.2413635,
+    "goal": "open notepad and type hello",
+    "user_input": "ModuleNotFoundError: No module named requests",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219589337",
+    "timestamp": 1793219589.33741,
+    "goal": "open notepad and type hello",
+    "user_input": "how do I fix git merge conflicts",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219590426",
+    "timestamp": 1793219590.4266539,
+    "goal": "open notepad and type hello",
+    "user_input": "how should I prioritize my tasks today",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219983109",
+    "timestamp": 1793219983.1095233,
+    "goal": "open notepad and type hello",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793219983155",
+    "timestamp": 1793219983.1556597,
+    "goal": "open notepad and type hello",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793220006497",
+    "timestamp": 1793220006.4973989,
+    "goal": "open notepad and type hello",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793220006543",
+    "timestamp": 1793220006.543818,
+    "goal": "open notepad and type hello",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793220081461",
+    "timestamp": 1793220081.4617567,
+    "goal": "Check my battery percentage and CPU usage.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793220081522",
+    "timestamp": 1793220081.5223634,
+    "goal": "Check my battery percentage and CPU usage.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221296618",
+    "timestamp": 1793221296.6181161,
+    "goal": "Check my battery percentage and CPU usage.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221296676",
+    "timestamp": 1793221296.6767268,
+    "goal": "Check my battery percentage and CPU usage.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221296864",
+    "timestamp": 1793221296.8647196,
+    "goal": "Analyze my storage space.",
+    "user_input": "Analyze my storage space.",
+    "action_taken": "storage_audit",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "storage_audit",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221296970",
+    "timestamp": 1793221296.9705033,
+    "goal": "List background tasks.",
+    "user_input": "List background tasks.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221433284",
+    "timestamp": 1793221433.284383,
+    "goal": "List background tasks.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221433333",
+    "timestamp": 1793221433.3338668,
+    "goal": "List background tasks.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221433558",
+    "timestamp": 1793221433.5582035,
+    "goal": "What is going on on my screen?",
+    "user_input": "What is going on on my screen?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221433591",
+    "timestamp": 1793221433.5918846,
+    "goal": "Analyze my storage space.",
+    "user_input": "Analyze my storage space.",
+    "action_taken": "storage_audit",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "storage_audit",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221433706",
+    "timestamp": 1793221433.7067099,
+    "goal": "List background tasks.",
+    "user_input": "List background tasks.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221506315",
+    "timestamp": 1793221506.3150554,
+    "goal": "List background tasks.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221506366",
+    "timestamp": 1793221506.3660128,
+    "goal": "List background tasks.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221506857",
+    "timestamp": 1793221506.8579447,
+    "goal": "What is going on on my screen?",
+    "user_input": "What is going on on my screen?",
+    "action_taken": "screen_understanding",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "screen_understanding",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221506899",
+    "timestamp": 1793221506.8992078,
+    "goal": "Analyze my storage space.",
+    "user_input": "Analyze my storage space.",
+    "action_taken": "storage_audit",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "storage_audit",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221507075",
+    "timestamp": 1793221507.0755723,
+    "goal": "List background tasks.",
+    "user_input": "List background tasks.",
+    "action_taken": "task_list",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "task_list",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221561589",
+    "timestamp": 1793221561.589388,
+    "goal": "List background tasks.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221561636",
+    "timestamp": 1793221561.636212,
+    "goal": "List background tasks.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221562146",
+    "timestamp": 1793221562.1466403,
+    "goal": "Analyze my storage space.",
+    "user_input": "Analyze my storage space.",
+    "action_taken": "storage_audit",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "storage_audit",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221592290",
+    "timestamp": 1793221592.2903004,
+    "goal": "List background tasks.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221592342",
+    "timestamp": 1793221592.3422034,
+    "goal": "List background tasks.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221592884",
+    "timestamp": 1793221592.8841462,
+    "goal": "Analyze my storage space.",
+    "user_input": "Analyze my storage space.",
+    "action_taken": "storage_audit",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "storage_audit",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221633546",
+    "timestamp": 1793221633.546484,
+    "goal": "List background tasks.",
+    "user_input": "I'm sad, please tell me what should I do, I still miss my ex, I think I should text her, should I text her?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221633599",
+    "timestamp": 1793221633.5998306,
+    "goal": "List background tasks.",
+    "user_input": "I don't think she has changed, but I think I have missed her really much, I have missed her too much.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221634146",
+    "timestamp": 1793221634.1465251,
+    "goal": "Analyze my storage space.",
+    "user_input": "Analyze my storage space.",
+    "action_taken": "storage_audit",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "storage_audit",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221654300",
+    "timestamp": 1793221654.300837,
+    "goal": "open calculator",
+    "user_input": "My Python script has failed three times. Can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793221716390",
+    "timestamp": 1793221716.3901303,
+    "goal": "open calculator",
+    "user_input": "My Python script has failed three times. Can you fix it?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793222902644",
+    "timestamp": 1793222902.6448493,
+    "goal": "I thought about deleting that file, but I'm not sure",
+    "user_input": "I thought about deleting that file, but I'm not sure",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793222910382",
+    "timestamp": 1793222910.3826709,
+    "goal": "what time is it",
+    "user_input": "what time is it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223033683",
+    "timestamp": 1793223033.6838052,
+    "goal": "I thought about deleting that file, but I'm not sure",
+    "user_input": "I thought about deleting that file, but I'm not sure",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223041240",
+    "timestamp": 1793223041.2409785,
+    "goal": "what time is it",
+    "user_input": "what time is it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223166522",
+    "timestamp": 1793223166.5225012,
+    "goal": "I thought about deleting that file, but I'm not sure",
+    "user_input": "I thought about deleting that file, but I'm not sure",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223174171",
+    "timestamp": 1793223174.1718678,
+    "goal": "what time is it",
+    "user_input": "what time is it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223212208",
+    "timestamp": 1793223212.2087183,
+    "goal": "I thought about deleting that file, but I'm not sure",
+    "user_input": "I thought about deleting that file, but I'm not sure",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223219929",
+    "timestamp": 1793223219.9296546,
+    "goal": "what time is it",
+    "user_input": "what time is it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223394041",
+    "timestamp": 1793223394.0410156,
+    "goal": "Find my latest resume.",
+    "user_input": "Find my latest resume.",
+    "action_taken": "file_operation",
+    "outcome_status": "needs_clarification",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "file_operation",
+      "needs_clarification"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223394604",
+    "timestamp": 1793223394.6041613,
+    "goal": "Find the report about the project.",
+    "user_input": "Find the report about the project.",
+    "action_taken": "file_operation",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_operation",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223403216",
+    "timestamp": 1793223403.2163892,
+    "goal": "Find my resume.",
+    "user_input": "Find my resume.",
+    "action_taken": "file_operation",
+    "outcome_status": "needs_clarification",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "file_operation",
+      "needs_clarification"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223406933",
+    "timestamp": 1793223406.9334443,
+    "goal": "Type exactly this into Notepad: E.D.I.T.H. V4 Exact Transcription:\nLine 1: Special Characters: !@#$%^&*()_+-=[]{}|;:'\",.<>?/\nLine 2: Unicode & Multilingual: \ud83d\ude80 \u2705 \ud83c\udfaf \u2014 Bonjour, \u3053\u3093\u306b\u3061\u306f, \u041f\u0440\u0438\u0432\u0435\u0442.\nLine 3: Numbers & Quotes: \"100% Guaranteed Reliability\" in [2026].",
+    "user_input": "Type exactly this into Notepad: E.D.I.T.H. V4 Exact Transcription:\nLine 1: Special Characters: !@#$%^&*()_+-=[]{}|;:'\",.<>?/\nLine 2: Unicode & Multilingual: \ud83d\ude80 \u2705 \ud83c\udfaf \u2014 Bonjour, \u3053\u3093\u306b\u3061\u306f, \u041f\u0440\u0438\u0432\u0435\u0442.\nLine 3: Numbers & Quotes: \"100% Guaranteed Reliability\" in [2026].",
+    "action_taken": "gui_action",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "gui_action",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223407892",
+    "timestamp": 1793223407.8923447,
+    "goal": "revise draft: Add a sentence about the deadline.",
+    "user_input": "revise draft: Add a sentence about the deadline.",
+    "action_taken": "draft_content",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "draft_content",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223410230",
+    "timestamp": 1793223410.230006,
+    "goal": "revise draft: Add a sentence about the deadline.",
+    "user_input": "revise draft: Add a sentence about the deadline.",
+    "action_taken": "draft_content",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "draft_content",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223410773",
+    "timestamp": 1793223410.7737865,
+    "goal": "Find my resume.",
+    "user_input": "Find my resume.",
+    "action_taken": "file_operation",
+    "outcome_status": "needs_clarification",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "file_operation",
+      "needs_clarification"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223411042",
+    "timestamp": 1793223411.042183,
+    "goal": "open 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_v4_conv_e4enqr7l/resume.docx'",
+    "user_input": "open 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_v4_conv_e4enqr7l/resume.docx'",
+    "action_taken": "file_operation",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_operation",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223416150",
+    "timestamp": 1793223416.150194,
+    "goal": "Send Rahul Sharma a message saying I will be 15 minutes late.",
+    "user_input": "Send Rahul Sharma a message saying I will be 15 minutes late.",
+    "action_taken": "whatsapp_send",
+    "outcome_status": "needs_confirmation",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "whatsapp_send",
+      "needs_confirmation"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223431374",
+    "timestamp": 1793223431.3748026,
+    "goal": "Send Rahul Sharma this exact message: I am outside the building",
+    "user_input": "Send Rahul Sharma this exact message: I am outside the building",
+    "action_taken": "whatsapp_send",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "whatsapp_send",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223431827",
+    "timestamp": 1793223431.8275442,
+    "goal": "Send Rahul Sharma a message saying I will be 15 minutes late.",
+    "user_input": "Send Rahul Sharma a message saying I will be 15 minutes late.",
+    "action_taken": "whatsapp_send",
+    "outcome_status": "needs_confirmation",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "whatsapp_send",
+      "needs_confirmation"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223445844",
+    "timestamp": 1793223445.8441007,
+    "goal": "Send 8591211342 this exact message: Safe transmission alpha",
+    "user_input": "Send 8591211342 this exact message: Safe transmission alpha",
+    "action_taken": "whatsapp_send",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "whatsapp_send",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223474796",
+    "timestamp": 1793223474.7967262,
+    "goal": null,
+    "user_input": "run urgent database migration",
+    "action_taken": "run_migration",
+    "outcome_status": "failure",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "run_migration",
+      "failure"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223476348",
+    "timestamp": 1793223476.3483043,
+    "goal": "delete entire project workspace",
+    "user_input": "delete entire project workspace",
+    "action_taken": "safety_gate",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "safety_gate",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223480943",
+    "timestamp": 1793223480.943317,
+    "goal": "send file 'C:/Users/Aditya Sawant/Desktop/edith_screenshot_20261029_030758.png' to 8591211342 on WhatsApp",
+    "user_input": "send file 'C:/Users/Aditya Sawant/Desktop/edith_screenshot_20261029_030758.png' to 8591211342 on WhatsApp",
+    "action_taken": "screen_understanding",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "screen_understanding",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223482861",
+    "timestamp": 1793223482.8618057,
+    "goal": "read file 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt'",
+    "user_input": "read file 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt'",
+    "action_taken": "file_read",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_read",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223482940",
+    "timestamp": 1793223482.9409876,
+    "goal": "append 'Phase 2 underway.' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt'",
+    "user_input": "append 'Phase 2 underway.' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_9j_zsy4a/mission_log.txt'",
+    "action_taken": "file_append",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_append",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223485803",
+    "timestamp": 1793223485.8031895,
+    "goal": null,
+    "user_input": "fetch user data",
+    "action_taken": "web_fetch",
+    "outcome_status": "failure",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "web_fetch",
+      "failure"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223486093",
+    "timestamp": 1793223486.093501,
+    "goal": null,
+    "user_input": "export user analytics report",
+    "action_taken": "export_csv",
+    "outcome_status": "success",
+    "verified": false,
+    "prediction_error": 0.6,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "export_csv",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223545546",
+    "timestamp": 1793223545.546755,
+    "goal": "maximize window",
+    "user_input": "maximize window",
+    "action_taken": "window_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "window_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223615730",
+    "timestamp": 1793223615.7304235,
+    "goal": "send file 'C:/Users/Aditya Sawant/Desktop/edith_screenshot_20261029_031015.png' to 8591211342 on WhatsApp",
+    "user_input": "send file 'C:/Users/Aditya Sawant/Desktop/edith_screenshot_20261029_031015.png' to 8591211342 on WhatsApp",
+    "action_taken": "whatsapp_send",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "whatsapp_send",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223617551",
+    "timestamp": 1793223617.551813,
+    "goal": "read file 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_j945v4mb/mission_log.txt'",
+    "user_input": "read file 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_j945v4mb/mission_log.txt'",
+    "action_taken": "file_read",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_read",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223617593",
+    "timestamp": 1793223617.5937352,
+    "goal": "append 'Phase 2 underway.' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_j945v4mb/mission_log.txt'",
+    "user_input": "append 'Phase 2 underway.' to 'C:/Users/ADITYA~1/AppData/Local/Temp/edith_test_v5_j945v4mb/mission_log.txt'",
+    "action_taken": "file_append",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "file_append",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793223814066",
+    "timestamp": 1793223814.0662143,
+    "goal": "maximize window",
+    "user_input": "maximize window",
+    "action_taken": "window_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "window_control",
+      "success"
+    ]
+  }
+]

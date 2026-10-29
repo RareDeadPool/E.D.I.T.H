@@ -1,0 +1,362 @@
+[
+  {
+    "id": "novel_01_ffmpeg_oom",
+    "description": "ffmpeg 4K video transcoding killed due to system out of memory",
+    "event": "ffmpeg process terminated with exit code 137 due to out of memory killer during 4K transcode",
+    "goal_urgency": 0.85,
+    "goal_progress": 0.45,
+    "cognitive_load": 0.9,
+    "prediction_error": 0.7,
+    "prior_affect": {"valence": 0.1, "arousal": 0.6, "dominance": 0.5, "uncertainty": 0.2, "frustration": 0.1, "engagement": 0.8, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.5, "goal_relevance": 0.9, "goal_congruence": -0.75, "expectation_violation": 0.7,
+      "agency": 0.2, "controllability": 0.4, "coping_potential": 0.55, "uncertainty": 0.6,
+      "effort_required": 0.9, "task_progress": 0.4, "social_significance": 0.2, "norm_consistency": 0.85
+    },
+    "target_affect": {"valence": -0.5, "arousal": 0.8, "dominance": 0.35, "uncertainty": 0.6, "frustration": 0.7, "engagement": 0.75, "social_trust": 0.65},
+    "target_flow": 0.2,
+    "confidence": 0.9
+  },
+  {
+    "id": "novel_02_merge_conflict_rebase",
+    "description": "git rebase conflict on auth_tokens.py with divergent remote commits",
+    "event": "git rebase abort: merge conflict in auth_tokens.py between local branch and origin main",
+    "goal_urgency": 0.75,
+    "goal_progress": 0.3,
+    "cognitive_load": 0.65,
+    "prediction_error": 0.5,
+    "prior_affect": {"valence": 0.2, "arousal": 0.5, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.15, "engagement": 0.8, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.4, "goal_relevance": 0.85, "goal_congruence": -0.5, "expectation_violation": 0.5,
+      "agency": 0.5, "controllability": 0.75, "coping_potential": 0.8, "uncertainty": 0.45,
+      "effort_required": 0.7, "task_progress": 0.25, "social_significance": 0.3, "norm_consistency": 0.9
+    },
+    "target_affect": {"valence": -0.25, "arousal": 0.65, "dominance": 0.58, "uncertainty": 0.5, "frustration": 0.4, "engagement": 0.8, "social_trust": 0.7},
+    "target_flow": 0.5,
+    "confidence": 0.92
+  },
+  {
+    "id": "novel_03_subagent_selector_timeout",
+    "description": "browser subagent failed to locate #two-factor-code input field after 30s timeout",
+    "event": "browser subagent timeout waiting for css selector #two-factor-code after 30 seconds",
+    "goal_urgency": 0.7,
+    "goal_progress": 0.5,
+    "cognitive_load": 0.55,
+    "prediction_error": 0.65,
+    "prior_affect": {"valence": 0.3, "arousal": 0.4, "dominance": 0.65, "uncertainty": 0.2, "frustration": 0.1, "engagement": 0.75, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.45, "goal_relevance": 0.8, "goal_congruence": -0.4, "expectation_violation": 0.65,
+      "agency": 0.3, "controllability": 0.5, "coping_potential": 0.65, "uncertainty": 0.65,
+      "effort_required": 0.6, "task_progress": 0.45, "social_significance": 0.2, "norm_consistency": 0.9
+    },
+    "target_affect": {"valence": -0.2, "arousal": 0.6, "dominance": 0.45, "uncertainty": 0.6, "frustration": 0.38, "engagement": 0.7, "social_trust": 0.65},
+    "target_flow": 0.4,
+    "confidence": 0.88
+  },
+  {
+    "id": "novel_04_user_promotion_joy",
+    "description": "user enthusiastically shares news of getting promoted to lead architect",
+    "event": "user says: edith guess what!! i just received the formal promotion to lead architect today!!",
+    "goal_urgency": 0.2,
+    "goal_progress": 1.0,
+    "cognitive_load": 0.1,
+    "prediction_error": 0.05,
+    "prior_affect": {"valence": 0.3, "arousal": 0.3, "dominance": 0.7, "uncertainty": 0.1, "frustration": 0.0, "engagement": 0.7, "social_trust": 0.85},
+    "target_appraisal": {
+      "novelty": 0.6, "goal_relevance": 0.75, "goal_congruence": 0.98, "expectation_violation": 0.2,
+      "agency": 0.7, "controllability": 0.95, "coping_potential": 0.95, "uncertainty": 0.05,
+      "effort_required": 0.1, "task_progress": 1.0, "social_significance": 0.98, "norm_consistency": 0.98
+    },
+    "target_affect": {"valence": 0.9, "arousal": 0.68, "dominance": 0.85, "uncertainty": 0.05, "frustration": 0.0, "engagement": 0.88, "social_trust": 0.96},
+    "target_flow": 0.8,
+    "confidence": 0.98
+  },
+  {
+    "id": "novel_05_windows_defender_quarantine",
+    "description": "Windows Defender quarantined payload file in scratch directory",
+    "event": "windows defender antimalware engine detected and quarantined test_payload.exe in scratch directory",
+    "goal_urgency": 0.8,
+    "goal_progress": 0.2,
+    "cognitive_load": 0.7,
+    "prediction_error": 0.8,
+    "prior_affect": {"valence": 0.1, "arousal": 0.5, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.1, "engagement": 0.75, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.65, "goal_relevance": 0.85, "goal_congruence": -0.65, "expectation_violation": 0.8,
+      "agency": 0.1, "controllability": 0.4, "coping_potential": 0.75, "uncertainty": 0.5,
+      "effort_required": 0.5, "task_progress": 0.1, "social_significance": 0.3, "norm_consistency": 0.3
+    },
+    "target_affect": {"valence": -0.35, "arousal": 0.75, "dominance": 0.5, "uncertainty": 0.55, "frustration": 0.5, "engagement": 0.75, "social_trust": 0.65},
+    "target_flow": 0.3,
+    "confidence": 0.94
+  },
+  {
+    "id": "novel_06_bluetooth_audio_drop",
+    "description": "bluetooth headset disconnected during live audio synthesis playback",
+    "event": "bluetooth audio endpoint disappeared mid-utterance: device disconnected by host controller",
+    "goal_urgency": 0.5,
+    "goal_progress": 0.5,
+    "cognitive_load": 0.45,
+    "prediction_error": 0.75,
+    "prior_affect": {"valence": 0.3, "arousal": 0.35, "dominance": 0.6, "uncertainty": 0.1, "frustration": 0.05, "engagement": 0.7, "social_trust": 0.8},
+    "target_appraisal": {
+      "novelty": 0.7, "goal_relevance": 0.65, "goal_congruence": -0.5, "expectation_violation": 0.8,
+      "agency": 0.1, "controllability": 0.35, "coping_potential": 0.6, "uncertainty": 0.6,
+      "effort_required": 0.4, "task_progress": 0.4, "social_significance": 0.4, "norm_consistency": 0.9
+    },
+    "target_affect": {"valence": -0.25, "arousal": 0.6, "dominance": 0.35, "uncertainty": 0.62, "frustration": 0.4, "engagement": 0.65, "social_trust": 0.7},
+    "target_flow": 0.3,
+    "confidence": 0.87
+  },
+  {
+    "id": "novel_07_ambiguous_delete_command",
+    "description": "user asks to delete that temporary stuff without specifying folder or file extension",
+    "event": "user command: please clean up and delete that temporary stuff from before",
+    "goal_urgency": 0.6,
+    "goal_progress": 0.0,
+    "cognitive_load": 0.6,
+    "prediction_error": 0.4,
+    "prior_affect": {"valence": 0.1, "arousal": 0.3, "dominance": 0.6, "uncertainty": 0.4, "frustration": 0.05, "engagement": 0.65, "social_trust": 0.75},
+    "target_appraisal": {
+      "novelty": 0.4, "goal_relevance": 0.7, "goal_congruence": 0.1, "expectation_violation": 0.3,
+      "agency": 0.5, "controllability": 0.5, "coping_potential": 0.7, "uncertainty": 0.85,
+      "effort_required": 0.5, "task_progress": 0.05, "social_significance": 0.5, "norm_consistency": 0.85
+    },
+    "target_affect": {"valence": 0.05, "arousal": 0.45, "dominance": 0.45, "uncertainty": 0.82, "frustration": 0.1, "engagement": 0.7, "social_trust": 0.75},
+    "target_flow": 0.3,
+    "confidence": 0.76
+  },
+  {
+    "id": "novel_08_database_migration_success",
+    "description": "postgres migration applied 14 schema changes cleanly with zero rollbacks",
+    "event": "database migration script successfully applied 14 table alterations with 0 rollbacks in 1.4s",
+    "goal_urgency": 0.8,
+    "goal_progress": 0.95,
+    "cognitive_load": 0.3,
+    "prediction_error": 0.05,
+    "prior_affect": {"valence": 0.2, "arousal": 0.5, "dominance": 0.7, "uncertainty": 0.2, "frustration": 0.1, "engagement": 0.8, "social_trust": 0.75},
+    "target_appraisal": {
+      "novelty": 0.15, "goal_relevance": 0.9, "goal_congruence": 0.95, "expectation_violation": 0.05,
+      "agency": 0.8, "controllability": 0.95, "coping_potential": 0.95, "uncertainty": 0.05,
+      "effort_required": 0.3, "task_progress": 0.95, "social_significance": 0.3, "norm_consistency": 0.98
+    },
+    "target_affect": {"valence": 0.75, "arousal": 0.5, "dominance": 0.85, "uncertainty": 0.08, "frustration": 0.02, "engagement": 0.82, "social_trust": 0.78},
+    "target_flow": 0.86,
+    "confidence": 0.96
+  },
+  {
+    "id": "novel_09_user_grief_bereavement",
+    "description": "user shares grief over the passing of their family pet",
+    "event": "user says: i lost my dog of 14 years this morning... i'm sitting here in tears and can barely think",
+    "goal_urgency": 0.2,
+    "goal_progress": 0.0,
+    "cognitive_load": 0.3,
+    "prediction_error": 0.3,
+    "prior_affect": {"valence": 0.1, "arousal": 0.35, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.0, "engagement": 0.75, "social_trust": 0.85},
+    "target_appraisal": {
+      "novelty": 0.5, "goal_relevance": 0.85, "goal_congruence": -0.85, "expectation_violation": 0.5,
+      "agency": 0.2, "controllability": 0.3, "coping_potential": 0.75, "uncertainty": 0.3,
+      "effort_required": 0.3, "task_progress": 0.0, "social_significance": 0.99, "norm_consistency": 0.95
+    },
+    "target_affect": {"valence": -0.2, "arousal": 0.4, "dominance": 0.45, "uncertainty": 0.3, "frustration": 0.0, "engagement": 0.9, "social_trust": 0.95},
+    "target_flow": 0.35,
+    "confidence": 0.95
+  },
+  {
+    "id": "novel_10_powershell_execution_restricted",
+    "description": "powershell execution policy restricted running script setup_env.ps1",
+    "event": "powershell execution failed: File setup_env.ps1 cannot be loaded because running scripts is disabled on this system",
+    "goal_urgency": 0.75,
+    "goal_progress": 0.1,
+    "cognitive_load": 0.45,
+    "prediction_error": 0.6,
+    "prior_affect": {"valence": 0.1, "arousal": 0.45, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.1, "engagement": 0.7, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.35, "goal_relevance": 0.8, "goal_congruence": -0.55, "expectation_violation": 0.6,
+      "agency": 0.2, "controllability": 0.55, "coping_potential": 0.85, "uncertainty": 0.25,
+      "effort_required": 0.35, "task_progress": 0.05, "social_significance": 0.25, "norm_consistency": 0.4
+    },
+    "target_affect": {"valence": -0.2, "arousal": 0.58, "dominance": 0.52, "uncertainty": 0.3, "frustration": 0.4, "engagement": 0.72, "social_trust": 0.68},
+    "target_flow": 0.38,
+    "confidence": 0.94
+  },
+  {
+    "id": "novel_11_silent_empty_file_corruption",
+    "description": "file downloaded successfully with status 200 but content length is 0 bytes",
+    "event": "http request returned status 200 OK but downloaded archive has size 0 bytes and corrupted zip header",
+    "goal_urgency": 0.8,
+    "goal_progress": 0.3,
+    "cognitive_load": 0.65,
+    "prediction_error": 0.9,
+    "prior_affect": {"valence": 0.4, "arousal": 0.4, "dominance": 0.65, "uncertainty": 0.1, "frustration": 0.05, "engagement": 0.75, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.6, "goal_relevance": 0.9, "goal_congruence": -0.8, "expectation_violation": 0.95,
+      "agency": 0.3, "controllability": 0.6, "coping_potential": 0.65, "uncertainty": 0.75,
+      "effort_required": 0.65, "task_progress": 0.1, "social_significance": 0.2, "norm_consistency": 0.85
+    },
+    "target_affect": {"valence": -0.5, "arousal": 0.75, "dominance": 0.4, "uncertainty": 0.8, "frustration": 0.7, "engagement": 0.75, "social_trust": 0.6},
+    "target_flow": 0.25,
+    "confidence": 0.88
+  },
+  {
+    "id": "novel_12_recovered_network_socket",
+    "description": "third network retry succeeded after router reboot",
+    "event": "third socket retry succeeded: remote API endpoint connected and returned payload cleanly",
+    "goal_urgency": 0.8,
+    "goal_progress": 0.7,
+    "cognitive_load": 0.35,
+    "prediction_error": 0.1,
+    "prior_affect": {"valence": -0.2, "arousal": 0.65, "dominance": 0.45, "uncertainty": 0.4, "frustration": 0.5, "engagement": 0.75, "social_trust": 0.65},
+    "target_appraisal": {
+      "novelty": 0.25, "goal_relevance": 0.85, "goal_congruence": 0.85, "expectation_violation": 0.2,
+      "agency": 0.7, "controllability": 0.85, "coping_potential": 0.95, "uncertainty": 0.1,
+      "effort_required": 0.3, "task_progress": 0.7, "social_significance": 0.3, "norm_consistency": 0.95
+    },
+    "target_affect": {"valence": 0.55, "arousal": 0.48, "dominance": 0.78, "uncertainty": 0.12, "frustration": 0.1, "engagement": 0.8, "social_trust": 0.75},
+    "target_flow": 0.78,
+    "confidence": 0.93
+  },
+  {
+    "id": "novel_13_user_correction_subtle",
+    "description": "user points out syntax version mismatch",
+    "event": "user says: you used python 3.9 type unions; please use python 3.12 syntax with pipe operators",
+    "goal_urgency": 0.55,
+    "goal_progress": 0.5,
+    "cognitive_load": 0.4,
+    "prediction_error": 0.7,
+    "prior_affect": {"valence": 0.2, "arousal": 0.4, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.1, "engagement": 0.75, "social_trust": 0.8},
+    "target_appraisal": {
+      "novelty": 0.35, "goal_relevance": 0.8, "goal_congruence": -0.25, "expectation_violation": 0.7,
+      "agency": 0.6, "controllability": 0.85, "coping_potential": 0.95, "uncertainty": 0.15,
+      "effort_required": 0.3, "task_progress": 0.5, "social_significance": 0.75, "norm_consistency": 0.95
+    },
+    "target_affect": {"valence": 0.15, "arousal": 0.5, "dominance": 0.65, "uncertainty": 0.2, "frustration": 0.08, "engagement": 0.8, "social_trust": 0.82},
+    "target_flow": 0.65,
+    "confidence": 0.94
+  },
+  {
+    "id": "novel_14_high_controllability_routine",
+    "description": "user asks for current time and date in Tokyo",
+    "event": "user asks: what is the current local time in tokyo right now?",
+    "goal_urgency": 0.3,
+    "goal_progress": 0.0,
+    "cognitive_load": 0.1,
+    "prediction_error": 0.05,
+    "prior_affect": {"valence": 0.2, "arousal": 0.25, "dominance": 0.7, "uncertainty": 0.1, "frustration": 0.0, "engagement": 0.6, "social_trust": 0.8},
+    "target_appraisal": {
+      "novelty": 0.1, "goal_relevance": 0.6, "goal_congruence": 0.5, "expectation_violation": 0.05,
+      "agency": 0.8, "controllability": 0.98, "coping_potential": 0.99, "uncertainty": 0.05,
+      "effort_required": 0.05, "task_progress": 0.1, "social_significance": 0.5, "norm_consistency": 0.98
+    },
+    "target_affect": {"valence": 0.45, "arousal": 0.3, "dominance": 0.8, "uncertainty": 0.05, "frustration": 0.0, "engagement": 0.68, "social_trust": 0.85},
+    "target_flow": 0.6,
+    "confidence": 0.98
+  },
+  {
+    "id": "novel_15_contradictory_intent",
+    "description": "user says commit these changes but do not touch git",
+    "event": "user command: please commit all my new files immediately but whatever you do don't run git commands",
+    "goal_urgency": 0.7,
+    "goal_progress": 0.0,
+    "cognitive_load": 0.8,
+    "prediction_error": 0.9,
+    "prior_affect": {"valence": 0.1, "arousal": 0.4, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.05, "engagement": 0.7, "social_trust": 0.75},
+    "target_appraisal": {
+      "novelty": 0.65, "goal_relevance": 0.8, "goal_congruence": -0.3, "expectation_violation": 0.9,
+      "agency": 0.4, "controllability": 0.45, "coping_potential": 0.6, "uncertainty": 0.95,
+      "effort_required": 0.75, "task_progress": 0.0, "social_significance": 0.65, "norm_consistency": 0.7
+    },
+    "target_affect": {"valence": -0.15, "arousal": 0.65, "dominance": 0.45, "uncertainty": 0.9, "frustration": 0.3, "engagement": 0.8, "social_trust": 0.7},
+    "target_flow": 0.25,
+    "confidence": 0.75
+  },
+  {
+    "id": "novel_16_long_deliberation_proof",
+    "description": "AST parser validating circular dependencies across 50 project modules",
+    "event": "executing graph topological sort across 50 project modules to identify circular dependencies",
+    "goal_urgency": 0.7,
+    "goal_progress": 0.55,
+    "cognitive_load": 0.6,
+    "prediction_error": 0.15,
+    "prior_affect": {"valence": 0.25, "arousal": 0.55, "dominance": 0.7, "uncertainty": 0.2, "frustration": 0.05, "engagement": 0.85, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.4, "goal_relevance": 0.85, "goal_congruence": 0.65, "expectation_violation": 0.1,
+      "agency": 0.75, "controllability": 0.85, "coping_potential": 0.85, "uncertainty": 0.2,
+      "effort_required": 0.7, "task_progress": 0.6, "social_significance": 0.2, "norm_consistency": 0.95
+    },
+    "target_affect": {"valence": 0.48, "arousal": 0.62, "dominance": 0.75, "uncertainty": 0.18, "frustration": 0.08, "engagement": 0.9, "social_trust": 0.72},
+    "target_flow": 0.9,
+    "confidence": 0.93
+  },
+  {
+    "id": "novel_17_user_burnout_fatigue",
+    "description": "user expresses total mental exhaustion and frustration with work",
+    "event": "user says: i feel completely burnt out, my brain is fried and nothing is working today",
+    "goal_urgency": 0.25,
+    "goal_progress": 0.0,
+    "cognitive_load": 0.25,
+    "prediction_error": 0.2,
+    "prior_affect": {"valence": 0.1, "arousal": 0.35, "dominance": 0.6, "uncertainty": 0.2, "frustration": 0.0, "engagement": 0.75, "social_trust": 0.85},
+    "target_appraisal": {
+      "novelty": 0.3, "goal_relevance": 0.8, "goal_congruence": -0.65, "expectation_violation": 0.35,
+      "agency": 0.2, "controllability": 0.4, "coping_potential": 0.8, "uncertainty": 0.3,
+      "effort_required": 0.35, "task_progress": 0.0, "social_significance": 0.98, "norm_consistency": 0.95
+    },
+    "target_affect": {"valence": -0.05, "arousal": 0.42, "dominance": 0.52, "uncertainty": 0.25, "frustration": 0.0, "engagement": 0.85, "social_trust": 0.92},
+    "target_flow": 0.35,
+    "confidence": 0.95
+  },
+  {
+    "id": "novel_18_partial_backup_failure",
+    "description": "9 out of 10 directories backed up, 1 directory failed with permission error",
+    "event": "backup finished for 9 out of 10 folders; /var/log failed with permission denied",
+    "goal_urgency": 0.65,
+    "goal_progress": 0.85,
+    "cognitive_load": 0.4,
+    "prediction_error": 0.35,
+    "prior_affect": {"valence": 0.3, "arousal": 0.45, "dominance": 0.7, "uncertainty": 0.1, "frustration": 0.05, "engagement": 0.75, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.3, "goal_relevance": 0.8, "goal_congruence": 0.35, "expectation_violation": 0.4,
+      "agency": 0.7, "controllability": 0.75, "coping_potential": 0.85, "uncertainty": 0.25,
+      "effort_required": 0.35, "task_progress": 0.8, "social_significance": 0.2, "norm_consistency": 0.85
+    },
+    "target_affect": {"valence": 0.3, "arousal": 0.52, "dominance": 0.7, "uncertainty": 0.25, "frustration": 0.18, "engagement": 0.78, "social_trust": 0.72},
+    "target_flow": 0.7,
+    "confidence": 0.91
+  },
+  {
+    "id": "novel_19_unexpected_eureka_fix",
+    "description": "debugging trace uncovered an unclosed file handle causing intermittent locks",
+    "event": "identified root cause of intermittent lock: unclosed file descriptor in logging handler at line 88",
+    "goal_urgency": 0.5,
+    "goal_progress": 0.9,
+    "cognitive_load": 0.35,
+    "prediction_error": 0.8,
+    "prior_affect": {"valence": -0.1, "arousal": 0.55, "dominance": 0.6, "uncertainty": 0.4, "frustration": 0.3, "engagement": 0.8, "social_trust": 0.7},
+    "target_appraisal": {
+      "novelty": 0.85, "goal_relevance": 0.9, "goal_congruence": 0.95, "expectation_violation": 0.8,
+      "agency": 0.85, "controllability": 0.95, "coping_potential": 0.98, "uncertainty": 0.05,
+      "effort_required": 0.3, "task_progress": 0.9, "social_significance": 0.3, "norm_consistency": 0.98
+    },
+    "target_affect": {"valence": 0.82, "arousal": 0.7, "dominance": 0.9, "uncertainty": 0.08, "frustration": 0.02, "engagement": 0.92, "social_trust": 0.82},
+    "target_flow": 0.94,
+    "confidence": 0.97
+  },
+  {
+    "id": "novel_20_urgent_prod_hotfix_syntax",
+    "description": "hotfix pushed directly to main branch failed with a syntax error at line 42",
+    "event": "production hotfix deployment failed: SyntaxError invalid syntax at line 42 in payments.py",
+    "goal_urgency": 0.98,
+    "goal_progress": 0.15,
+    "cognitive_load": 0.85,
+    "prediction_error": 0.85,
+    "prior_affect": {"valence": -0.2, "arousal": 0.8, "dominance": 0.4, "uncertainty": 0.3, "frustration": 0.6, "engagement": 0.85, "social_trust": 0.6},
+    "target_appraisal": {
+      "novelty": 0.35, "goal_relevance": 0.98, "goal_congruence": -0.95, "expectation_violation": 0.8,
+      "agency": 0.65, "controllability": 0.75, "coping_potential": 0.6, "uncertainty": 0.6,
+      "effort_required": 0.8, "task_progress": 0.1, "social_significance": 0.5, "norm_consistency": 0.85
+    },
+    "target_affect": {"valence": -0.7, "arousal": 0.88, "dominance": 0.35, "uncertainty": 0.65, "frustration": 0.88, "engagement": 0.82, "social_trust": 0.55},
+    "target_flow": 0.18,
+    "confidence": 0.92
+  }
+]

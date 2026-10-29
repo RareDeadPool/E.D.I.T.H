@@ -1,0 +1,108 @@
+{
+  "version": 203,
+  "timestamp": 1793281409.9153876,
+  "session_id": "edith_v5_main",
+  "perception": {
+    "current_interpretation": "chitchat -> respond_dialogue",
+    "entities": {},
+    "belief_confidence": 1.0,
+    "competing_interpretations": [],
+    "observed_events": [],
+    "inferred_events": [],
+    "prior_expectations": {
+      "expected_outcome": true,
+      "calibrated_confidence": 0.72,
+      "action": "respond_dialogue"
+    },
+    "detected_contradictions": []
+  },
+  "goals": {
+    "active_goal": "open notepad",
+    "desired_outcome": null,
+    "intermediate_objectives": [],
+    "priority": 0.4,
+    "urgency": 0.5,
+    "progress": 1.0,
+    "perceived_effort": 0.3,
+    "curiosity_drive": 0.5,
+    "completion_drive": 0.7,
+    "explore_vs_exploit": 0.4,
+    "clarification_need": 0.0,
+    "long_term_commitments": []
+  },
+  "condition": {
+    "attention_focus": "active_goal_flow",
+    "working_memory_occupancy": 0.0,
+    "task_complexity": 0.2,
+    "unresolved_questions": [],
+    "cognitive_load": 0.2,
+    "plan_confidence": 0.72,
+    "prediction_error": 0.0,
+    "error_accumulation": 0.0,
+    "task_switching_cost": 0.1,
+    "inhibition_active": false,
+    "deep_reasoning_needed": false
+  },
+  "momentary_affect": {
+    "valence": 0.6169366580303984,
+    "arousal": 0.4934546199139237,
+    "dominance": 0.6101689937468339,
+    "uncertainty": 0.20145027043672553,
+    "frustration": 0.0,
+    "engagement": 0.7279304077678797,
+    "social_trust": 0.8371776811872241
+  },
+  "baseline_mood": {
+    "valence": 0.4147047696579213,
+    "arousal": 0.5019758239810426,
+    "dominance": 0.642132862777526,
+    "uncertainty": 0.22651220089452676,
+    "frustration": 0.0,
+    "engagement": 0.7663391536819332,
+    "social_trust": 0.8214532724310982
+  },
+  "user_estimate": {
+    "detected_user_mood": "operational_neutral",
+    "user_valence": 0.0,
+    "user_arousal": 0.3,
+    "confidence_in_user_estimate": 0.6,
+    "perceived_user_goal": null,
+    "communicative_need": "collaborative_dialogue",
+    "preferred_directness": 0.7,
+    "prior_user_attempts": []
+  },
+  "operational": {
+    "cpu_percent": 25.0,
+    "memory_percent": 61.0,
+    "task_queue_depth": 0,
+    "recent_latency_ms": 50.0,
+    "retry_count": 0,
+    "consecutive_failures": 0,
+    "available_compute_budget": 0.651
+  },
+  "in_flow_state": true,
+  "flow_intensity": 0.663,
+  "last_appraisal_trace": {
+    "novelty": 0.2,
+    "goal_relevance": 0.55,
+    "goal_congruence": 0.85,
+    "expectation_violation": 0.05,
+    "agency": "user",
+    "controllability": 0.3,
+    "coping_potential": 0.25,
+    "uncertainty": 0.28,
+    "effort_required": 0.4,
+    "task_progress": 0.7,
+    "social_significance": 0.85,
+    "norm_consistency": 1.0,
+    "confidence": 0.72,
+    "provenance_notes": [
+      "Task succeeded and was verified closed-loop: highly goal-congruent",
+      "Outcome matched expectation",
+      "No immediate automated recovery available; requires clarification or user intervention",
+      "High social/interpersonal significance detected",
+      "Neural appraisal bypass/fallback: 'CognitiveState' object has no attribute 'affect'"
+    ]
+  },
+  "state_update_reason": "Congruence=+0.85, Violation=0.05, Coping=0.25 [neural_gru_fused] -> engaged_flow"
+}

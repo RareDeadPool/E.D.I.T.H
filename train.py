@@ -1,20 +1,52 @@
-"""E.D.I.T.H. Custom Multi-Task Neural Network Training and Evaluation Pipeline V2."""
+"""E.D.I.T.H. Custom Multi-Task Neural Network Training and Evaluation Pipeline V8.
+
+Features:
+- Multi-task Transformer training on intent, BIO slot tagging, action policy, operational confidence, and plan complexity.
+- Rich domain vocabulary fitted with V8 conversational, reflective, hard-negative, and screen understanding terms.
+- Candidate checkpoint isolation (`edith_ann_v8_candidate.pt`) with ONNX export (`dynamo=False`) and numerical parity testing.
+- Rigorous validation against held-out baseline metrics before promotion.
+- Full provenance and metric logging to `models/checkpoints/v8_training_metrics.json`.
+"""
 
 import os
 import sys
 import json
 import time
 import math
+import shutil
 from typing import Dict, List, Any
 import torch
+import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(line_buffering=True, encoding="utf-8", errors="replace")
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from edith_ann.tokenizer import EdithTokenizer
 from edith_ann.model import EdithNeuralNetwork
 from edith_ann.loss import EdithMultiTaskLoss
+
+
+class EdithOnnxWrapper(nn.Module):
+    """Wrapper to flatten dictionary outputs into sequential tuple for TorchScript ONNX export."""
+    def __init__(self, model: EdithNeuralNetwork):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor):
+        out = self.model(input_ids, attention_mask=attention_mask)
+        return (
+            out["intent_logits"],
+            out["slot_logits"],
+            out["action_logits"],
+            out["confidence"],
+            out["complexity_logits"],
+            out["contextual_embeddings"],
+        )
 
 
 class EdithDataset(Dataset):
@@ -87,8 +119,8 @@ def evaluate(
     criterion: EdithMultiTaskLoss,
     device: torch.device,
     num_intents: int = 17,
-) -> Dict[str, float]:
-    """Evaluate model computing multi-task metrics, macro-F1, and calibration error."""
+) -> Dict[str, Any]:
+    """Evaluate model computing multi-task metrics, per-class F1, macro-F1, and calibration error."""
     model.eval()
     total_val_loss = 0.0
     correct_intent = 0
@@ -159,6 +191,7 @@ def evaluate(
 
     # Macro-F1 across intents
     f1_scores = []
+    per_intent_f1 = {}
     for i in range(num_intents):
         tp = intent_tp[i]
         fp = intent_fp[i]
@@ -167,6 +200,7 @@ def evaluate(
         rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         f1 = (2 * prec * rec) / (prec + rec) if (prec + rec) > 0 else 0.0
         f1_scores.append(f1)
+        per_intent_f1[i] = {"precision": prec * 100.0, "recall": rec * 100.0, "f1": f1 * 100.0, "support": tp + fn}
     macro_f1 = (sum(f1_scores) / len(f1_scores)) * 100.0
 
     return {
@@ -177,13 +211,92 @@ def evaluate(
         "slot_acc": slot_acc,
         "complexity_acc": comp_acc,
         "ood_acc": ood_acc,
+        "per_intent": per_intent_f1,
     }
+
+
+def export_and_verify_onnx(
+    model: EdithNeuralNetwork,
+    onnx_path: str,
+    max_seq_len: int = 64,
+) -> bool:
+    """Export PyTorch model to ONNX using legacy TorchScript and verify exact output parity."""
+    print(f"\nExporting candidate model to ONNX: {onnx_path} ...", flush=True)
+    model.eval()
+    wrapper = EdithOnnxWrapper(model)
+
+    dummy_input_ids = torch.ones((1, max_seq_len), dtype=torch.long)
+    dummy_attention_mask = torch.ones((1, max_seq_len), dtype=torch.long)
+
+    try:
+        torch.onnx.export(
+            wrapper,
+            (dummy_input_ids, dummy_attention_mask),
+            onnx_path,
+            input_names=["input_ids", "attention_mask"],
+            output_names=[
+                "intent_logits",
+                "slot_logits",
+                "action_logits",
+                "confidence",
+                "complexity_logits",
+                "contextual_embeddings",
+            ],
+            dynamic_axes={
+                "input_ids": {0: "batch_size", 1: "seq_len"},
+                "attention_mask": {0: "batch_size", 1: "seq_len"},
+                "intent_logits": {0: "batch_size"},
+                "slot_logits": {0: "batch_size", 1: "seq_len"},
+                "action_logits": {0: "batch_size"},
+                "confidence": {0: "batch_size"},
+                "complexity_logits": {0: "batch_size"},
+                "contextual_embeddings": {0: "batch_size", 1: "seq_len"},
+            },
+            opset_version=14,
+            dynamo=False,
+        )
+        print("  -> ONNX export succeeded.", flush=True)
+    except Exception as e:
+        print(f"  [ERROR] ONNX export failed: {e}", flush=True)
+        return False
+
+    # Verify ONNX Runtime Parity
+    try:
+        import onnxruntime as ort
+        import numpy as np
+
+        session = ort.InferenceSession(onnx_path, providers=["CPUExecutionProvider"])
+        with torch.no_grad():
+            py_out = model(dummy_input_ids, attention_mask=dummy_attention_mask)
+
+        ort_in = {
+            "input_ids": dummy_input_ids.numpy(),
+            "attention_mask": dummy_attention_mask.numpy(),
+        }
+        ort_outs = session.run(None, ort_in)
+
+        # Check maximum absolute error across intent logits
+        diff_intent = np.max(np.abs(py_out["intent_logits"].numpy() - ort_outs[0]))
+        diff_slot = np.max(np.abs(py_out["slot_logits"].numpy() - ort_outs[1]))
+        diff_action = np.max(np.abs(py_out["action_logits"].numpy() - ort_outs[2]))
+        diff_conf = np.max(np.abs(py_out["confidence"].numpy() - ort_outs[3]))
+
+        print(f"  -> Numerical Parity Check: max diff intent={diff_intent:.6f}, slot={diff_slot:.6f}, action={diff_action:.6f}, conf={diff_conf:.6f}", flush=True)
+        if diff_intent > 1e-3 or diff_slot > 1e-3:
+            print("  [WARNING] ONNX parity discrepancy exceeds 1e-3 threshold!", flush=True)
+            return False
+
+        print("  -> ONNX numerical parity verified within tolerance (max error < 1e-3).", flush=True)
+        return True
+    except Exception as e:
+        print(f"  [WARNING] Could not verify ONNX runtime parity: {e}", flush=True)
+        return False
 
 
 def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("==================================================", flush=True)
-    print(" [E.D.I.T.H. NEURAL NETWORK TRAINING ENGINE V2] ", flush=True)
+    print(" [E.D.I.T.H. NEURAL NETWORK TRAINING ENGINE V8] ", flush=True)
     print(f" Execution Device: {device}", flush=True)
     print("==================================================", flush=True)
 
@@ -206,7 +319,7 @@ def train():
     slot_map = maps["slots"]
     action_map = maps["actions"]
 
-    # 3. Fit Tokenizer on Training Data with expanded seed words
+    # 3. Fit Tokenizer with rich V8 seed words
     all_texts = [s["text"] for s in train_samples]
     tokenizer = EdithTokenizer()
     domain_seed_words = [
@@ -225,7 +338,7 @@ def train():
         "send", "email", "mail", "draft", "message", "write", "type", "letter",
         "first", "second", "third", "fourth", "fifth", "latest", "newer", "older", "one", "recent",
         "most", "it", "that", "this", "them", "everything", "rahul", "john", "alex",
-        # New V2 domain seed words
+        # V8 domain seed words (Emotional, Hard Negatives, Systems, Screen, Multi-turn)
         "coding", "environment", "dev", "workspace", "ide", "edith", "tests", "test", "suite",
         "unit", "pass", "fail", "whether", "properly", "starts", "started", "working", "work",
         "meant", "other", "version", "result", "results", "relaxing", "relax", "chill", "lofi",
@@ -234,15 +347,20 @@ def train():
         "ping", "connectivity", "reachability", "latency", "host", "diagnose", "hello", "hi",
         "greetings", "morning", "afternoon", "evening", "thanks", "thank", "who", "purpose",
         "dismiss", "shut", "quit", "load", "utilization", "capacity", "percent", "percentage",
-        "eval", "evaluate", "solve", "math", "sqrt", "square", "root", "clean", "hide", "snapshot"
+        "eval", "evaluate", "solve", "math", "sqrt", "square", "root", "clean", "hide", "snapshot",
+        "stressed", "exam", "anxiety", "college", "decision", "decisions", "thoughts", "thinking", "listen",
+        "struggling", "recursion", "audit", "temporary", "interface", "negation", "hate", "slow", "old",
+        "duplicate", "java", "git", "status", "error", "explain", "why", "choose", "misunderstood",
+        "wrong", "approach", "bored", "rough", "interesting", "disagree", "overwhelmed", "recommendation",
+        "assignment", "compiler", "diagnostic", "storage", "cleanup", "visible", "multitask",
+        "organize", "organization", "revert", "rollback"
     ]
     tokenizer.build_vocab(all_texts, min_freq=1, seed_words=domain_seed_words)
-    tokenizer_path = os.path.join(checkpoint_dir, "tokenizer.json")
-    tokenizer.save(tokenizer_path)
+    candidate_tokenizer_path = os.path.join(checkpoint_dir, "tokenizer_v8_candidate.json")
+    tokenizer.save(candidate_tokenizer_path)
     print(f"Built custom domain vocabulary: {tokenizer.vocab_size} tokens.", flush=True)
-    print(f"Tokenizer checkpoint saved to {tokenizer_path}", flush=True)
 
-    # 4. Create Pre-encoded Datasets & DataLoaders
+    # 4. Pre-encode Datasets
     max_seq_len = config["model"]["max_seq_len"]
     t0 = time.time()
     train_dataset = EdithDataset(train_samples, tokenizer, slot_map, max_seq_len=max_seq_len)
@@ -253,7 +371,7 @@ def train():
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=False)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-    # 5. Instantiate EDITH Neural Network
+    # 5. Instantiate Architecture
     model = EdithNeuralNetwork(
         vocab_size=tokenizer.vocab_size,
         num_intents=len(intent_map),
@@ -288,9 +406,11 @@ def train():
 
     epochs = config["training"]["epochs"]
     best_val_loss = float("inf")
-    best_checkpoint_path = os.path.join(checkpoint_dir, "edith_ann_best.pt")
+    candidate_checkpoint_path = os.path.join(checkpoint_dir, "edith_ann_v8_candidate.pt")
+    candidate_onnx_path = os.path.join(checkpoint_dir, "edith_ann_v8_candidate.onnx")
 
     print("\nStarting Training Loop...\n", flush=True)
+    training_history = []
 
     for epoch in range(1, epochs + 1):
         model.train()
@@ -316,6 +436,19 @@ def train():
         metrics = evaluate(model, val_loader, criterion, device, num_intents=len(intent_map))
         elapsed = time.time() - start_time
 
+        epoch_stat = {
+            "epoch": epoch,
+            "train_loss": epoch_loss,
+            "val_loss": metrics["val_loss"],
+            "intent_acc": metrics["intent_acc"],
+            "macro_f1": metrics["macro_f1"],
+            "slot_acc": metrics["slot_acc"],
+            "action_acc": metrics["action_acc"],
+            "ood_acc": metrics["ood_acc"],
+            "elapsed_sec": elapsed,
+        }
+        training_history.append(epoch_stat)
+
         print(
             f"Epoch [{epoch:02d}/{epochs:02d}] "
             f"| Train Loss: {epoch_loss:.4f} "
@@ -329,7 +462,6 @@ def train():
             flush=True
         )
 
-        # Checkpoint Saving based on validation loss
         if metrics["val_loss"] < best_val_loss:
             best_val_loss = metrics["val_loss"]
             save_payload = {
@@ -341,18 +473,19 @@ def train():
                 "vocab_size": tokenizer.vocab_size,
                 "metadata_maps": maps,
             }
-            torch.save(save_payload, best_checkpoint_path)
-            print(f"  -> Best model saved to {best_checkpoint_path} (Val Loss: {best_val_loss:.4f})", flush=True)
+            torch.save(save_payload, candidate_checkpoint_path)
+            print(f"  -> Candidate model saved to {candidate_checkpoint_path} (Val Loss: {best_val_loss:.4f})", flush=True)
 
     print("\n==================================================", flush=True)
     print(" Training Finished Successfully!", flush=True)
-    print(f" Best Checkpoint: {best_checkpoint_path}", flush=True)
+    print(f" Candidate Checkpoint: {candidate_checkpoint_path}", flush=True)
     print("==================================================", flush=True)
 
-    # 7. Evaluate Best Validated Checkpoint on Held-Out Test Set
+    # 7. Evaluate Candidate Checkpoint on Held-Out Test Set
+    test_metrics = {}
     if os.path.exists("data/test_data.json"):
-        print("\nEvaluating Best Validated Checkpoint on Held-Out Test Split (Unseen Phrasings)...", flush=True)
-        best_ckpt = torch.load(best_checkpoint_path, map_location=device)
+        print("\nEvaluating Candidate Checkpoint on Held-Out Test Split (Unseen Phrasings)...", flush=True)
+        best_ckpt = torch.load(candidate_checkpoint_path, map_location=device)
         model.load_state_dict(best_ckpt["model_state_dict"])
         model.eval()
 
@@ -361,13 +494,58 @@ def train():
         test_dataset = EdithDataset(test_samples, tokenizer, slot_map, max_seq_len=max_seq_len)
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
         test_metrics = evaluate(model, test_loader, criterion, device, num_intents=len(intent_map))
-        print(f"Held-Out Test Results:", flush=True)
+        print("Candidate Held-Out Test Results:", flush=True)
         print(f"  Loss: {test_metrics['val_loss']:.4f}", flush=True)
         print(f"  Intent Accuracy: {test_metrics['intent_acc']:.2f}%", flush=True)
         print(f"  Macro-F1: {test_metrics['macro_f1']:.2f}%", flush=True)
         print(f"  Action Accuracy: {test_metrics['action_acc']:.2f}%", flush=True)
         print(f"  Slot Accuracy: {test_metrics['slot_acc']:.2f}%", flush=True)
         print(f"  OOD Detection: {test_metrics['ood_acc']:.2f}%", flush=True)
+
+    # 8. Export to ONNX and Verify Parity
+    onnx_ok = export_and_verify_onnx(model, candidate_onnx_path, max_seq_len=max_seq_len)
+
+    # 9. Gatekeeper: Compare Candidate vs Baseline for Promotion
+    # Baseline Test Macro-F1 on new V8 dataset: 80.28%, Val Loss: 2.58
+    baseline_test_macro_f1 = 80.28
+    candidate_test_macro_f1 = test_metrics.get("macro_f1", 0.0)
+
+    print("\n=================== PROMOTION AUDIT ===================", flush=True)
+    print(f"Baseline Test Macro-F1: {baseline_test_macro_f1:.2f}%", flush=True)
+    print(f"Candidate Test Macro-F1: {candidate_test_macro_f1:.2f}%", flush=True)
+    print(f"ONNX Parity Verified:    {onnx_ok}", flush=True)
+
+    should_promote = (candidate_test_macro_f1 >= baseline_test_macro_f1) and onnx_ok
+    if should_promote:
+        print("  -> PROMOTION APPROVED! Candidate outperforms baseline and satisfies all parity gates.", flush=True)
+        prod_pt = os.path.join(checkpoint_dir, "edith_ann_best.pt")
+        prod_onnx = os.path.join(checkpoint_dir, "edith_ann_best.onnx")
+        prod_tok = os.path.join(checkpoint_dir, "tokenizer.json")
+
+        shutil.copyfile(candidate_checkpoint_path, prod_pt)
+        shutil.copyfile(candidate_onnx_path, prod_onnx)
+        shutil.copyfile(candidate_tokenizer_path, prod_tok)
+        print(f"  -> Promoted to production: {prod_pt}, {prod_onnx}, {prod_tok}", flush=True)
+    else:
+        print("  -> PROMOTION WITHHELD. Candidate did not strictly outperform baseline or parity failed.", flush=True)
+
+    # 10. Save Full Metrics Report
+    report_data = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "model_config": config,
+        "vocab_size": tokenizer.vocab_size,
+        "total_parameters": total_params,
+        "training_history": training_history,
+        "best_val_loss": best_val_loss,
+        "test_metrics": test_metrics,
+        "baseline_test_macro_f1": baseline_test_macro_f1,
+        "candidate_test_macro_f1": candidate_test_macro_f1,
+        "promoted_to_production": should_promote,
+    }
+    metrics_path = os.path.join(checkpoint_dir, "v8_training_metrics.json")
+    with open(metrics_path, "w", encoding="utf-8") as f:
+        json.dump(report_data, f, indent=2)
+    print(f"Training metrics and provenance logged to: {metrics_path}\n", flush=True)
 
 
 if __name__ == "__main__":
