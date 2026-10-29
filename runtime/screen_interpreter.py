@@ -356,3 +356,17 @@ class ScreenInterpreter:
             return "Inspect argument types being passed into the failing function call — verify whether `None` or an unexpected type was supplied."
         else:
             return f"Review the stack trace above the error line and ensure all preconditions and variables are initialized before execution."
+
+    def interpret_screen(self, user_query: str = "") -> Any:
+        """Adapter method for executor and test suites returning grounded interpretation."""
+        res = self.interpret(user_query)
+
+        class ScreenInterpretationResult:
+            def __init__(self, data: Dict[str, Any]):
+                self.data = data
+                self.grounded_summary = data.get("message", "")
+
+            def to_dict(self) -> Dict[str, Any]:
+                return self.data
+
+        return ScreenInterpretationResult(res)

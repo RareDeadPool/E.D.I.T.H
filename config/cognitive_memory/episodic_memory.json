@@ -1,107 +1,5 @@
 [
   {
-    "episode_id": "ep_1793189462416",
-    "timestamp": 1793189462.416739,
-    "goal": "Left",
-    "user_input": "Left",
-    "action_taken": "system_control",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "system_control",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793189672373",
-    "timestamp": 1793189672.3730657,
-    "goal": "Left",
-    "user_input": "i miss my ex",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793218236500",
-    "timestamp": 1793218236.5008998,
-    "goal": "open calculator instead",
-    "user_input": "my python script has failed three times. can you fix it?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793218249392",
-    "timestamp": 1793218249.3928537,
-    "goal": "open calculator instead",
-    "user_input": "my python script has failed three times. can you fix it?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793218426566",
-    "timestamp": 1793218426.5660288,
-    "goal": "open calculator instead",
-    "user_input": "My Python script has failed three times. Can you fix it?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793218505662",
-    "timestamp": 1793218505.6621966,
-    "goal": "open calculator",
-    "user_input": "My Python script has failed three times. Can you fix it?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
     "episode_id": "ep_1793218639217",
     "timestamp": 1793218639.2172613,
     "goal": "open calculator",
@@ -1696,6 +1594,108 @@
     "lesson_learned": null,
     "context_tags": [
       "window_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793286642942",
+    "timestamp": 1793286642.9423695,
+    "goal": "what time is it",
+    "user_input": "I am feeling sad, so talk to me a bit",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793286667568",
+    "timestamp": 1793286667.5681658,
+    "goal": "what time is it",
+    "user_input": "My girlfriend left me, so I'm feeling sad, is talk to me or come on",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793287600934",
+    "timestamp": 1793287600.9344993,
+    "goal": "what time is it",
+    "user_input": "I am feeling sad, so talk to me a bit",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793287601023",
+    "timestamp": 1793287601.0230837,
+    "goal": "what time is it",
+    "user_input": "I cannot say anything at such, nothing interesting happened in my life today, but I still recall the days why I passed with my girlfriend, so I am sad of recalling them, please help me",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793287649397",
+    "timestamp": 1793287649.3979821,
+    "goal": "what is going on my screen",
+    "user_input": "I am feeling sad, so talk to me a bit",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793287649480",
+    "timestamp": 1793287649.4802413,
+    "goal": "what is going on my screen",
+    "user_input": "I cannot say anything at such, nothing interesting happened in my life today, but I still recall the days why I passed with my girlfriend, so I am sad of recalling them, please help me",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
       "success"
     ]
   }
