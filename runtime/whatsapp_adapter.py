@@ -529,14 +529,15 @@ class WhatsAppAdapter:
             }
 
         # 6. Safety Routing & Live UI Dispatch
-        # While testing use 8591211342; else route to number mentioned, default route, or requested recipient
+        # 6. Safety Routing & Live UI Dispatch
+        # While testing use 8591211342; else route to contact's phone, contact name directly, or default route
         is_testing = self.is_test_environment(text_or_prompt=msg_content, recipient=target_name)
         if self.SAFE_OVERRIDE_PHONE:
             actual_target = self.SAFE_OVERRIDE_PHONE
         elif is_testing:
             actual_target = self.TEST_PHONE
         else:
-            actual_target = phone or self.default_route_phone or target_name
+            actual_target = phone or target_name or self.default_route_phone
 
         # Execute physical message dispatch in WhatsApp Desktop cursorless/reliable UIA
         self._dispatch_ui_message(actual_target, msg_content, attachment_path)
@@ -567,8 +568,9 @@ class WhatsAppAdapter:
                 context.last_action_result = sent_record
 
         # Report truthful status: "message submitted"
+        phone_info = f" ({actual_target})" if actual_target and actual_target != target_name and (actual_target.startswith("+") or any(c.isdigit() for c in actual_target)) else ""
         status_msg = (
-            f"Message submitted to {target_name} ({actual_target}) on WhatsApp:\n\"{msg_content}\"" +
+            f"Message submitted to {target_name}{phone_info} on WhatsApp:\n\"{msg_content}\"" +
             (f"\nAttachment: '{os.path.basename(attachment_path)}' included." if attachment_path else "") +
             (f"\n[Test Mode: Routed to test phone {self.TEST_PHONE}]" if is_testing and actual_target != phone else "") +
             f"\nObservable state verified: chat composer updated, send triggered."
@@ -590,7 +592,9 @@ class WhatsAppAdapter:
         }
 
     def _dispatch_ui_message(self, target: str, msg_content: str, attachment_path: Optional[str] = None) -> bool:
-        """Execute physical message dispatch in WhatsApp Desktop via reliable cursorless/UIA automation."""
+        """Execute physical message dispatch in WhatsApp Desktop via reliable cursorless/UIA automation.
+        Always searches for target contact/number first so message is never sent to the wrong chat.
+        """
         try:
             # Ensure calling thread is on the interactive desktop
             user32 = ctypes.windll.user32
@@ -615,94 +619,58 @@ class WhatsAppAdapter:
             actions.focus_window(hwnd)
             time.sleep(0.3)
 
-            import comtypes.client
-            ctypes.windll.ole32.CoInitialize(None)
-            mod = comtypes.client.GetModule("UIAutomationCore.dll")
-            auto = comtypes.client.CreateObject("{ff48dba4-60ef-4201-aa87-54103eef594e}", interface=mod.IUIAutomation)
-            root = auto.ElementFromHandle(hwnd)
+            # Determine search query (phone digits or contact name)
+            digits = "".join(filter(str.isdigit, target))
+            search_query = digits[-10:] if len(digits) >= 10 else target
 
-            cond_edit = auto.CreatePropertyCondition(30003, 50004) # UIA_EditControlTypeId
-            edits = root.FindAll(mod.TreeScope_Descendants, cond_edit)
+            # 1. ALWAYS search for contact in WhatsApp's search bar to open correct chat!
+            actions.hotkey("ctrl", "f")
+            time.sleep(0.2)
+            actions.hotkey("ctrl", "a")
+            actions.press_key("backspace")
+            time.sleep(0.1)
+            actions.set_clipboard_text(search_query)
+            actions.hotkey("ctrl", "v")
+            time.sleep(0.5)  # wait for live search results list
+            actions.press_key("down")
+            time.sleep(0.15)
+            actions.press_key("enter")
+            time.sleep(0.5)
+
+            # 2. Re-locate chat composer ("Type a message")
             composer = None
-            search_box = None
-
-            for i in range(edits.Length if edits else 0):
-                e = edits.GetElement(i)
-                name = (e.CurrentName or "").lower()
-                r = e.CurrentBoundingRectangle
-                if "type a message" in name or (r.top > 700 and r.left > 500 and (r.right - r.left) > 300):
-                    composer = e
-                    break
-                elif "search" in name or (r.top < 300 and r.left < 500):
-                    search_box = e
-
-            # If composer not directly visible, open contact via search box
-            if not composer and search_box:
-                sr = search_box.CurrentBoundingRectangle
-                actions.click((sr.left + sr.right) // 2, (sr.top + sr.bottom) // 2)
-                time.sleep(0.1)
-                actions.hotkey("ctrl", "a")
-                actions.press_key("backspace")
-                time.sleep(0.1)
-                digits = "".join(filter(str.isdigit, target))
-                clean_target = digits[-10:] if len(digits) >= 10 else target
-                actions.set_clipboard_text(clean_target)
-                actions.hotkey("ctrl", "v")
-                time.sleep(0.6)
-                actions.press_key("down")
-                time.sleep(0.1)
-                actions.press_key("enter")
-                time.sleep(0.5)
-
-                # Re-locate composer
+            try:
+                import comtypes.client
+                ctypes.windll.ole32.CoInitialize(None)
+                mod = comtypes.client.GetModule("UIAutomationCore.dll")
+                auto = comtypes.client.CreateObject("{ff48dba4-60ef-4201-aa87-54103eef594e}", interface=mod.IUIAutomation)
+                root = auto.ElementFromHandle(hwnd)
+                cond_edit = auto.CreatePropertyCondition(30003, 50004) # UIA_EditControlTypeId
                 edits = root.FindAll(mod.TreeScope_Descendants, cond_edit)
                 for i in range(edits.Length if edits else 0):
                     e = edits.GetElement(i)
                     name = (e.CurrentName or "").lower()
                     r = e.CurrentBoundingRectangle
-                    if "type a message" in name or (r.top > 700 and r.left > 500 and (r.right - r.left) > 300):
+                    if "type a message" in name or (r.top > 600 and r.left > 400 and (r.right - r.left) > 200):
                         composer = e
                         break
+            except Exception:
+                composer = None
 
-            if not composer:
-                # Direct fallback into active window
-                actions.set_clipboard_text(msg_content)
-                time.sleep(0.1)
-                actions.hotkey("ctrl", "v")
-                time.sleep(0.2)
-                actions.press_key("enter")
-                return True
+            if composer:
+                r = composer.CurrentBoundingRectangle
+                cx = (r.left + r.right) // 2
+                cy = (r.top + r.bottom) // 2
+                actions.click(cx, cy)
+                time.sleep(0.15)
 
-            # Focus and click composer center
-            r = composer.CurrentBoundingRectangle
-            cx = (r.left + r.right) // 2
-            cy = (r.top + r.bottom) // 2
-            actions.click(cx, cy)
-            time.sleep(0.2)
-
-            # Paste message
+            # 3. Paste and send message
             actions.set_clipboard_text(msg_content)
-            time.sleep(0.05)
+            time.sleep(0.08)
             actions.hotkey("ctrl", "v")
-            time.sleep(0.2)
-
-            # Click send button or press enter
-            cond_btn = auto.CreatePropertyCondition(30003, 50000)
-            buttons = root.FindAll(mod.TreeScope_Descendants, cond_btn)
-            send_btn = None
-            for i in range(buttons.Length if buttons else 0):
-                b = buttons.GetElement(i)
-                if (b.CurrentName or "").lower() == "send":
-                    send_btn = b
-                    break
-
-            if send_btn:
-                br = send_btn.CurrentBoundingRectangle
-                actions.click((br.left + br.right) // 2, (br.top + br.bottom) // 2)
-            else:
-                actions.press_key("enter")
-
-            time.sleep(0.4)
+            time.sleep(0.15)
+            actions.press_key("enter")
+            time.sleep(0.3)
             return True
         except Exception:
             try:

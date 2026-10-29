@@ -64,6 +64,7 @@ class ContactResolver:
 
     DEFAULT_CONTACTS = [
         Contact(name="Test Recipient", phone="+918591211342", role="test", aliases=["test", "test recipient", "8591211342", "+918591211342", "tester"]),
+        Contact(name="Sakshi", role="friend", aliases=["sakshi", "saksi", "sekshi", "shakshi", "suxie"]),
         Contact(name="Rahul Sharma", phone="+919876543210", role="colleague", aliases=["rahul", "rahul sharma"]),
         Contact(name="Rahul Verma", phone="+919811223344", role="college friend", aliases=["rahul verma"]),
         Contact(name="Mom", phone="+919822334455", role="mom", aliases=["mother", "mummy", "maa"]),
@@ -155,7 +156,8 @@ class ContactResolver:
         extracted_text = None
         is_exact = False
 
-        q_work = re.sub(r"^(?:can\s+you\s+(?:please\s+)?|could\s+you\s+(?:please\s+)?|please\s+)", "", q, flags=re.IGNORECASE).strip()
+        q_work = re.sub(r"^(?:can\s+you\s+(?:please\s+)?|could\s+you\s+(?:please\s+)?|please\s+|and\s+|also\s+|now\s+)", "", q, flags=re.IGNORECASE).strip()
+        q_work = re.sub(r"^(message|whatsapp|text),\s*", r"\1 ", q_work, flags=re.IGNORECASE)
 
         # 2. Extract Exact Quoted Dictation (Preserves inner instructions like "open the browser")
         # e.g., Tell Rahul 'open the browser when you reach home'
@@ -248,6 +250,74 @@ class ContactResolver:
                 recipient_candidate = m_redir.group(1).strip()
                 extracted_text = None
 
+        # 7b. Pattern: Recipient Correction Directive
+        # e.g. "No I don't want to message any of our, I want to message Sakshi", "not our, message Sakshi"
+        if not recipient_candidate:
+            m_correct = re.search(
+                r"^(?:no,?\s+)?(?:i\s+don't\s+want\s+to\s+message\s+(?:any\s+of\s+)?[a-zA-Z0-9_\-\s]+?,?\s+)?(?:i\s+(?:want\s+to\s+|meant\s+to\s+)?message\s+(?:a\s+person\s+(?:spelled\s+)?)?|not\s+[a-zA-Z0-9_\-\s]+?,?\s+(?:message\s+)?|cancel\s+that,?\s+(?:message\s+)?|i\s+meant\s+)([a-zA-Z0-9_\-\+]+)(?:\s+(?:on|via)\s+whatsapp)?(?:\s+instead)?(?:\s+(.+))?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_correct:
+                action_type = "send"
+                recipient_candidate = m_correct.group(1).strip()
+                extracted_text = m_correct.group(2).strip() if m_correct.group(2) else None
+
+        # Hinglish Pattern H1: "<RECIPIENT> ko (whatsapp|message|text) (bhejo|karo|kar do|daalo|send karo) [ki/saying/that <TEXT>]"
+        # e.g. "sakshi ko whatsapp message bhejo ki i miss her", "rahul ko message bhejo", "sakshi ko whatsapp karo"
+        if not recipient_candidate:
+            m_h1 = re.search(
+                r"^(?:the\s+|my\s+)?([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)\s+ko\s+(?:ek\s+)?(?:whatsapp\s+)?(?:message|text)?\s*(?:bhejo|karo|kar\s+do|daalo|send\s+karo)(?:\s+(?:ki|saying|that|with\s+text)\s+(.+))?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_h1:
+                action_type = "send"
+                recipient_candidate = m_h1.group(1).strip()
+                extracted_text = m_h1.group(2).strip() if m_h1.group(2) else None
+
+        # Hinglish Pattern H2: "(whatsapp|message|text) (bhejo|karo|kar do|send karo) <RECIPIENT> ko [ki/saying/that <TEXT>]"
+        # e.g. "message bhejo sakshi ko ki kahan ho", "whatsapp karo rahul ko"
+        if not recipient_candidate:
+            m_h2 = re.search(
+                r"^(?:ek\s+)?(?:whatsapp\s*(?:message|text)?\s*|(?:message|text)\s+)(?:bhejo|karo|kar\s+do|send\s+karo)\s+([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)\s*(?:ko)?(?:\s+(?:ki|saying|that|with\s+text)\s+(.+))?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_h2:
+                action_type = "send"
+                recipient_candidate = m_h2.group(1).strip()
+                extracted_text = m_h2.group(2).strip() if m_h2.group(2) else None
+
+        # Hinglish Pattern H3: "<RECIPIENT> ko (bolo|batao|kaho) [ki/saying/that <TEXT>]"
+        # e.g. "sakshi ko bolo ki call kare"
+        if not recipient_candidate:
+            m_h3 = re.search(
+                r"^(?:the\s+|my\s+)?([a-zA-Z0-9_\-\+]+(?:\s+[a-zA-Z0-9_\-\+]+)?)\s+ko\s+(?:bolo|batao|kaho)(?:\s+(?:ki|saying|that)\s+(.+))?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_h3:
+                action_type = "send"
+                recipient_candidate = m_h3.group(1).strip()
+                extracted_text = m_h3.group(2).strip() if m_h3.group(2) else None
+
+        # Direct Spoken Form: "<RECIPIENT>,? (whatsapp message|whatsapp|message),? [TEXT]"
+        # e.g. "sakshi, whatsapp message, what time is it", "sakshi, whatsapp: i miss her"
+        if not recipient_candidate:
+            m_dir = re.search(
+                r"^([a-zA-Z0-9_\-\+]+),?\s+(?:whatsapp\s+message|message\s+on\s+whatsapp|whatsapp|message),?\s*(?:[:\-]\s*)?(.+)?$",
+                q_work,
+                re.IGNORECASE
+            )
+            if m_dir:
+                cand_r = m_dir.group(1).strip()
+                cand_t = m_dir.group(2).strip() if m_dir.group(2) else None
+                if cand_r.lower() not in ["send", "draft", "write", "compose", "the", "a", "an", "ping", "karo", "bhejo"]:
+                    action_type = "send"
+                    recipient_candidate = cand_r
+                    extracted_text = cand_t
+
         # 8. Pattern: "Send <TEXT> to <RECIPIENT>"
         if not extracted_text:
             m_send_to = re.search(
@@ -300,6 +370,13 @@ class ContactResolver:
                     if two_w in known_matches or two_w in ["project group", "test recipient"]:
                         cand_rec = f"{cand_rec} {parts[0]}"
                         cand_extra = parts[1].strip() if len(parts) > 1 else None
+
+                # Check if cand_extra is just "on whatsapp" or "via whatsapp"
+                if cand_extra:
+                    m_on_wa = re.match(r"^(?:on|via|through)\s+whatsapp(?:\s+(?:saying|that|about|with\s+text)?\s*(.+))?$", cand_extra, re.IGNORECASE)
+                    if m_on_wa:
+                        cand_extra = m_on_wa.group(1).strip() if m_on_wa.group(1) else None
+
                 recipient_candidate = cand_rec
                 extracted_text = cand_extra
 
@@ -308,16 +385,26 @@ class ContactResolver:
             recipient_candidate = re.sub(r"^(?:a\s+message\s+to\s+|message\s+to\s+|to\s+)", "", recipient_candidate, flags=re.IGNORECASE).strip()
             recipient_candidate = re.sub(r"^(?:the\s+)?(?:contact\s+|person\s+|group\s+)?", "", recipient_candidate, flags=re.IGNORECASE).strip()
             recipient_candidate = re.sub(r"^(?:my\s+)", "", recipient_candidate, flags=re.IGNORECASE).strip()
-            # Remove trailing words like 'on whatsapp', 'via whatsapp'
+            # Remove trailing words like 'on whatsapp', 'via whatsapp', ' ko'
             recipient_candidate = re.sub(r"\s+(?:on|via|through)\s+whatsapp.*$", "", recipient_candidate, flags=re.IGNORECASE).strip()
-            if recipient_candidate.lower() in ["a", "an", "the", "a recipient", "someone", "recipient", "person", "contact", "anybody"]:
+            recipient_candidate = re.sub(r"\s+ko$", "", recipient_candidate, flags=re.IGNORECASE).strip()
+            pronoun_blacklist = [
+                "a", "an", "the", "a recipient", "someone", "recipient", "person", "contact", "anybody", "nobody",
+                "our", "any of our", "their", "my", "your", "his", "her", "any", "some", "all", "each", "one",
+                "this", "that", "these", "those", "who", "a person", "the person", "a contact", "the contact",
+                "a text", "the text", "a message", "the message", "message", "text", "draft", "note", "whatsapp",
+                "whatsapp message", "a whatsapp message", "karo", "bhejo", "daalo", "bolo"
+            ]
+            if recipient_candidate.lower() in pronoun_blacklist:
                 recipient_candidate = None
 
         # 11. Clean up extracted text
         if extracted_text:
             # Strip outer quotes if present
             extracted_text = re.sub(r'^["\']|["\']$', '', extracted_text).strip()
-            if re.match(r"^(?:a\s+)?(?:whatsapp\s+)?(?:message|text|note|draft)$", extracted_text, re.IGNORECASE):
+            # Strip leading conversational markers like "ki ", "saying ", "that "
+            extracted_text = re.sub(r"^(?:ki\s+|saying\s+|that\s+|about\s+|with\s+text\s+)", "", extracted_text, flags=re.IGNORECASE).strip()
+            if re.match(r"^(?:a\s+)?(?:whatsapp\s+)?(?:message|text|note|draft)$", extracted_text, re.IGNORECASE) or extracted_text.lower() in ["on whatsapp", "via whatsapp"]:
                 extracted_text = None
 
         return {
