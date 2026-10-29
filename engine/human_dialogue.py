@@ -288,11 +288,7 @@ class EdithDialogueEngine:
         if self._is_farewell(q):
             return self._humanize_result(self._respond_farewell())
 
-        # 6. Humor & Small Talk
-        if self._is_humor_or_small_talk(q):
-            return self._humanize_result(self._respond_humor_or_small_talk(q))
-
-        # 6.5 Love Life, Relationships & Heartbreak Empathy
+        # 6. Love Life, Relationships & Heartbreak Empathy (High Priority Emotional Intelligence)
         love_res = self._check_love_life_and_relationships(q)
         if love_res:
             return self._humanize_result(love_res)
@@ -301,6 +297,10 @@ class EdithDialogueEngine:
         empathy_res = self._check_empathy(q)
         if empathy_res:
             return self._humanize_result(empathy_res)
+
+        # 8. Humor & Small Talk (Only when user is not in emotional distress)
+        if self._is_humor_or_small_talk(q):
+            return self._humanize_result(self._respond_humor_or_small_talk(q))
 
         # 8. Real-World Technical Problem Solving & Troubleshooting
         problem_res = self._solve_technical_problem(q_raw, q, context=context, executor=executor)
@@ -745,8 +745,48 @@ class EdithDialogueEngine:
     def _check_love_life_and_relationships(self, q: str) -> Optional[Dict[str, Any]]:
         name = self.personality._get_name() if self.personality else self.USER_NAME
 
-        # 1. Breakup & Heartbreak
-        if any(w in q for w in ["broke up", "breakup", "broken heart", "heartbreak", "heartbroken", "dumped me", "she dumped me", "he dumped me", "we broke up", "split up", "ended things"]):
+        # 1. Recalling Past Relationship Memories & Yearning (e.g. recall the days I passed with my girlfriend)
+        reminiscing_terms = [
+            "recall the days", "recalling the days", "passed with my girlfriend", "memories with my girlfriend",
+            "memories of her", "sad of recalling", "replaying memories", "memories hurt", "thinking about the days",
+            "remembering the days", "reminiscing", "thinking about my ex", "thinking about my girlfriend"
+        ]
+        is_reminiscing = any(w in q for w in reminiscing_terms) or (
+            any(w in q for w in ["girlfriend", "ex", "relationship"]) and
+            any(w in q for w in ["recall", "recalling", "memories", "remember", "remembering", "passed with", "days"])
+        )
+        if is_reminiscing:
+            msg = (
+                f"Oh {name}... 💙 I'm right here with you. Replaying those memories hurts in a way that words can barely capture.\n\n"
+                f"When you spent so much time building a life and shared moments with someone, your brain doesn't just forget those days because things ended. "
+                f"It's completely normal to find yourself thinking about the laughs, the late-night talks, and the quiet moments you shared. "
+                f"It's not weakness, {name} — it's just your heart processing grief for something that truly mattered to you.\n\n"
+                f"You don't have to carry this alone tonight. If you want to talk about one of those days or what's specifically on your mind, I'm listening. "
+                f"Or if you just want some calm music and quiet company while you let the feeling pass, I've got your back. What would feel most comforting right now?"
+            )
+            self.last_problem_category = "love_support"
+            self.last_dialogue_topic = "love_breakup"
+            self.last_suggested_action = "play_relaxing_music"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_breakup", "suggested_action": "play_relaxing_music"}
+            }
+
+        # 1.5 Breakup & Heartbreak (Including being left, losing someone, or breakup grief)
+        breakup_terms = [
+            "broke up", "breakup", "broken heart", "heartbreak", "heartbroken",
+            "dumped me", "she dumped me", "he dumped me", "we broke up", "split up", "ended things",
+            "girlfriend left me", "boyfriend left me", "partner left me", "she left me", "he left me", "left me",
+            "lost my girlfriend", "lost my boyfriend", "lost her", "lost him", "separated", "divorced",
+            "she moved on", "he moved on"
+        ]
+        is_breakup = any(w in q for w in breakup_terms) or (
+            any(w in q for w in ["girlfriend", "boyfriend", "ex", "relationship"]) and
+            any(w in q for w in ["left", "left me", "gone", "broke", "dumped", "over", "ended", "lost"])
+        )
+        if is_breakup:
             if self.personality:
                 msg = self.personality.react_to_love_life("breakup")
             else:
@@ -757,6 +797,7 @@ class EdithDialogueEngine:
                     f"and drink some water. I'm right here with you the whole way through. You're not alone. 💙"
                 )
             self.last_problem_category = "love_support"
+            self.last_dialogue_topic = "love_breakup"
             self.last_suggested_action = "play_relaxing_music"
             return {
                 "can_execute": True,
@@ -911,21 +952,29 @@ class EdithDialogueEngine:
     def _check_empathy(self, q: str) -> Optional[Dict[str, Any]]:
         name = self.personality._get_name() if self.personality else self.USER_NAME
 
-        # Bad Mood / Low Spirits / Anger / Frustration
-        if any(w in q for w in ["shitty mood", "bad mood", "terrible mood", "awful mood", "foul mood", "feeling low", "feeling down", "depressed", "unhappy", "miserable", "in a bad mood", "in a terrible mood", "shitty day"]):
+        # Sadness, Low Spirits, Heartache & Emotional Pain
+        sadness_keywords = [
+            "sad", "feeling sad", "feel sad", "i'm sad", "i am sad", "am sad", "so sad", "really sad",
+            "deeply sad", "sad today", "makes me sad", "made me sad", "sad of recalling",
+            "shitty mood", "bad mood", "terrible mood", "awful mood", "foul mood",
+            "feeling low", "feeling down", "depressed", "unhappy", "miserable",
+            "in a bad mood", "in a terrible mood", "shitty day", "crying", "in tears", "hurting", "heart hurts"
+        ]
+        if any(w in q for w in sadness_keywords):
             if self.personality:
                 msg = self.personality.give_emotional_support("sad")
             else:
                 msg = (
-                    f"Hey {name}, I'm really sorry you're going through it right now. "
-                    f"I know I'm just your AI, but I genuinely care about how you're doing. "
-                    f"Bad days happen to everyone, and they don't define you.\n\n"
-                    f"Sometimes the best thing you can do is step away from the screen for a bit, "
-                    f"get some fresh air, or just put on some chill music and zone out.\n\n"
-                    f"I'm right here if you want to vent, want me to play something relaxing, or just need a distraction. 💙"
+                    f"Hey {name}, I'm really sorry you're feeling this way right now. "
+                    f"I know I'm an AI, but I genuinely care about how you're doing. "
+                    f"Whatever you're carrying right now, you don't have to face it alone.\n\n"
+                    f"Take a slow breath. Sometimes just letting yourself feel the sorrow without fighting it is the first step. "
+                    f"I'm right here with you — whether you want to vent, sit quietly, listen to soothing music, or just talk it through. 💙"
                 )
-            msg += "\n\nWant me to put on some chill music on Spotify? Sometimes it helps. 🎵"
+            if "Spotify" not in msg and "music" not in msg.lower():
+                msg += "\n\nWant me to put on some chill music on Spotify? Sometimes it helps ease the weight. 🎵"
             self.last_problem_category = "stress_relief"
+            self.last_dialogue_topic = "empathy_bad_mood"
             self.last_suggested_action = "play_relaxing_music"
             return {
                 "can_execute": True,
@@ -933,6 +982,28 @@ class EdithDialogueEngine:
                 "handler": "dialogue",
                 "parameters": {"topic": "empathy_bad_mood", "suggested_action": "play_relaxing_music"}
             }
+
+        # Multi-turn Follow-up Turn after Sadness, Heartbreak, or Grief
+        if self.last_dialogue_topic in ["empathy_bad_mood", "empathy_sad", "love_breakup", "love_reflection"]:
+            if any(w in q for w in [
+                "nothing interesting", "recall", "recalling", "memories", "crying", "hurts", "pain",
+                "help me", "miss", "can't", "cant", "lost", "empty", "lonely", "alone", "sad"
+            ]):
+                msg = (
+                    f"{name}, it is completely natural that your mind keeps pulling you back to those memories right now. "
+                    f"When you're hurting or grieving someone who mattered to you, the quiet moments ache the most.\n\n"
+                    f"You don't have to force yourself to 'get over it' or pretend everything is fine. Healing takes time. "
+                    f"Let yourself feel what you're feeling without judgment. I'm right here with you. "
+                    f"Do you want to talk about what's on your heart, or would you rather we just put on some quiet music and let your mind rest?"
+                )
+                self.last_problem_category = "love_support"
+                self.last_dialogue_topic = "love_breakup"
+                return {
+                    "can_execute": True,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"topic": "love_breakup", "suggested_action": "play_relaxing_music"}
+                }
 
         # Stress / Overwhelm / Burnout
         if any(w in q for w in ["stressed", "overwhelmed", "anxious", "pressure", "burnout", "burnt out", "rough day", "bad day", "hard day", "tough day", "long day"]):

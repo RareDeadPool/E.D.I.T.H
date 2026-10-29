@@ -483,11 +483,21 @@ class EdithTaskExecutor:
             return {"status": "error", "message": "ScreenInterpreter is unavailable."}
 
         query = params.get("query", "")
-        interpretation = self.screen_interpreter.interpret_screen(user_query=query)
+        if hasattr(self.screen_interpreter, "interpret_screen"):
+            interpretation = self.screen_interpreter.interpret_screen(user_query=query)
+        else:
+            interpretation = self.screen_interpreter.interpret(user_question=query)
+
+        summary = getattr(interpretation, "grounded_summary", None)
+        if summary is None and isinstance(interpretation, dict):
+            summary = interpretation.get("message", "Screen analysis complete.")
+
+        dict_data = interpretation.to_dict() if hasattr(interpretation, "to_dict") else (interpretation if isinstance(interpretation, dict) else {})
+
         return {
             "status": "success",
-            "interpretation": interpretation.to_dict(),
-            "message": interpretation.grounded_summary
+            "interpretation": dict_data,
+            "message": summary or "Screen analysis complete."
         }
 
     def _project_action(self, params: Dict[str, Any]) -> Dict[str, Any]:

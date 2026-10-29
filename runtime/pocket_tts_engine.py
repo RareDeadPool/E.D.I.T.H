@@ -300,34 +300,33 @@ class PocketTTSEngine:
                         PocketTTSEngine._shared_model = None
 
             if PocketTTSEngine._shared_model is not None and PocketTTSEngine._shared_voice_state is None:
-                # 1. Try loading cached safetensors embedding first (< 2ms)
-                if os.path.exists(self.voice_cache) and os.path.getsize(self.voice_cache) > 0:
+                # 1. Prioritize extracting voice state directly from the reference recording WAV
+                if os.path.exists(self.voice_wav):
+                    try:
+                        logger.info(f"Loading voice state directly from reference recording WAV: {self.voice_wav}...")
+                        PocketTTSEngine._shared_voice_state = PocketTTSEngine._shared_model.get_state_for_audio_prompt(
+                            self.voice_wav
+                        )
+                        logger.info("Voice state successfully extracted from reference recording WAV.")
+                        # Keep safetensors cache synchronized for consistency
+                        if export_model_state is not None:
+                            try:
+                                export_model_state(PocketTTSEngine._shared_voice_state, Path(self.voice_cache))
+                            except Exception:
+                                pass
+                    except Exception as e:
+                        logger.warning(f"Could not extract directly from reference WAV {self.voice_wav}: {e}")
+                        PocketTTSEngine._shared_voice_state = None
+
+                # 2. Fallback to cached safetensors if WAV is missing
+                if PocketTTSEngine._shared_voice_state is None and os.path.exists(self.voice_cache):
                     try:
                         logger.info(f"Loading cached voice state from {self.voice_cache}...")
                         PocketTTSEngine._shared_voice_state = PocketTTSEngine._shared_model.get_state_for_audio_prompt(
                             self.voice_cache
                         )
-                        logger.info("Voice state cached embedding loaded successfully.")
                     except Exception as e:
-                        logger.warning(f"Failed loading cached safetensors, will regenerate from WAV: {e}")
-                        PocketTTSEngine._shared_voice_state = None
-
-                # 2. Extract from reference WAV if safetensors cache is missing
-                if PocketTTSEngine._shared_voice_state is None and os.path.exists(self.voice_wav):
-                    try:
-                        logger.info(f"Extracting voice state from WAV: {self.voice_wav}...")
-                        PocketTTSEngine._shared_voice_state = PocketTTSEngine._shared_model.get_state_for_audio_prompt(
-                            self.voice_wav
-                        )
-                        # Save cached safetensors for future instant restarts
-                        if export_model_state is not None:
-                            try:
-                                export_model_state(PocketTTSEngine._shared_voice_state, Path(self.voice_cache))
-                                logger.info(f"Voice state cached to {self.voice_cache}.")
-                            except Exception as save_err:
-                                logger.warning(f"Could not cache voice state: {save_err}")
-                    except Exception as e:
-                        logger.error(f"Failed to extract voice state from WAV {self.voice_wav}: {e}")
+                        logger.error(f"Failed loading cached safetensors: {e}")
                         PocketTTSEngine._shared_voice_state = None
 
     class _ReadyState(int):
