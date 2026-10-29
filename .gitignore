@@ -60,6 +60,11 @@ logs/traces/
 scratch/test_*.py
 scratch/tts_cache/
 scratch/*.onnx
+scratch/*.wav
+scratch/*.json
 
 # Diagnostics and runtime logs
 config/diagnostics/
+
+# Heavy local TTS weights (>100MB)
+models/pocket_tts/*.safetensors

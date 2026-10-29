@@ -152,19 +152,30 @@ class SpeechProsodyFormatter:
 
 
 class LocalSpeechSynthesisEngine:
-    """100% Offline Windows Speech Synthesizer with Prosody Shaping and Instant Barge-In."""
+    """100% Offline Speech Synthesizer with Pocket TTS Indian Female Voice and Prosody SAPI Fallback."""
 
-    def __init__(self, voice_preference: str = "zira", rate: int = 1, volume: int = 100):
+    def __init__(self, voice_preference: str = "zira", rate: int = 1, volume: int = 100, use_pocket_tts: bool = True):
         self.voice_preference = voice_preference.lower()
         self.rate = rate
         self.volume = volume
+        self.use_pocket_tts = use_pocket_tts
         self._sapi_voice = None
+        self._pocket_engine = None
         self._stop_event = threading.Event()
         self._is_speaking = False
         self._delivered_text_parts: List[str] = []
         self._lock = threading.Lock()
         self._cache_dir = os.path.join(PROJECT_ROOT, "scratch", "tts_cache")
         os.makedirs(self._cache_dir, exist_ok=True)
+
+        if self.use_pocket_tts:
+            try:
+                from runtime.pocket_tts_engine import get_pocket_tts_engine
+                engine = get_pocket_tts_engine()
+                if engine and engine.is_ready():
+                    self._pocket_engine = engine
+            except Exception:
+                self._pocket_engine = None
 
         self._init_sapi()
 
@@ -190,6 +201,11 @@ class LocalSpeechSynthesisEngine:
     def stop(self):
         """Immediately abort speech synthesis and clear pending queue (instant barge-in)."""
         self._stop_event.set()
+        if self._pocket_engine:
+            try:
+                self._pocket_engine.stop()
+            except Exception:
+                pass
         if self._sapi_voice:
             try:
                 # SVSFPurgeBeforeSpeak = 2 (immediately purges queue and stops current utterance)
@@ -286,7 +302,19 @@ class LocalSpeechSynthesisEngine:
             self._is_speaking = False
 
     def _speak_phrase(self, phrase: str, delivery_style: str = "relaxed_casual"):
-        """Speak a single phrase with prosody formatting via native Windows SAPI."""
+        """Speak a single phrase via Pocket TTS (Indian Female), with SAPI5 prosody fallback."""
+        if self._stop_event.is_set():
+            return
+
+        if self._pocket_engine and self._pocket_engine.is_ready():
+            try:
+                ok = self._pocket_engine.speak(phrase, async_mode=False)
+                if ok:
+                    return
+            except Exception:
+                pass
+
+        # Fallback to native Windows SAPI
         if not self._sapi_voice:
             self._init_sapi()
 

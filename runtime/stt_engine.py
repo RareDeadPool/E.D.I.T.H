@@ -534,6 +534,12 @@ class EdithTTSEngine:
         self._pygame_initialized = False
         self._stop_event = threading.Event()
         self._is_speaking = False
+        self.pocket_tts = None
+        try:
+            from runtime.pocket_tts_engine import PocketTTSEngine
+            self.pocket_tts = PocketTTSEngine(volume=self.volume / 100.0)
+        except Exception:
+            self.pocket_tts = None
         self._init_audio()
         self._init_sapi()
 
@@ -568,6 +574,11 @@ class EdithTTSEngine:
     def stop(self):
         """Immediately abort speech synthesis and audio playback (barge-in / interrupt)."""
         self._stop_event.set()
+        if self.pocket_tts:
+            try:
+                self.pocket_tts.stop()
+            except Exception:
+                pass
         if pygame is not None and pygame.mixer.get_init():
             try:
                 pygame.mixer.music.stop()
@@ -584,6 +595,8 @@ class EdithTTSEngine:
 
     def is_speaking(self) -> bool:
         """Check if audio playback or speech is currently active."""
+        if self.pocket_tts and self.pocket_tts.is_speaking():
+            return True
         if pygame is not None and pygame.mixer.get_init():
             try:
                 if pygame.mixer.music.get_busy():
@@ -656,30 +669,17 @@ class EdithTTSEngine:
             self._synthesize_and_play(clean_text)
 
     def _synthesize_and_play(self, text: str):
-        """Synthesize using edge-tts and play via pygame, with fallback to SAPI."""
+        """Synthesize using 100% local Pocket TTS Indian Female voice, with fallback to SAPI."""
         self._stop_event.clear()
         self._is_speaking = True
         try:
-            # 1. Try Neural Voice via edge-tts
-            if edge_tts is not None and pygame is not None and not self._stop_event.is_set():
+            # 1. Primary: 100% Local Pocket TTS with Natural Indian Female Voice
+            if self.pocket_tts and self.pocket_tts.is_ready and not self._stop_event.is_set():
                 try:
-                    import asyncio
-                    import hashlib
-
-                    h = hashlib.md5(text.encode("utf-8")).hexdigest()[:12]
-                    out_path = os.path.join(self._cache_dir, f"speech_{h}.mp3")
-
-                    if not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
-                        async def _gen():
-                            communicate = edge_tts.Communicate(text, self.voice_name)
-                            await communicate.save(out_path)
-                        asyncio.run(_gen())
-
-                    if not self._stop_event.is_set() and os.path.exists(out_path) and os.path.getsize(out_path) > 0:
-                        self._play_audio_file(out_path)
+                    res = self.pocket_tts.speak(text, async_mode=False)
+                    if res.get("status") == "success":
                         return
                 except Exception:
-                    # If network fails or edge-tts errors, fall back to SAPI
                     pass
 
             # 2. Local Fallback via Windows SAPI
