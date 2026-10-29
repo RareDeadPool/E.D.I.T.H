@@ -55,11 +55,51 @@ TTS_CACHE_DIR = os.path.join(PROJECT_ROOT, "scratch", "tts_cache")
 class ConversationalSpeechNormalizer:
     """Specialized text normalizer for natural, professional Indian-English speech."""
 
-    # Acronyms, application names, and technical tokens expanded for natural phonetics
+    # Acronyms, application names, Indian names, Hinglish tokens expanded for natural phonetics
     EXPANSIONS = [
         # Assistant & identity
         (r"\bE\.D\.I\.T\.H\.?\b", "Edith"),
         (r"\bEDITH\b", "Edith"),
+
+        # Indian Names & User Identities (Phonetic respelling prevents G2P mumbling/distortion)
+        (r"\bSakshi\b", "Saakshi"),
+        (r"\bsakshi\b", "Saakshi"),
+        (r"\bAditya\b", "Uh-dith-ya"),
+        (r"\baditya\b", "Uh-dith-ya"),
+        (r"\bSawant\b", "Suh-vaant"),
+        (r"\bsawant\b", "Suh-vaant"),
+        (r"\bRahul\b", "Rah-hool"),
+        (r"\bPooja\b", "Poo-jaa"),
+        (r"\bAnanya\b", "Uh-nun-yaa"),
+        (r"\bRohan\b", "Ro-hun"),
+        (r"\bSneha\b", "Snay-haa"),
+
+        # Conversational Hinglish Spoken Phonetics
+        (r"\bbhejo\b", "bhay-jo"),
+        (r"\bbhej\b", "bhayj"),
+        (r"\bkholo\b", "kho-lo"),
+        (r"\bkhol\b", "khol"),
+        (r"\bchalao\b", "chuh-lao"),
+        (r"\bbajao\b", "buh-jao"),
+        (r"\bgaana\b", "gaa-na"),
+        (r"\bgana\b", "gaa-na"),
+        (r"\bkaro\b", "kuh-ro"),
+        (r"\bkar\s+do\b", "kar doh"),
+        (r"\btheek\b", "theek"),
+        (r"\baccha\b", "uh-chha"),
+        (r"\bachha\b", "uh-chha"),
+        (r"\bshukriya\b", "shook-ree-ya"),
+        (r"\balvida\b", "ul-vi-daa"),
+        (r"\bbatao\b", "buh-tao"),
+        (r"\bsuno\b", "soo-no"),
+        (r"\bbolo\b", "bo-lo"),
+        (r"\bsamjhe\b", "sum-jhay"),
+        (r"\bsamajh\b", "suh-mujh"),
+        (r"\bkaise\b", "kay-say"),
+        (r"\bkaisa\b", "kay-saa"),
+        (r"\bkaisi\b", "kay-see"),
+        (r"\bzindagi\b", "zin-duh-gee"),
+        (r"\bwhatsapp\b", "WhatsApp"),
 
         # Common Applications
         (r"\bvscode\b", "V S Code"),

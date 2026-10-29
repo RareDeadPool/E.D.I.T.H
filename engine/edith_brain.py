@@ -672,6 +672,15 @@ class EdithBrain:
         self.permission_guard = PermissionGuard() if PermissionGuard is not None else None
         self.dialogue_engine = EdithDialogueEngine() if EdithDialogueEngine is not None else None
         self.cognitive_cycle = EdithCognitiveCycle() if EdithCognitiveCycle is not None else None
+        try:
+            from engine.user_profile import get_user_profile_manager
+            self.user_profile = get_user_profile_manager()
+        except ImportError:
+            try:
+                from user_profile import get_user_profile_manager
+                self.user_profile = get_user_profile_manager()
+            except ImportError:
+                self.user_profile = None
         self._gui_agent = None
         self.was_interrupted: bool = False
 
@@ -866,6 +875,14 @@ class EdithBrain:
             if self.context and res.get("status") in ["OPERATIONAL", "success"] and res.get("intent") != "dialogue":
                 self.context.last_command_executed = resolved_cmd
                 self.context.last_action_result = res
+
+            # Update User Psychological Profile dynamically from every turn
+            if getattr(self, "user_profile", None):
+                try:
+                    final_msg = res.get("directive", {}).get("message", "")
+                    self.user_profile.update_from_turn(original_msg, final_msg)
+                except Exception:
+                    pass
         except Exception:
             pass
 

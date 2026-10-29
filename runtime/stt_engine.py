@@ -617,8 +617,8 @@ class EdithTTSEngine:
     edge-tts high-fidelity neural voice synthesis, and offline Windows SAPI fallback.
     """
 
-    NEURAL_VOICE = "en-US-AvaMultilingualNeural"  # Expressive, warm, ChatGPT Advanced Voice style
-    FALLBACK_NEURAL_VOICE = "en-US-JennyNeural"
+    NEURAL_VOICE = "en-IN-NeerjaExpressiveNeural"  # Expressive, natural Indian English female voice
+    FALLBACK_NEURAL_VOICE = "en-US-AvaMultilingualNeural"  # Conversational multilingual female voice
 
     def __init__(self, rate: int = 0, volume: int = 100, voice: Optional[str] = None):
         self.rate = rate
@@ -630,6 +630,16 @@ class EdithTTSEngine:
         self._pygame_initialized = False
         self._stop_event = threading.Event()
         self._is_speaking = False
+
+        # 1. Primary Neural Voice Engine (Expressive Conversational Female)
+        self.edge_tts = None
+        try:
+            from runtime.edge_tts_engine import NeuralEdgeTTSEngine
+            self.edge_tts = NeuralEdgeTTSEngine(voice=self.voice_name)
+        except Exception:
+            self.edge_tts = None
+
+        # 2. Local Neural Voice Engine (100% Offline Pocket TTS)
         self.pocket_tts = None
         try:
             from runtime.pocket_tts_engine import PocketTTSEngine
@@ -670,6 +680,11 @@ class EdithTTSEngine:
     def stop(self):
         """Immediately abort speech synthesis and audio playback (barge-in / interrupt)."""
         self._stop_event.set()
+        if self.edge_tts:
+            try:
+                self.edge_tts.stop()
+            except Exception:
+                pass
         if self.pocket_tts:
             try:
                 self.pocket_tts.stop()
@@ -691,6 +706,8 @@ class EdithTTSEngine:
 
     def is_speaking(self) -> bool:
         """Check if audio playback or speech is currently active."""
+        if self.edge_tts and self.edge_tts.is_speaking():
+            return True
         if self.pocket_tts and self.pocket_tts.is_speaking():
             return True
         if pygame is not None and pygame.mixer.get_init():
@@ -766,11 +783,20 @@ class EdithTTSEngine:
             self._synthesize_and_play(clean_text)
 
     def _synthesize_and_play(self, text: str):
-        """Synthesize using 100% local Pocket TTS Indian Female voice, with fallback to SAPI."""
+        """Synthesize using expressive female Neural Edge TTS, with fallback to Pocket TTS and SAPI."""
         self._stop_event.clear()
         self._is_speaking = True
         try:
-            # 1. Primary: 100% Local Pocket TTS with Natural Indian Female Voice
+            # 1. Primary: High-fidelity Neural Edge TTS (Natural Indian English female voice)
+            if self.edge_tts and self.edge_tts.is_available and not self._stop_event.is_set():
+                try:
+                    res = self.edge_tts.speak(text, async_mode=False)
+                    if res.get("status") == "success":
+                        return
+                except Exception:
+                    pass
+
+            # 2. Local Fallback: 100% Offline Pocket TTS with Indian Female Voice
             if self.pocket_tts and self.pocket_tts.is_ready and not self._stop_event.is_set():
                 try:
                     res = self.pocket_tts.speak(text, async_mode=False)
@@ -779,7 +805,7 @@ class EdithTTSEngine:
                 except Exception:
                     pass
 
-            # 2. Local Fallback via Windows SAPI
+            # 3. Local Fallback via Windows SAPI
             if not self._stop_event.is_set():
                 self._speak_sapi(text)
         finally:
