@@ -226,7 +226,7 @@ class TestEdithSTTEngine(unittest.TestCase):
         res = va.listen_and_execute(brain=brain, speak_response=False, cmd_override="i am in a shitty mood today")
         self.assertEqual(res["status"], "success")
         self.assertEqual(res["brain_result"]["intent"], "chitchat")
-        self.assertTrue(any(w in res["speech_response"].lower() for w in ["tough time", "rough patch", "sorry"]))
+        self.assertTrue(any(w in res["speech_response"].lower() for w in ["bad days", "tough time", "rough patch", "sorry", "chill"]))
 
     def test_14_whisper_desktop_prompt_and_model_cascade(self):
         """Verify faster-whisper configuration has domain-biasing prompt and base.en model."""

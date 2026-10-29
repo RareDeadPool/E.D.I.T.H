@@ -1,9 +1,9 @@
 {
-  "version": 203,
-  "timestamp": 1793281409.9153876,
+  "version": 254,
+  "timestamp": 1793286163.758495,
   "session_id": "edith_v5_main",
   "perception": {
-    "current_interpretation": "chitchat -> respond_dialogue",
+    "current_interpretation": "system_utility -> exec_system_utility",
     "entities": {},
     "belief_confidence": 1.0,
     "competing_interpretations": [],
@@ -12,15 +12,15 @@
     "prior_expectations": {
       "expected_outcome": true,
       "calibrated_confidence": 0.72,
-      "action": "respond_dialogue"
+      "action": "exec_system_utility"
     },
     "detected_contradictions": []
   },
   "goals": {
-    "active_goal": "open notepad",
+    "active_goal": "what time is it",
     "desired_outcome": null,
     "intermediate_objectives": [],
-    "priority": 0.4,
+    "priority": 0.7,
     "urgency": 0.5,
     "progress": 1.0,
     "perceived_effort": 0.3,
@@ -44,22 +44,22 @@
     "deep_reasoning_needed": false
   },
   "momentary_affect": {
-    "valence": 0.6169366580303984,
-    "arousal": 0.4934546199139237,
-    "dominance": 0.6101689937468339,
-    "uncertainty": 0.20145027043672553,
+    "valence": 0.5266564132764466,
+    "arousal": 0.472999148289294,
+    "dominance": 0.5741800189312575,
+    "uncertainty": 0.2373357397585702,
     "frustration": 0.0,
-    "engagement": 0.7279304077678797,
-    "social_trust": 0.8371776811872241
+    "engagement": 0.710819607995697,
+    "social_trust": 0.7950935382341037
   },
   "baseline_mood": {
-    "valence": 0.4147047696579213,
-    "arousal": 0.5019758239810426,
-    "dominance": 0.642132862777526,
-    "uncertainty": 0.22651220089452676,
+    "valence": 0.4161285361278639,
+    "arousal": 0.47619165414056913,
+    "dominance": 0.632642833721292,
+    "uncertainty": 0.22721307958152492,
     "frustration": 0.0,
-    "engagement": 0.7663391536819332,
-    "social_trust": 0.8214532724310982
+    "engagement": 0.7439407095047466,
+    "social_trust": 0.7996833173224401
   },
   "user_estimate": {
     "detected_user_mood": "operational_neutral",
@@ -72,16 +72,16 @@
     "prior_user_attempts": []
   },
   "operational": {
-    "cpu_percent": 25.0,
-    "memory_percent": 61.0,
+    "cpu_percent": 33.0,
+    "memory_percent": 63.2,
     "task_queue_depth": 0,
     "recent_latency_ms": 50.0,
     "retry_count": 0,
     "consecutive_failures": 0,
-    "available_compute_budget": 0.651
+    "available_compute_budget": 0.61
   },
   "in_flow_state": true,
-  "flow_intensity": 0.663,
+  "flow_intensity": 0.792,
   "last_appraisal_trace": {
     "novelty": 0.2,
     "goal_relevance": 0.55,
@@ -93,14 +93,13 @@
     "uncertainty": 0.28,
     "effort_required": 0.4,
     "task_progress": 0.7,
-    "social_significance": 0.85,
+    "social_significance": 0.3,
     "norm_consistency": 1.0,
     "confidence": 0.72,
     "provenance_notes": [
       "Task succeeded and was verified closed-loop: highly goal-congruent",
       "Outcome matched expectation",
       "No immediate automated recovery available; requires clarification or user intervention",
-      "High social/interpersonal significance detected",
       "Neural appraisal bypass/fallback: 'CognitiveState' object has no attribute 'affect'"
     ]
   },
