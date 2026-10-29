@@ -1,18 +1,20 @@
 {
-  "version": 3564,
-  "timestamp": 1793313233.7520406,
+  "version": 5886,
+  "timestamp": 1793317711.9679682,
   "session_id": "edith_v5_main",
   "perception": {
-    "current_interpretation": "chitchat -> respond_dialogue",
-    "entities": {},
+    "current_interpretation": "communication -> send_whatsapp",
+    "entities": {
+      "APP": "whatsapp"
+    },
     "belief_confidence": 1.0,
     "competing_interpretations": [],
     "observed_events": [],
     "inferred_events": [],
     "prior_expectations": {
       "expected_outcome": true,
-      "calibrated_confidence": 0.72,
-      "action": "respond_dialogue"
+      "calibrated_confidence": 0.713,
+      "action": "send_whatsapp"
     },
     "detected_contradictions": []
   },
@@ -20,7 +22,7 @@
     "active_goal": "send a whatsapp message",
     "desired_outcome": null,
     "intermediate_objectives": [],
-    "priority": 0.4,
+    "priority": 0.7,
     "urgency": 0.5,
     "progress": 1.0,
     "perceived_effort": 0.3,
@@ -36,7 +38,7 @@
     "task_complexity": 0.2,
     "unresolved_questions": [],
     "cognitive_load": 0.2,
-    "plan_confidence": 0.72,
+    "plan_confidence": 0.713,
     "prediction_error": 0.0,
     "error_accumulation": 0.0,
     "task_switching_cost": 0.1,
@@ -44,22 +46,22 @@
     "deep_reasoning_needed": false
   },
   "momentary_affect": {
-    "valence": 0.5445377608091448,
-    "arousal": 0.47846638733335345,
-    "dominance": 0.5840049737531932,
-    "uncertainty": 0.2324963050058415,
-    "frustration": 2.7852350004930043e-32,
-    "engagement": 0.7005715712115589,
-    "social_trust": 0.8198200389289303
+    "valence": 0.5251668593008365,
+    "arousal": 0.4753959021958521,
+    "dominance": 0.5788133103927566,
+    "uncertainty": 0.24103315288850707,
+    "frustration": 1.118397536136847e-59,
+    "engagement": 0.7114210496518749,
+    "social_trust": 0.8147412449176823
   },
   "baseline_mood": {
-    "valence": 0.4182602373437304,
-    "arousal": 0.5052637263506815,
-    "dominance": 0.6398167117753596,
-    "uncertainty": 0.22797374599338163,
+    "valence": 0.42152832720428085,
+    "arousal": 0.4997764525042883,
+    "dominance": 0.6401791265099633,
+    "uncertainty": 0.2279247548449191,
     "frustration": 0.0,
-    "engagement": 0.7315463869835808,
-    "social_trust": 0.8345510952571185
+    "engagement": 0.7325482207142048,
+    "social_trust": 0.8337206231272221
   },
   "user_estimate": {
     "detected_user_mood": "operational_neutral",
@@ -72,16 +74,16 @@
     "prior_user_attempts": []
   },
   "operational": {
-    "cpu_percent": 21.1,
-    "memory_percent": 67.4,
+    "cpu_percent": 38.5,
+    "memory_percent": 59.2,
     "task_queue_depth": 0,
     "recent_latency_ms": 50.0,
     "retry_count": 0,
     "consecutive_failures": 0,
-    "available_compute_budget": 0.641
+    "available_compute_budget": 0.604
   },
   "in_flow_state": true,
-  "flow_intensity": 0.658,
+  "flow_intensity": 0.793,
   "last_appraisal_trace": {
     "novelty": 0.2,
     "goal_relevance": 0.55,
@@ -90,12 +92,12 @@
     "agency": "user",
     "controllability": 0.3,
     "coping_potential": 0.25,
-    "uncertainty": 0.28,
+    "uncertainty": 0.287,
     "effort_required": 0.4,
     "task_progress": 0.7,
     "social_significance": 0.3,
     "norm_consistency": 1.0,
-    "confidence": 0.72,
+    "confidence": 0.713,
     "provenance_notes": [
       "Task succeeded and was verified closed-loop: highly goal-congruent",
       "Outcome matched expectation",
