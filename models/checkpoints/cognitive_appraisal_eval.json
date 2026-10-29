@@ -1,0 +1,204 @@
+{
+  "status": "trained",
+  "checkpoint": "models/checkpoints/cognitive_appraisal.pt",
+  "dataset_provenance": {
+    "total_scenarios": 720,
+    "scenario_families": 24,
+    "train_families": 18,
+    "held_out_families": 6,
+    "split_methodology": "Family-level partitioning with zero template or lexical overlap"
+  },
+  "train_size": 540,
+  "zero_leakage_val_size": 180,
+  "best_zero_leakage_val_loss": 0.3579,
+  "final_zero_leakage_appraisal_mae": 0.2322,
+  "final_zero_leakage_affect_mae": 0.1754,
+  "final_leaky_legacy_appraisal_mae": 0.2226,
+  "final_leaky_legacy_affect_mae": 0.147,
+  "reported_paper_appraisal_mae": 0.0203,
+  "reported_paper_affect_mae": 0.033,
+  "total_parameters": 114780,
+  "metrics_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.4476,
+      "zero_leakage_val_loss": 0.373,
+      "zero_leakage_appraisal_mae": 0.2271,
+      "zero_leakage_affect_mae": 0.2029,
+      "leaky_legacy_appraisal_mae": 0.2258,
+      "leaky_legacy_affect_mae": 0.1904
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.1512,
+      "zero_leakage_val_loss": 0.3579,
+      "zero_leakage_appraisal_mae": 0.2322,
+      "zero_leakage_affect_mae": 0.1754,
+      "leaky_legacy_appraisal_mae": 0.2226,
+      "leaky_legacy_affect_mae": 0.147
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.0653,
+      "zero_leakage_val_loss": 0.3582,
+      "zero_leakage_appraisal_mae": 0.2343,
+      "zero_leakage_affect_mae": 0.1777,
+      "leaky_legacy_appraisal_mae": 0.2248,
+      "leaky_legacy_affect_mae": 0.1517
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.0448,
+      "zero_leakage_val_loss": 0.3675,
+      "zero_leakage_appraisal_mae": 0.2318,
+      "zero_leakage_affect_mae": 0.1778,
+      "leaky_legacy_appraisal_mae": 0.2198,
+      "leaky_legacy_affect_mae": 0.1469
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.0372,
+      "zero_leakage_val_loss": 0.3614,
+      "zero_leakage_appraisal_mae": 0.2312,
+      "zero_leakage_affect_mae": 0.1776,
+      "leaky_legacy_appraisal_mae": 0.222,
+      "leaky_legacy_affect_mae": 0.1505
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.0323,
+      "zero_leakage_val_loss": 0.3636,
+      "zero_leakage_appraisal_mae": 0.23,
+      "zero_leakage_affect_mae": 0.177,
+      "leaky_legacy_appraisal_mae": 0.2195,
+      "leaky_legacy_affect_mae": 0.1474
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.0282,
+      "zero_leakage_val_loss": 0.3678,
+      "zero_leakage_appraisal_mae": 0.2304,
+      "zero_leakage_affect_mae": 0.1783,
+      "leaky_legacy_appraisal_mae": 0.219,
+      "leaky_legacy_affect_mae": 0.149
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.0249,
+      "zero_leakage_val_loss": 0.3705,
+      "zero_leakage_appraisal_mae": 0.2275,
+      "zero_leakage_affect_mae": 0.1793,
+      "leaky_legacy_appraisal_mae": 0.2162,
+      "leaky_legacy_affect_mae": 0.1499
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.0227,
+      "zero_leakage_val_loss": 0.3808,
+      "zero_leakage_appraisal_mae": 0.2288,
+      "zero_leakage_affect_mae": 0.1816,
+      "leaky_legacy_appraisal_mae": 0.2161,
+      "leaky_legacy_affect_mae": 0.1531
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.0196,
+      "zero_leakage_val_loss": 0.3686,
+      "zero_leakage_appraisal_mae": 0.2294,
+      "zero_leakage_affect_mae": 0.1785,
+      "leaky_legacy_appraisal_mae": 0.2191,
+      "leaky_legacy_affect_mae": 0.1548
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.0183,
+      "zero_leakage_val_loss": 0.3727,
+      "zero_leakage_appraisal_mae": 0.2301,
+      "zero_leakage_affect_mae": 0.1789,
+      "leaky_legacy_appraisal_mae": 0.2186,
+      "leaky_legacy_affect_mae": 0.1534
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.016,
+      "zero_leakage_val_loss": 0.3662,
+      "zero_leakage_appraisal_mae": 0.2283,
+      "zero_leakage_affect_mae": 0.1761,
+      "leaky_legacy_appraisal_mae": 0.2163,
+      "leaky_legacy_affect_mae": 0.1516
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.0145,
+      "zero_leakage_val_loss": 0.3593,
+      "zero_leakage_appraisal_mae": 0.2259,
+      "zero_leakage_affect_mae": 0.1716,
+      "leaky_legacy_appraisal_mae": 0.2157,
+      "leaky_legacy_affect_mae": 0.1496
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.0134,
+      "zero_leakage_val_loss": 0.3705,
+      "zero_leakage_appraisal_mae": 0.2267,
+      "zero_leakage_affect_mae": 0.1751,
+      "leaky_legacy_appraisal_mae": 0.2133,
+      "leaky_legacy_affect_mae": 0.151
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.0122,
+      "zero_leakage_val_loss": 0.3766,
+      "zero_leakage_appraisal_mae": 0.2288,
+      "zero_leakage_affect_mae": 0.1728,
+      "leaky_legacy_appraisal_mae": 0.2148,
+      "leaky_legacy_affect_mae": 0.1483
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.011,
+      "zero_leakage_val_loss": 0.3686,
+      "zero_leakage_appraisal_mae": 0.2264,
+      "zero_leakage_affect_mae": 0.1717,
+      "leaky_legacy_appraisal_mae": 0.2139,
+      "leaky_legacy_affect_mae": 0.1504
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.0104,
+      "zero_leakage_val_loss": 0.3614,
+      "zero_leakage_appraisal_mae": 0.2255,
+      "zero_leakage_affect_mae": 0.1691,
+      "leaky_legacy_appraisal_mae": 0.2137,
+      "leaky_legacy_affect_mae": 0.1513
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.0097,
+      "zero_leakage_val_loss": 0.3648,
+      "zero_leakage_appraisal_mae": 0.2262,
+      "zero_leakage_affect_mae": 0.1716,
+      "leaky_legacy_appraisal_mae": 0.2138,
+      "leaky_legacy_affect_mae": 0.1525
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.0089,
+      "zero_leakage_val_loss": 0.3688,
+      "zero_leakage_appraisal_mae": 0.2275,
+      "zero_leakage_affect_mae": 0.1708,
+      "leaky_legacy_appraisal_mae": 0.2138,
+      "leaky_legacy_affect_mae": 0.1511
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.0085,
+      "zero_leakage_val_loss": 0.3691,
+      "zero_leakage_appraisal_mae": 0.2275,
+      "zero_leakage_affect_mae": 0.1705,
+      "leaky_legacy_appraisal_mae": 0.2146,
+      "leaky_legacy_affect_mae": 0.1513
+    }
+  ],
+  "audit_conclusion": "The low reported MAE (0.0203 / 0.0330) was caused by row-level target leakage where duplicate templates appeared in both train and validation sets with minor Gaussian noise. On honest zero-leakage family splits, the model achieves realistic agreement with the synthetic generator without artificial memorization."
+}

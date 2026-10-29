@@ -91,6 +91,50 @@ class EdithTaskExecutor:
             self._gui_agent = GUIAgent()
         return self._gui_agent
 
+    @property
+    def storage_analyzer(self):
+        """Lazy-loaded StorageAnalyzer for safe storage intelligence and cleanup."""
+        if getattr(self, "_storage_analyzer", None) is None:
+            try:
+                from runtime.storage_analyzer import StorageAnalyzer
+                self._storage_analyzer = StorageAnalyzer()
+            except ImportError:
+                self._storage_analyzer = None
+        return self._storage_analyzer
+
+    @property
+    def file_organizer(self):
+        """Lazy-loaded SemanticFileOrganizer for taxonomy classification and reversible reorganization."""
+        if getattr(self, "_file_organizer", None) is None:
+            try:
+                from runtime.file_organizer import SemanticFileOrganizer
+                self._file_organizer = SemanticFileOrganizer()
+            except ImportError:
+                self._file_organizer = None
+        return self._file_organizer
+
+    @property
+    def task_manager(self):
+        """Lazy-loaded TaskManager for dependable multitasking and concurrency."""
+        if getattr(self, "_task_manager", None) is None:
+            try:
+                from runtime.task_manager import TaskManager
+                self._task_manager = TaskManager()
+            except ImportError:
+                self._task_manager = None
+        return self._task_manager
+
+    @property
+    def screen_interpreter(self):
+        """Lazy-loaded ScreenInterpreter for unified screen understanding and UI reasoning."""
+        if getattr(self, "_screen_interpreter", None) is None:
+            try:
+                from runtime.screen_interpreter import ScreenInterpreter
+                self._screen_interpreter = ScreenInterpreter()
+            except ImportError:
+                self._screen_interpreter = None
+        return self._screen_interpreter
+
     APP_MAP = {
         "notepad": "notepad.exe",
         "calculator": "calc.exe",
@@ -323,9 +367,127 @@ class EdithTaskExecutor:
                 return res
             return {"status": "error", "message": "Action registry is not initialized."}
 
+        # 26. Safe Storage Intelligence & Cleanup
+        elif handler in ["storage_audit", "storage_cleanup", "storage_intelligence"]:
+            return self._handle_storage_intelligence(params)
+
+        # 27. Intelligent File Organization
+        elif handler in ["file_organize_plan", "semantic_file_organize", "file_organize_rollback"]:
+            return self._handle_file_organization(handler, params)
+
+        # 28. Multitasking & Background Task Manager
+        elif handler in ["task_submit", "task_cancel", "task_list", "task_status"]:
+            return self._handle_task_manager(handler, params)
+
+        # 29. Unified Screen Understanding
+        elif handler in ["screen_understanding", "explain_screen", "screen_error_check"]:
+            return self._handle_screen_understanding(params)
+
         return {
             "status": "unhandled",
             "message": f"Action handler '{handler}' is recognized by ANN but not yet bound in runtime."
+        }
+
+    def _handle_storage_intelligence(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute safe storage audit or reversible quarantine cleanup."""
+        if not self.storage_analyzer:
+            return {"status": "error", "message": "StorageAnalyzer is unavailable."}
+
+        subaction = params.get("subaction", "audit")
+        target_dir = params.get("path")
+        report = self.storage_analyzer.audit_storage(target_dir=target_dir)
+
+        if subaction == "cleanup":
+            dry_run = params.get("dry_run", True)
+            candidates = report.candidates_for_cleanup
+            quarantine_res = self.storage_analyzer.quarantine_candidates(candidates, dry_run=dry_run)
+            return {
+                "status": "success",
+                "action": "storage_cleanup",
+                "dry_run": dry_run,
+                "items_processed": len(quarantine_res.get("items", [])),
+                "bytes_saved": quarantine_res.get("total_bytes_saved", 0),
+                "manifest_path": quarantine_res.get("manifest_path"),
+                "message": f"Storage cleanup {'dry run completed' if dry_run else 'quarantined'} {len(quarantine_res.get('items', []))} items safely."
+            }
+
+        return {
+            "status": "success",
+            "action": "storage_audit",
+            "disk_free_gb": report.disk_free_gb,
+            "potential_savings_mb": report.potential_savings_mb,
+            "duplicate_groups": len(report.duplicates),
+            "candidates_count": len(report.candidates_for_cleanup),
+            "message": f"Storage audit complete: {report.disk_free_gb} GB free. Identified {report.potential_savings_mb} MB potential savings across {len(report.candidates_for_cleanup)} disposable items."
+        }
+
+    def _handle_file_organization(self, handler: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute semantic file categorization, dry-run plan, or transaction rollback."""
+        if not self.file_organizer:
+            return {"status": "error", "message": "SemanticFileOrganizer is unavailable."}
+
+        if handler == "file_organize_rollback":
+            tx_id = params.get("transaction_id", "")
+            res = self.file_organizer.rollback_transaction(tx_id)
+            return {
+                "status": "success" if res.get("success") else "error",
+                "restored_count": res.get("restored_count", 0),
+                "message": f"Rollback restored {res.get('restored_count', 0)} files back to their original locations."
+            }
+
+        source_dir = params.get("source_dir") or params.get("path") or os.path.expanduser("~/Downloads")
+        plan = self.file_organizer.generate_organization_plan(source_dir)
+
+        execute_real = params.get("execute", False)
+        exec_res = self.file_organizer.execute_organization_plan(plan, dry_run=not execute_real)
+
+        return {
+            "status": "success",
+            "dry_run": not execute_real,
+            "planned_moves": len(plan.moves),
+            "protected_files": len(plan.protected_files),
+            "transaction_file": exec_res.get("transaction_file"),
+            "message": f"File organization {'plan generated' if not execute_real else 'executed'}: {len(plan.moves)} moves proposed, {len(plan.protected_files)} protected project files preserved."
+        }
+
+    def _handle_task_manager(self, handler: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Manage background concurrent multitasking, cancellation, and inspection."""
+        if not self.task_manager:
+            return {"status": "error", "message": "TaskManager is unavailable."}
+
+        if handler == "task_list":
+            tasks = self.task_manager.list_tasks()
+            return {"status": "success", "count": len(tasks), "tasks": tasks}
+
+        elif handler == "task_cancel":
+            t_id = params.get("task_id", "")
+            success = self.task_manager.cancel_task(t_id, reason=params.get("reason", "Cancelled by user"))
+            return {
+                "status": "success" if success else "failed",
+                "task_id": t_id,
+                "message": f"Task '{t_id}' cancellation {'requested successfully' if success else 'failed or already finished'}."
+            }
+
+        elif handler == "task_status":
+            t_id = params.get("task_id", "")
+            task = self.task_manager.get_task(t_id)
+            if task:
+                return {"status": "success", "task": task}
+            return {"status": "error", "message": f"Task '{t_id}' not found."}
+
+        return {"status": "unhandled", "message": f"Task action '{handler}' not supported."}
+
+    def _handle_screen_understanding(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Perform unified multi-modal screen interpretation using UIA, OCR, and error detection."""
+        if not self.screen_interpreter:
+            return {"status": "error", "message": "ScreenInterpreter is unavailable."}
+
+        query = params.get("query", "")
+        interpretation = self.screen_interpreter.interpret_screen(user_query=query)
+        return {
+            "status": "success",
+            "interpretation": interpretation.to_dict(),
+            "message": interpretation.grounded_summary
         }
 
     def _project_action(self, params: Dict[str, Any]) -> Dict[str, Any]:
@@ -680,6 +842,21 @@ class EdithTaskExecutor:
                             return {"status": "error", "message": f"Failed to open folder '{entry}': {e}"}
 
         # 3. Lookup in APP_MAP with fuzzy matching
+        if low == "spotify":
+            try:
+                from runtime.spotify_adapter import SpotifyAdapter
+                spot = SpotifyAdapter()
+                ok, msg, hwnd = spot.launch_desktop_app(timeout=8.0)
+                return {
+                    "status": "success" if ok else "warning",
+                    "action": "launch_app",
+                    "app": "spotify",
+                    "hwnd": hwnd,
+                    "message": msg
+                }
+            except Exception as ex:
+                pass
+
         target = self.APP_MAP.get(low)
         if not target:
             matches = difflib.get_close_matches(low, list(self.APP_MAP.keys()), n=1, cutoff=0.7)
@@ -1462,19 +1639,39 @@ class EdithTaskExecutor:
                 "message": f"Playing '{best_target}' on YouTube.{sugg_text}"
             }
         else:
-            success = self._spotify_play_track(best_target)
-            if success:
-                msg = f"Playing '{top['track']}' by {top['artist']} on Spotify!{sugg_text}"
-            else:
-                msg = f"Opened Spotify for '{best_target}'. Please check playback."
-            return {
-                "status": "success" if success else "warning",
-                "action": "play_music",
-                "platform": "spotify",
-                "song": best_target,
-                "suggestions": suggestions,
-                "message": msg
-            }
+            try:
+                from runtime.spotify_adapter import SpotifyAdapter
+                spot = SpotifyAdapter()
+                spot_res = spot.play_track(best_target)
+                is_playing = spot_res.get("is_playing", False)
+                verified = spot_res.get("verified", False)
+                stat = "success" if is_playing else "playback_initiated"
+                if is_playing:
+                    msg = f"Playing '{top['track']}' by {top['artist']} on Spotify!{sugg_text}"
+                else:
+                    msg = spot_res.get("message") or f"Opened Spotify for '{best_target}'. Please check playback."
+                return {
+                    "status": stat,
+                    "action": "play_music",
+                    "platform": "spotify",
+                    "song": best_target,
+                    "verified": verified,
+                    "is_playing": is_playing,
+                    "window_title": spot_res.get("window_title", ""),
+                    "suggestions": suggestions,
+                    "message": msg
+                }
+            except Exception:
+                success = self._spotify_play_track(best_target)
+                msg = f"Playing '{top['track']}' by {top['artist']} on Spotify!{sugg_text}" if success else f"Opened Spotify for '{best_target}'."
+                return {
+                    "status": "success" if success else "warning",
+                    "action": "play_music",
+                    "platform": "spotify",
+                    "song": best_target,
+                    "suggestions": suggestions,
+                    "message": msg
+                }
 
 
     def _compute_math(self, params: Dict[str, Any]) -> Dict[str, Any]:

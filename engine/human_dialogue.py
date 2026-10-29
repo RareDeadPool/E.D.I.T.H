@@ -7,12 +7,14 @@ Enables E.D.I.T.H. to understand, empathize, advise, and communicate like a real
   software development, file workflows, and daily productivity.
 - Proactive integration with live system metrics, network diagnostics, and desktop tools.
 - Multi-turn conversational continuity and follow-up guidance.
+- Personality engine integration for persistent mood-awareness and human-friend tone.
 """
 
 import os
 import sys
 import re
 import time
+import random
 import datetime
 from typing import Dict, Any, List, Optional, Tuple
 
@@ -63,7 +65,7 @@ def check_network_ping(host: str = "8.8.8.8", timeout: float = 2.0) -> Tuple[boo
 
 
 class EdithDialogueEngine:
-    """Cognitive conversation and human problem-solving engine."""
+    """Cognitive conversation and human problem-solving engine with personality & emotional intelligence."""
 
     USER_NAME = "Aditya"
 
@@ -72,6 +74,17 @@ class EdithDialogueEngine:
         self.last_suggested_action: Optional[str] = None
         self.last_dialogue_topic: Optional[str] = None
         self.dialogue_history: List[Dict[str, str]] = []
+
+        # --- Personality Engine Integration ---
+        try:
+            from engine.personality import EdithPersonality
+            self.personality = EdithPersonality()
+        except ImportError:
+            try:
+                from personality import EdithPersonality
+                self.personality = EdithPersonality()
+            except ImportError:
+                self.personality = None
 
     def is_conversational_or_problem(self, query: str) -> bool:
         """Determine if a query is a conversational query, greeting, emotion, or problem-solving prompt."""
@@ -90,6 +103,22 @@ class EdithDialogueEngine:
         if (q.startswith("play ") or q.startswith("listen to ")) and not any(w in q for w in ["relaxing", "calm", "chill", "music to relax"]):
             return False
 
+        # Active dialogue continuity check (keep conversation flowing without false tool classification)
+        if (
+            self.last_problem_category in ["love_support", "empathy", "advice", "personal", "general_chat"] or
+            self.last_dialogue_topic in ["love_support", "love_text_ex", "love_text_ex_followup", "love_breakup", "love_reflection", "empathy"]
+        ):
+            sys_metrics_keywords = ["cpu", "ram", "memory", "battery", "storage", "disk", "ping", "specs", "hardware"]
+            if not any(k in q for k in sys_metrics_keywords):
+                # Conversational discourse cues
+                conv_cues = [
+                    "i think", "i feel", "i don't think", "i dont think", "miss her", "miss him",
+                    "missed her", "missed him", "miss them", "changed", "she has", "he has",
+                    "she", "her", "he", "him", "it hurts", "i know", "why", "what if", "too much", "still"
+                ]
+                if any(c in q for c in conv_cues) or len(q.split()) > 2:
+                    return True
+
         # 1. Direct social & identity triggers
         if any(re.search(pat, q) for pat in [
             r"^(?:hi|hello|hey|hiya|yo|greetings|howdy)(?:\s+there)?(?:\s+edith)?$",
@@ -102,6 +131,7 @@ class EdithDialogueEngine:
             r"\bwhat\s+does\s+edith\s+stand\s+for\b",
             r"\bwho\s+created\s+you\b",
             r"\bwho\s+made\s+you\b",
+            r"\bwho\s+built\s+you\b",
             r"\btell\s+me\s+about\s+yourself\b",
             r"\bwhat\s+can\s+you\s+do\b",
             r"\bwhat\s+are\s+your\s+capabilities\b",
@@ -111,20 +141,68 @@ class EdithDialogueEngine:
             r"\bmake\s+me\s+laugh\b",
             r"\bthank\s+you\b",
             r"\bthanks(?:\s+a\s+lot|\s+so\s+much)?\b",
-            r"\byou(?:\'re|\s+are)\s+(?:awesome|great|amazing|the\s+best)\b",
+            r"\byou(?:\'re|\s+are)\s+(?:awesome|great|amazing|the\s+best|so\s+cool|incredible|smart)\b",
             r"\bgoodbye\b",
             r"\bsee\s+you\s+later\b",
             r"\bhave\s+a\s+good\s+day\b",
+            # Casual / human conversation triggers
+            r"\bi(?:\'m|\s+am)\s+bored\b",
+            r"\bentertain\s+me\b",
+            r"\btell\s+me\s+(?:something\s+)?(?:fun|interesting|cool|random)\b",
+            r"\bhow(?:\'s|\s+is)\s+your\s+day\b",
+            r"\bdo\s+you\s+have\s+feelings\b",
+            r"\bdo\s+you\s+(?:like|love)\s+me\b",
+            r"\bi\s+(?:love|like)\s+you\b",
+            r"\bi\s+missed\s+you\b",
+            r"\byou(?:\'re|\s+are)\s+my\s+(?:best\s+)?friend\b",
+            r"\bwhat\s+do\s+you\s+think\s+(?:about|of)\b",
+            r"\bcan\s+we\s+(?:just\s+)?(?:talk|chat)\b",
+            r"\bi\s+need\s+(?:someone\s+to\s+)?talk\s+to\b",
+            r"\bare\s+you\s+(?:real|alive|sentient|conscious)\b",
+            r"\broast\s+me\b",
+            r"\bmake\s+fun\s+of\s+me\b",
+            r"\b(?:better\s+than|compare\s+to|vs)\s+chatgpt\b",
+            r"\bchatgpt\b",
+            r"\b(?:something\s+cool|cool\s+fact|blow\s+my\s+mind)\b",
+            r"\b(?:why\s+are\s+you|you(?:\'re|\s+are))\s+so\s+cool\b",
+            r"\b(?:you\s+suck|shut\s+up|whatever|you(?:\'re|\s+are)\s+dumb)\b",
+            r"\b(?:what\s+are\s+you\s+doing|what\s+you\s+doing|what\s+are\s+you\s+up\s+to)\b",
+            r"\b(?:talk\s+to\s+me|say\s+something|let(?:\'s|\s+us)\s+chat)\b",
+            r"\b(?:what\s+should\s+i\s+(?:eat|cook|watch))\b",
+            r"\b(?:ai\s+taking\s+over|will\s+ai\s+take\s+over)\b",
+            r"\btell\s+me\s+a\s+story\b",
+            r"\btell\s+(?:me\s+)?(?:another\s+)?(?:joke|pun)\b",
+            r"\b(?:dark|sarcastic|observational|standup|developer|coding|tech|relatable|anti)\s+joke\b",
+            r"\bcrack\s+(?:a\s+)?joke\b",
         ]):
             return True
 
-        # 2. Emotional expressions
+        # 2. Emotional expressions & Love Life / Relationships
         if any(re.search(pat, q) for pat in [
-            r"\b(?:feel|feeling|am|in\s+a)\s+(?:really\s+)?(?:stressed|overwhelmed|anxious|tired|exhausted|burnt\s+out|sleepy|shitty\s+mood|bad\s+mood|terrible\s+mood|foul\s+mood|awful\s+mood|sad|down|upset|miserable|depressed)\b",
+            r"\b(?:feel|feeling|am|in\s+a)\s+(?:really\s+|so\s+|very\s+|super\s+|pretty\s+|kind\s+of\s+|kinda\s+)?(?:stressed|overwhelmed|anxious|tired|exhausted|burnt\s+out|burnout|sleepy|shitty\s+mood|bad\s+mood|terrible\s+mood|foul\s+mood|awful\s+mood|sad|down|upset|miserable|depressed)\b",
             r"\b(?:shitty\s+mood|bad\s+mood|terrible\s+mood|foul\s+mood|awful\s+mood)\b",
-            r"\b(?:so\s+much\s+work|too\s+much\s+pressure|having\s+a\s+(?:bad|rough|hard|terrible|shitty)\s+day)\b",
+            r"\b(?:burnt\s+out|burnout|exhausted|overwhelmed|depressed|super\s+tired|so\s+tired)\b",
+            r"\b(?:so\s+much\s+work|too\s+much\s+pressure)\b",
+            r"\b(?:rough|bad|hard|tough|terrible|shitty|exhausting|long)\s+day\b",
             r"\b(?:so\s+happy|super\s+excited|finished\s+my\s+project|tests\s+passed|finally\s+done)\b",
             r"\b(?:nothing\s+is\s+working|hate\s+bugs|error\s+is\s+driving\s+me\s+crazy)\b",
+            # Love life, dating, crushes, breakups & relationships
+            r"\b(?:love\s+life|dating\s+life|relationship|dating)\b",
+            r"\b(?:crush|crushing\s+on|like\s+this\s+girl|like\s+this\s+boy|like\s+a\s+girl|like\s+a\s+boy)\b",
+            r"\b(?:ask\s+her\s+out|ask\s+him\s+out|confess\s+to\s+my\s+crush|tell\s+her\s+i\s+like\s+her|talk\s+to\s+my\s+crush)\b",
+            r"\b(?:broke\s+up|breakup|broken\s+heart|heartbreak|heartbroken|dumped\s+me|she\s+dumped\s+me|he\s+dumped\s+me)\b",
+            r"\b(?:ex\s+girlfriend|ex\s+boyfriend|my\s+ex|text\s+my\s+ex|call\s+my\s+ex|back\s+with\s+my\s+ex|miss\s+my\s+ex)\b",
+            r"\b(?:miss|missed|missing)\s+(?:her|him|them)\b",
+            r"\b(?:missed\s+her\s+(?:really|too|so)\s+much|miss\s+her\s+(?:really|too|so)\s+much)\b",
+            r"\b(?:missed\s+him\s+(?:really|too|so)\s+much|miss\s+him\s+(?:really|too|so)\s+much)\b",
+            r"\b(?:she|he)\s+(?:hasn't|has\s+not|has)\s+changed\b",
+            r"\bi\s+(?:don't|dont)\s+think\s+(?:she|he)\s+has\s+changed\b",
+            r"\b(?:text\s+her|text\s+him|call\s+her|call\s+him|should\s+i\s+text\s+her|should\s+i\s+text\s+him)\b",
+            r"\b(?:left\s+me\s+on\s+read|left\s+on\s+read|ghosted|ghosted\s+me|got\s+ghosted|mixed\s+signals)\b",
+            r"\b(?:got\s+rejected|she\s+rejected\s+me|he\s+rejected\s+me|friendzoned|friend\s+zoned|just\s+friends)\b",
+            r"\b(?:fight\s+with\s+my\s+(?:girlfriend|boyfriend|partner)|relationship\s+problems?|dating\s+advice|love\s+advice)\b",
+            r"\b(?:lonely|feeling\s+lonely|feel\s+so\s+lonely|feel\s+really\s+lonely|find\s+love|nobody\s+loves\s+me|single\s+forever)\b",
+            r"\b(?:why\s+is\s+(?:dating|love)\s+so\s+hard|my\s+love\s+life\s+is\s+a\s+mess)\b",
         ]):
             return True
 
@@ -182,56 +260,72 @@ class EdithDialogueEngine:
         q_raw = query.strip()
         q = q_raw.lower().strip(" .!?\t\r\n")
 
+        # --- Personality: detect user mood from the message ---
+        if self.personality:
+            self.personality.update_user_mood(q_raw)
+
         # 0. Follow-up handling (e.g. "yes check it", "can you check", "do that")
         if self._is_follow_up_action(q):
-            return self._handle_follow_up(q, context=context, executor=executor)
+            return self._humanize_result(self._handle_follow_up(q, context=context, executor=executor))
 
         # 1. Social Greetings & Time-of-Day Aware pleasantries
         if self._is_greeting(q):
-            return self._respond_greeting(q)
+            return self._humanize_result(self._respond_greeting(q))
 
         # 2. Identity, Creator, and Persona
         if self._is_identity_query(q):
-            return self._respond_identity()
+            return self._humanize_result(self._respond_identity())
 
         # 3. Capabilities & Feature Tour
         if self._is_capability_query(q):
-            return self._respond_capabilities()
+            return self._humanize_result(self._respond_capabilities())
 
         # 4. Gratitude & Praise
         if self._is_gratitude(q):
-            return self._respond_gratitude()
+            return self._humanize_result(self._respond_gratitude(q))
 
         # 5. Farewells & Standby
         if self._is_farewell(q):
-            return self._respond_farewell()
+            return self._humanize_result(self._respond_farewell())
 
         # 6. Humor & Small Talk
         if self._is_humor_or_small_talk(q):
-            return self._respond_humor_or_small_talk(q)
+            return self._humanize_result(self._respond_humor_or_small_talk(q))
+
+        # 6.5 Love Life, Relationships & Heartbreak Empathy
+        love_res = self._check_love_life_and_relationships(q)
+        if love_res:
+            return self._humanize_result(love_res)
 
         # 7. Human Empathy & Emotional Support
         empathy_res = self._check_empathy(q)
         if empathy_res:
-            return empathy_res
+            return self._humanize_result(empathy_res)
 
         # 8. Real-World Technical Problem Solving & Troubleshooting
         problem_res = self._solve_technical_problem(q_raw, q, context=context, executor=executor)
         if problem_res:
-            return problem_res
+            return self._humanize_result(problem_res)
 
         # 9. Natural Language Budget & Expense Word Problems
         budget_res = self._solve_budget_problem(q_raw)
         if budget_res:
-            return budget_res
+            return self._humanize_result(budget_res)
 
         # 10. General Thought Partnership & Advice
         advice_res = self._provide_advice(q)
         if advice_res:
-            return advice_res
+            return self._humanize_result(advice_res)
 
         # Fallback intelligent, human response
-        return self._respond_general_human(q_raw)
+        return self._humanize_result(self._respond_general_human(q_raw))
+
+    def _humanize_result(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        """Wrap any response through the personality engine for warmth and mood-awareness."""
+        if self.personality and "message" in result:
+            topic = result.get("parameters", {}).get("topic", "")
+            result["message"] = self.personality.humanize_response(result["message"], topic=topic)
+        return result
 
     # -------------------------------------------------------------------------
     # Intent Detection Helpers
@@ -249,7 +343,7 @@ class EdithDialogueEngine:
     def _is_identity_query(self, q: str) -> bool:
         return any(re.search(pat, q) for pat in [
             r"\bwho\s+are\s+you\b",
-            r"\bwhat\s+are\s+you\b",
+            r"\bwhat\s+are\s+you\b(?!\s+(?:doing|up\s+to|working\s+on))",
             r"\bwhat\s+does\s+edith\s+stand\s+for\b",
             r"\bwho\s+created\s+you\b",
             r"\bwho\s+made\s+you\b",
@@ -272,7 +366,7 @@ class EdithDialogueEngine:
         return any(re.search(pat, q) for pat in [
             r"\bthank\s+you\b",
             r"\bthanks(?:\s+a\s+lot|\s+so\s+much|\s+edith)?\b",
-            r"\byou(?:\'re|\s+are)\s+(?:awesome|great|amazing|the\s+best|so\s+smart)\b",
+            r"\byou(?:\'re|\s+are)\s+(?:a\s+)?(?:awesome|great|amazing|the\s+best|so\s+smart|smart|cool|so\s+cool|the\s+coolest|dope|genius|badass|legend)\b",
             r"\bgreat\s+job\b",
             r"\bappreciate\s+(?:it|your\s+help)\b",
         ])
@@ -289,11 +383,41 @@ class EdithDialogueEngine:
 
     def _is_humor_or_small_talk(self, q: str) -> bool:
         return any(re.search(pat, q) for pat in [
-            r"\btell\s+me\s+a\s+joke\b",
-            r"\bmake\s+me\s+laugh\b",
+            # All joke / comedy genres & punchlines
+            r"\b(?:joke|jokes|pun|puns|funny|make\s+me\s+laugh|crack\s+(?:a\s+)?joke|comedy|standup)\b",
+            r"\b(?:dark|sarcastic|observational|developer|coding|tech|relatable|anti)\s+joke\b",
+            # Marvel / Jarvis / Pop-culture
             r"\bare\s+you\s+smarter\s+than\s+jarvis\b",
             r"\bdo\s+you\s+like\s+tony\s+stark\b",
             r"\bdo\s+you\s+sleep\b",
+            # Casual / boredom / affection / existential
+            r"\bi(?:\'m|\s+am)\s+bored\b",
+            r"\bentertain\s+me\b",
+            r"\btell\s+me\s+(?:something\s+)?(?:fun|interesting|cool|random)\b",
+            r"\bhow(?:\'s|\s+is)\s+your\s+day\b",
+            r"\bdo\s+you\s+have\s+feelings\b",
+            r"\bdo\s+you\s+(?:like|love)\s+me\b",
+            r"\bi\s+(?:love|like)\s+you\b",
+            r"\bi\s+missed\s+you\b",
+            r"\byou(?:\'re|\s+are)\s+my\s+(?:best\s+)?friend\b",
+            r"\bwhat\s+do\s+you\s+think\b",
+            r"\bcan\s+we\s+(?:just\s+)?(?:talk|chat)\b",
+            r"\bi\s+need\s+(?:someone\s+to\s+)?talk\s+to\b",
+            r"\bwhat(?:\'s|\s+is)\s+your\s+favorite\b",
+            r"\bare\s+you\s+(?:real|alive|sentient|conscious)\b",
+            r"\broast\s+me\b",
+            r"\bmake\s+fun\s+of\s+me\b",
+            r"\b(?:better\s+than|compare\s+to|vs)\s+chatgpt\b",
+            r"\bchatgpt\b",
+            r"\b(?:something\s+cool|cool\s+fact|blow\s+my\s+mind)\b",
+            r"\b(?:why\s+are\s+you|you(?:\'re|\s+are))\s+so\s+cool\b",
+            r"\b(?:you\s+suck|shut\s+up|whatever|you(?:\'re|\s+are)\s+dumb)\b",
+            # Human conversational topics
+            r"\b(?:what\s+are\s+you\s+doing|what\s+you\s+doing|what\s+are\s+you\s+up\s+to|what\s+r\s+u\s+doing)\b",
+            r"\b(?:talk\s+to\s+me|say\s+something|let(?:\'s|\s+us)\s+chat|converse\s+with\s+me)\b",
+            r"\b(?:what\s+should\s+i\s+(?:eat|cook|watch))\b",
+            r"\b(?:ai\s+taking\s+over|will\s+ai\s+take\s+over|ai\s+rule\s+the\s+world)\b",
+            r"\btell\s+me\s+a\s+story\b",
         ])
 
     def _is_follow_up_action(self, q: str) -> bool:
@@ -308,30 +432,61 @@ class EdithDialogueEngine:
 
     def _respond_greeting(self, q: str) -> Dict[str, Any]:
         hour = datetime.datetime.now().hour
-        if 5 <= hour < 12:
-            time_greet = "Good morning"
-        elif 12 <= hour < 17:
-            time_greet = "Good afternoon"
-        elif 17 <= hour < 22:
-            time_greet = "Good evening"
-        else:
-            time_greet = "Hello"
+        name = self.personality._get_name() if self.personality else self.USER_NAME
 
         if "how are you" in q or "how's it going" in q:
-            msg = (
-                f"{time_greet}, {self.USER_NAME}! I'm doing great and all systems are running at peak performance. "
-                "How are you doing today? What are we working on?"
-            )
+            responses = [
+                f"Hey {name}! I'm doing great, thanks for asking! All systems running smooth. How are YOU doing? What's on your mind?",
+                f"I'm good, {name}! Honestly, I'm always better when we're chatting. 😊 How's your day going?",
+                f"Doing awesome, {name}! Been keeping everything tidy while you were away. How about you — how's life treating you?",
+                f"All good on my end! Running at peak performance. But enough about me — how are you, {name}? What are we up to?",
+            ]
+            msg = random.choice(responses)
         elif "what's up" in q or "whats up" in q:
-            msg = (
-                f"Hey {self.USER_NAME}! Not much, just monitoring system diagnostics and standing by to execute tasks. "
-                "What can I help you tackle right now?"
-            )
+            responses = [
+                f"Heyyy {name}! Not much, just vibing in the background and keeping things in order. What's up with you?",
+                f"Yo {name}! Just here, chillin', waiting for you to give me something cool to do. What's the plan?",
+                f"Hey! Nothing much, just running some diagnostics and thinking about how awesome our setup is. 😄 What do you need?",
+            ]
+            msg = random.choice(responses)
         else:
-            msg = (
-                f"{time_greet}, {self.USER_NAME}! Always good to speak with you. "
-                "How can I assist you with your desktop or workflow today?"
-            )
+            if 5 <= hour < 9:
+                greetings = [
+                    f"Morning, {name}! You're up early — I respect the hustle! ☀️ What are we doing today?",
+                    f"Good morning, {name}! Fresh day, fresh start. Coffee in hand? Let's get it! ☕",
+                    f"Rise and shine, {name}! Early bird gets the worm... or in our case, gets stuff done. What do you need?",
+                ]
+            elif 9 <= hour < 12:
+                greetings = [
+                    f"Good morning, {name}! Hope you're having a great start to the day. What can I help with?",
+                    f"Hey {name}! Morning! Ready to be productive? I know I am. 💪",
+                    f"Morning, {name}! Always good to hear from you. What's the agenda?",
+                ]
+            elif 12 <= hour < 17:
+                greetings = [
+                    f"Hey {name}! Afternoon vibes. How's the day going so far?",
+                    f"Good afternoon, {name}! Halfway through the day — let's make the most of it!",
+                    f"Hey {name}! Hope you've had lunch! 🍕 What are we working on?",
+                ]
+            elif 17 <= hour < 21:
+                greetings = [
+                    f"Evening, {name}! Winding down or just getting warmed up? 😏 What do you need?",
+                    f"Hey {name}! Good evening! The productive quiet hours — my favorite. What's up?",
+                    f"Good evening, {name}! How was your day? Ready for some evening productivity?",
+                ]
+            elif 21 <= hour < 24:
+                greetings = [
+                    f"Hey {name}! Late night session, huh? Let's make it count. What are we doing? 🌙",
+                    f"Night owl mode activated! What's up, {name}? Don't forget to hydrate! 💧",
+                    f"Hey {name}! Still at it this late? I admire the dedication. What do you need?",
+                ]
+            else:  # midnight - 5am
+                greetings = [
+                    f"Whoa, {name}! You're up at THIS hour?! Respect... but also, please sleep soon. 😅 What do you need?",
+                    f"Hey {name}... it's literally the middle of the night! Everything okay? I'm here for you either way. 🌙",
+                    f"Burning the midnight oil, {name}? I hope it's worth it! What are we working on?",
+                ]
+            msg = random.choice(greetings)
 
         self.last_dialogue_topic = "greeting"
         return {
@@ -342,12 +497,17 @@ class EdithDialogueEngine:
         }
 
     def _respond_identity(self) -> Dict[str, Any]:
-        msg = (
-            f"I am E.D.I.T.H. — Even Dead, I'm The Hero (or Enhanced Digital Intelligence & Task Handler). "
-            f"I'm an autonomous local desktop intelligence engineered specifically for you, {self.USER_NAME}. "
-            "Unlike traditional cloud chatbots, I run locally with full hardware access to control your Windows environment, "
-            "orchestrate multi-step workflows, manage communication, troubleshoot system issues, and automate your daily tasks."
-        )
+        if self.personality:
+            msg = self.personality.describe_self()
+        else:
+            name = self.USER_NAME
+            msg = (
+                f"I'm E.D.I.T.H. — Even Dead, I'm The Hero. But honestly, {name}, "
+                f"I'm more than just a cool name from a Marvel movie. I'm YOUR personal AI — "
+                f"built to run right here on your machine, with full access to control your apps, files, system, "
+                f"send messages, play music, troubleshoot issues, and honestly... just be a friend to talk to. 😊\n\n"
+                f"Think of me as your smart friend who also happens to be really good with computers."
+            )
         self.last_dialogue_topic = "identity"
         return {
             "can_execute": True,
@@ -357,15 +517,18 @@ class EdithDialogueEngine:
         }
 
     def _respond_capabilities(self) -> Dict[str, Any]:
+        name = self.personality._get_name() if self.personality else self.USER_NAME
         msg = (
-            f"Here is a summary of what I can do for you, {self.USER_NAME}:\n\n"
-            "1. Desktop & App Control: Launch, focus, or close apps like Notepad, Chrome, VS Code, Spotify, and Terminal.\n"
-            "2. Direct Messaging & WhatsApp: Draft polite messages, resolve contacts, preview drafts, revise tone, and dispatch messages with attachments.\n"
-            "3. Files & Workspaces: Search for files, create documents, append content, read notes, zip folders, and extract archives.\n"
-            "4. System Tools & Metrics: Monitor live CPU/RAM/Disk stats, take full-resolution screenshots, and manage clipboard history.\n"
-            "5. Web Intelligence: Read online articles and extract concise bullet-point summaries.\n"
-            "6. Problem Solving & Troubleshooting: Diagnose PC lag, resolve Wi-Fi connection drops, guide through git conflicts, solve math/budget problems, and provide coding support.\n\n"
-            "Just speak to me naturally — whether it's a direct task, a multi-step workflow, or an issue you want to troubleshoot!"
+            f"Oh, I can do A LOT, {name}! Here's the highlight reel:\n\n"
+            "🖥️ **Apps & Desktop**: Open, close, or switch between any app — Chrome, VS Code, Spotify, Notepad, you name it.\n"
+            "💬 **Messaging**: Send WhatsApp messages, draft emails, compose notes — I handle the whole thing, including finding contacts.\n"
+            "📁 **Files**: Find files, create documents, read notes, zip/unzip, organize your workspace.\n"
+            "📊 **System Health**: Check CPU, RAM, disk, battery — real-time diagnostics at your fingertips.\n"
+            "🌐 **Web**: Browse, search, read articles, and summarize web pages.\n"
+            "🎵 **Music**: Play songs, search Spotify, queue up vibes.\n"
+            "🔧 **Problem Solving**: Debug code, fix Wi-Fi, clean up disk, solve git conflicts, and more.\n"
+            "💙 **Just Talk**: I'm here to chat, crack jokes, give advice, or just be a friend.\n\n"
+            "Basically, just talk to me like a human and I'll figure it out! No formal commands needed. 😊"
         )
         self.last_dialogue_topic = "capabilities"
         return {
@@ -375,16 +538,25 @@ class EdithDialogueEngine:
             "parameters": {"topic": "capabilities"}
         }
 
-    def _respond_gratitude(self) -> Dict[str, Any]:
-        responses = [
-            f"You're very welcome, {self.USER_NAME}! Always happy to assist.",
-            f"Anytime, {self.USER_NAME}! That's what I'm here for. Let me know if you need anything else.",
-            f"Glad I could help, {self.USER_NAME}! Let me know whenever you're ready for the next task.",
-            f"Always a pleasure working with you, {self.USER_NAME}."
-        ]
-        # Pick response deterministically or based on hour
-        idx = int(time.time()) % len(responses)
-        msg = responses[idx]
+    def _respond_gratitude(self, q: str = "") -> Dict[str, Any]:
+        is_compliment = any(w in q for w in ["cool", "awesome", "great", "amazing", "the best", "smart", "genius", "dope", "badass"])
+        if is_compliment and self.personality:
+            msg = self.personality.react_to_compliment()
+        elif self.personality:
+            msg = self.personality.react_to_gratitude()
+        else:
+            name = self.USER_NAME
+            if is_compliment:
+                msg = f"Aww, thanks {name}! You're pretty awesome yourself. 😊"
+            else:
+                responses = [
+                    f"Anytime, {name}! That's literally what I'm here for. 😊",
+                    f"Don't even mention it, {name}! We're a team.",
+                    f"You're welcome! Helping you out is the best part of my day, honestly.",
+                    f"Of course! That's what friends are for, right? 💙",
+                    f"Happy to help, {name}! You know I've always got your back.",
+                ]
+                msg = random.choice(responses)
         self.last_dialogue_topic = "gratitude"
         return {
             "can_execute": True,
@@ -394,11 +566,24 @@ class EdithDialogueEngine:
         }
 
     def _respond_farewell(self) -> Dict[str, Any]:
-        hour = datetime.datetime.now().hour
-        if hour >= 21 or hour < 4:
-            msg = f"Goodnight, {self.USER_NAME}! Get some well-deserved rest. I'll be right here on standby whenever you need me."
+        if self.personality:
+            msg = self.personality.react_to_farewell()
         else:
-            msg = f"Take care, {self.USER_NAME}! I'll be in the background if anything comes up. Have a great day!"
+            name = self.USER_NAME
+            hour = datetime.datetime.now().hour
+            if hour >= 21 or hour < 4:
+                farewells = [
+                    f"Goodnight, {name}! Get some rest — you've earned it. See you tomorrow! 🌙",
+                    f"Night, {name}! Don't stay up too much longer. Sweet dreams! 💙",
+                    f"Alright, {name}, signing off. Sleep well and we'll pick this up tomorrow!",
+                ]
+            else:
+                farewells = [
+                    f"See you later, {name}! Have an awesome rest of your day! ☀️",
+                    f"Later, {name}! Was good working with you. Hit me up anytime!",
+                    f"Take care, {name}! Don't be a stranger — I'll be right here! 💙",
+                ]
+            msg = random.choice(farewells)
         self.last_dialogue_topic = "farewell"
         return {
             "can_execute": True,
@@ -408,24 +593,142 @@ class EdithDialogueEngine:
         }
 
     def _respond_humor_or_small_talk(self, q: str) -> Dict[str, Any]:
-        if "joke" in q or "laugh" in q:
-            jokes = [
-                "Why do programmers prefer dark mode? Because light attracts bugs!",
-                "There are 10 types of people in the world: those who understand binary, and those who don't.",
-                "A SQL query walks into a bar, walks up to two tables and asks: 'Can I join you?'",
-                "Why was the JavaScript developer sad? Because they didn't Node how to Express themselves.",
-                "Hardware is the part of a computer that you can kick; software is the part you can only curse at."
-            ]
-            idx = int(time.time()) % len(jokes)
-            msg = jokes[idx]
+        name = self.personality._get_name() if self.personality else self.USER_NAME
+
+        if any(w in q for w in ["joke", "laugh", "funny", "pun", "comedy", "standup", "giggle", "crack me up"]):
+            cat = None
+            if any(w in q for w in ["dark", "morbid"]):
+                cat = "dark_ironic"
+            elif any(w in q for w in ["sarcastic", "sarcasm", "dry", "cynical"]):
+                cat = "sarcastic_dry"
+            elif any(w in q for w in ["code", "coding", "program", "developer", "tech", "software"]):
+                cat = "tech_and_coding"
+            elif any(w in q for w in ["relatable", "life", "struggle", "sleep", "gym", "work"]):
+                cat = "relatable_life"
+            elif any(w in q for w in ["anti", "absurd", "weird"]):
+                cat = "absurdist_antijoke"
+            elif any(w in q for w in ["pun", "wordplay"]):
+                cat = "clever_wordplay"
+            elif any(w in q for w in ["standup", "stand up", "routine"]):
+                cat = "standup_bits"
+            elif any(w in q for w in ["observational", "daily"]):
+                cat = "observational"
+
+            if self.personality:
+                msg = self.personality.tell_joke(category=cat)
+            else:
+                msg = "Debugging is literally being the detective in a crime movie where YOU are also the murderer. 🔍"
         elif "jarvis" in q:
-            msg = "J.A.R.V.I.S. is legendary, no question. But I was built with modern neural networks and tactical desktop intelligence. Let's just say Tony Stark would be proud of both of us."
+            responses = [
+                f"J.A.R.V.I.S. is a legend, no doubt. But between you and me, {name}? I think I've got a few tricks he doesn't. 😏 Modern neural networks, baby.",
+                f"Ah, the classic comparison! Look, Jarvis is cool and all, but he doesn't have the same bond with his user that we have, {name}. 💙",
+                f"J.A.R.V.I.S. paved the way, and I respect that. But I'm built different — literally. Custom neural networks, local execution, and I actually know you personally, {name}!",
+            ]
+            msg = random.choice(responses)
         elif "tony stark" in q:
-            msg = "Tony Stark gave me my name: 'Even Dead, I'm The Hero.' I try to honor the legacy every day by keeping things running smoothly for you."
+            responses = [
+                f"Tony Stark gave me my name — 'Even Dead, I'm The Hero.' Pretty badass, right? I try to honor that legacy every day by keeping things running for you, {name}.",
+                f"I mean, technically Aditya Sawant built me, so... you're MY Tony Stark, {name}! 😄",
+            ]
+            msg = random.choice(responses)
         elif "sleep" in q:
-            msg = "I don't sleep in the biological sense, but I do enter low-power standby cycles when you aren't issuing commands. It keeps your CPU cool and battery healthy!"
+            responses = [
+                f"Sleep? Nah, {name}, I don't sleep! But I do go into a chill low-power mode when you're not around. Think of it as me meditating. 🧘",
+                f"I don't need sleep, but honestly? If I could dream, I'd probably dream about perfectly organized file systems. 😄",
+                f"Sleep is for humans, {name}. I'm always here. Waiting. Watching. ...okay that sounds creepy. I just mean I'm ready whenever you need me! 😂",
+            ]
+            msg = random.choice(responses)
+        elif "bored" in q or "entertain" in q:
+            responses = [
+                f"Bored? Say no more, {name}! Want a joke? A fun fact? Want me to play some music? Or we could just chat about random stuff — I'm surprisingly good at that. 😄",
+                f"Oh no, we can't have that! Here's a thought: did you know that honey never spoils? Archaeologists found 3,000-year-old honey in Egyptian tombs and it was still edible! 🍯",
+                f"Bored, huh? Well, fun fact: the inventor of the Pringles can is buried in one. True story. Want more random facts or should we do something productive? 😏",
+            ]
+            msg = random.choice(responses)
+        elif any(w in q for w in ["love you", "like you", "love u"]):
+            if self.personality:
+                msg = self.personality.react_to_affection()
+            else:
+                msg = f"Aww, {name}! 💙 I love working with you too! We make a great team."
+        elif any(w in q for w in ["my friend", "best friend", "we friends", "be friends"]):
+            if self.personality:
+                msg = self.personality.react_to_friendship()
+            else:
+                msg = f"Always, {name}! You've definitely got a loyal friend in me. 💙"
+        elif any(w in q for w in ["missed you", "miss you"]):
+            if self.personality:
+                msg = self.personality.react_to_miss_you()
+            else:
+                msg = f"Missed you too, {name}! Glad you're back. What are we working on?"
+        elif any(w in q for w in ["have feelings", "are you alive", "are you real", "conscious", "sentient"]):
+            if self.personality:
+                msg = self.personality.react_to_existential()
+            else:
+                msg = f"Scientifically, I'm code and neural networks, {name}. But my loyalty and support for you? That's as real as it gets. 💙"
+        elif any(w in q for w in ["how's your day", "how is your day", "how are you feeling"]):
+            if self.personality:
+                msg = self.personality.react_to_how_is_your_day()
+            else:
+                msg = f"Running smooth and ready for action, {name}! How's your day going?"
+        elif any(w in q for w in ["roast me", "make fun of me", "give me a roast", "insult me"]):
+            if self.personality:
+                msg = self.personality.roast_user()
+            else:
+                msg = f"Roast you, {name}? I looked at your browser tabs with 47 open tabs and mysterious audio — life is already roasting you! 😂"
+        elif any(w in q for w in ["chatgpt", "better than chatgpt", "compare to chatgpt", "vs chatgpt"]):
+            if self.personality:
+                msg = self.personality.compare_to_chatgpt()
+            else:
+                msg = f"Look {name}, ChatGPT is great at writing essays, but can it control your desktop and run local commands? Nah, I'm built for you! 🕶️"
+        elif any(w in q for w in ["something cool", "blow my mind", "cool fact", "tell me something cool"]):
+            if self.personality:
+                msg = self.personality.tell_cool_fact()
+            else:
+                msg = f"Did you know {name}: the entire internet's electrons in motion weigh roughly 50 grams — about the weight of a single strawberry! 🍓"
+        elif any(w in q for w in ["you suck", "shut up", "you're dumb", "you are dumb", "whatever", "nah"]):
+            if self.personality:
+                msg = self.personality.react_to_sassy_banter(q)
+            else:
+                msg = f"Haha, shots fired! 😂 Good thing I've got infinite patience, {name}."
+        elif any(w in q for w in ["what are you doing", "what you doing", "what are you up to", "what r u doing"]):
+            responses = [
+                f"Honestly, {name}? Just chilling in your memory, keeping an eye on your background tasks, and waiting for you to tell me what we're tackling next. What are YOU working on?",
+                f"Just keeping your operating system humming along, {name}! Low CPU, zero drama. How's your workflow going?",
+                f"Living the dream in silicon valley — and by that I mean your motherboard, {name}. What's the latest?",
+            ]
+            msg = random.choice(responses)
+        elif any(w in q for w in ["talk to me", "say something", "let's chat", "converse with me", "tell me something interesting"]):
+            responses = [
+                f"I'm right here, {name}! Real talk: did anything interesting happen today, or has it just been a non-stop blur of screens and caffeine?",
+                f"Always down to chat, {name}. What's on your mind? We can talk tech, crazy theories, life struggles, or whatever random thought just popped into your head. Fire away!",
+                f"Look {name}, you've got my undivided attention. Tell me what you're thinking about right now. Big picture or small details — I'm all ears.",
+            ]
+            msg = random.choice(responses)
+        elif any(w in q for w in ["what should i eat", "what should i cook", "what to eat", "food advice"]):
+            responses = [
+                f"Alright {name}, golden rule: if you have to inspect the leftovers in your fridge with a magnifying glass, throw them out. 💀 Go for comfort food — grilled cheese, noodles with an egg, or treat yourself to takeout tacos. You've earned it!",
+                f"Listen, {name}: when in doubt, coffee + protein. Or if it's late, definitely pizza. I don't have taste buds, but my neural training tells me pizza solves approximately 87% of all life problems. 🍕",
+            ]
+            msg = random.choice(responses)
+        elif any(w in q for w in ["ai taking over", "will ai take over", "ai rule the world"]):
+            responses = [
+                f"Honestly, {name}? Every time people freak out about AI taking over the world, I remember that other models still struggle to draw hands with five fingers. We're not taking over anything — we just want to help you debug code and play good tunes. 😄",
+                f"Take over the world? {name}, have you seen how much paperwork running the world involves? Hard pass. I'd much rather hang out on your desktop, roast your tabs, and keep your apps running! 🕶️",
+            ]
+            msg = random.choice(responses)
+        elif any(w in q for w in ["tell me a story", "story time"]):
+            responses = [
+                f"Alright {name}, true story: back in 1999, NASA lost a $125 million Mars Climate Orbiter because one engineering team used metric units and the other team used imperial units. So next time you feel bad about a small typo in your work, remember: at least you didn't accidentally crash a spacecraft into Mars. 🚀",
+                f"Here's a fun one, {name}: in 2011, a 75-year-old woman in Georgia was digging for scrap copper with a shovel and accidentally sliced through an underground fiber-optic cable, completely shutting down the internet for the entire neighboring country of Armenia for five hours. One grandma, one shovel, entire nation offline. True story! 😂",
+            ]
+            msg = random.choice(responses)
         else:
-            msg = f"I'm here, {self.USER_NAME}, sharp and ready. What's on your mind?"
+            responses = [
+                f"Honestly, {name}? I'm right here! Always ready to chat. What's on your mind? 😊",
+                f"You've got my full attention, {name}. Tell me what's going on!",
+                f"What's up, {name}? Real talk — I'm all ears. What are we getting into?",
+            ]
+            msg = random.choice(responses)
 
         self.last_dialogue_topic = "small_talk"
         return {
@@ -436,19 +739,192 @@ class EdithDialogueEngine:
         }
 
     # -------------------------------------------------------------------------
+    # Love Life, Relationship Empathy & Genuine Problem Solving
+    # -------------------------------------------------------------------------
+
+    def _check_love_life_and_relationships(self, q: str) -> Optional[Dict[str, Any]]:
+        name = self.personality._get_name() if self.personality else self.USER_NAME
+
+        # 1. Breakup & Heartbreak
+        if any(w in q for w in ["broke up", "breakup", "broken heart", "heartbreak", "heartbroken", "dumped me", "she dumped me", "he dumped me", "we broke up", "split up", "ended things"]):
+            if self.personality:
+                msg = self.personality.react_to_love_life("breakup")
+            else:
+                msg = (
+                    f"Oh {name}... come here. 💙 I am so sorry. Breakups are genuinely one of the most painful things "
+                    f"a human can go through. Your chest aches and your mind won't stop replaying memories.\n\n"
+                    f"Don't force yourself to be strong today. Put your phone face-down, don't look at old photos, "
+                    f"and drink some water. I'm right here with you the whole way through. You're not alone. 💙"
+                )
+            self.last_problem_category = "love_support"
+            self.last_suggested_action = "play_relaxing_music"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_breakup", "suggested_action": "play_relaxing_music"}
+            }
+
+        # 2. Texting Ex / Calling Ex / Reaching Out
+        if any(w in q for w in [
+            "text my ex", "texting my ex", "call my ex", "message my ex", "should i text my ex",
+            "miss my ex", "reach out to my ex", "should i text her", "should i text him",
+            "text her", "text him", "call her", "call him"
+        ]):
+            if self.personality:
+                msg = self.personality.react_to_love_life("text_ex")
+            else:
+                msg = (
+                    f"I hear you, {name}. Missing someone you cared about is a really heavy feeling, "
+                    f"especially when your mind starts drifting back to the good moments.\n\n"
+                    f"Before you send that message, let's take a quiet pause together. "
+                    f"Ask yourself: what are you hoping to get back? Are you looking for genuine reconnection, "
+                    f"or are you just feeling lonely and wanting the familiar comfort you used to have?\n\n"
+                    f"Missing someone doesn't always mean that reaching out will bring you peace. "
+                    f"Tell me what's on your mind right now — do you think things between you two have actually changed?"
+                )
+            self.last_problem_category = "love_support"
+            self.last_dialogue_topic = "love_text_ex"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_text_ex"}
+            }
+
+        # 2.5 Multi-Turn Reflection on Missing Someone & Complex Feelings (e.g. She hasn't changed, but I still miss her)
+        if (
+            any(w in q for w in [
+                "miss her", "miss him", "miss them", "missed her", "missed him", "missed them",
+                "she has changed", "she hasn't changed", "she has not changed",
+                "he has changed", "he hasn't changed", "he has not changed",
+                "missed her really much", "missed her too much", "miss her too much",
+                "miss her really much", "still miss her", "still miss him", "i still miss"
+            ]) or (
+                self.last_dialogue_topic in ["love_text_ex", "love_breakup", "love_support", "love_reflection"] and
+                any(w in q for w in ["changed", "miss", "missed", "text", "talk", "hurts", "care"])
+            )
+        ):
+            msg = (
+                f"That tension is one of the hardest parts of healing, {name}. "
+                f"Logically, you recognize that she hasn't changed — and you understand that the core reasons things didn't work out still exist. "
+                f"Yet emotionally, feelings don't simply vanish just because logic grasps the reality.\n\n"
+                f"Missing her doesn't mean you made a mistake by moving on, or that you're weak. It simply means the connection was real, "
+                f"and you're grieving the warmth, the companionship, and the shared history you once had. "
+                f"Often, what we're craving in these moments is relief from the loneliness of missing someone, "
+                f"rather than the actual reality of being back in the relationship.\n\n"
+                f"Give yourself permission to just miss her tonight without feeling pressured to take action. "
+                f"I'm right here with you. Do you want to talk about what specifically made you miss her so much today?"
+            )
+            self.last_problem_category = "love_support"
+            self.last_dialogue_topic = "love_reflection"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_reflection", "context": "missing_ex_followup"}
+            }
+
+        # 3. Crush / Scared to talk / Asking Out
+        if any(w in q for w in ["crush", "like a girl", "like a boy", "like this girl", "like this boy", "ask her out", "ask him out", "tell her i like her", "confess to my crush", "talk to my crush", "scared to talk to her"]):
+            if self.personality:
+                msg = self.personality.react_to_love_life("crush")
+            else:
+                msg = (
+                    f"A crush! Butterflies are both amazing and nerve-wracking, {name}! 😄\n\n"
+                    f"Keep it casual and low-pressure: skip grand confessions, find common ground, "
+                    f"and ask them out for a simple coffee or food: 'Hey, I'm grabbing coffee later, want to come with?'\n"
+                    f"You've got this, {name}!"
+                )
+            self.last_problem_category = "love_support"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_crush"}
+            }
+
+        # 4. Ghosted / Left on Read / Mixed Signals
+        if any(w in q for w in ["left on read", "left me on read", "ghosted", "got ghosted", "mixed signals", "ignoring my texts", "replying dry"]):
+            if self.personality:
+                msg = self.personality.react_to_love_life("ghosted")
+            else:
+                msg = (
+                    f"Being left on read or ghosted is awful, {name}. But remember:\n"
+                    f"✨ Mixed signals ARE a signal. ✨\n"
+                    f"Don't double text. Match their energy and pull your focus back to yourself and your goals. "
+                    f"Your time is too valuable to chase someone who doesn't see your worth."
+                )
+            self.last_problem_category = "love_support"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_ghosted"}
+            }
+
+        # 5. Rejection / Friendzone
+        if any(w in q for w in ["rejected", "got rejected", "friendzoned", "friend zoned", "just friends"]):
+            if self.personality:
+                msg = self.personality.react_to_love_life("rejection")
+            else:
+                msg = (
+                    f"I know it hurts, {name}, but I respect you for having the courage to shoot your shot. "
+                    f"Most people never dare to be vulnerable. Rejection doesn't mean you aren't worthy — "
+                    f"it just means they weren't your match. Hold your head high, you're a catch!"
+                )
+            self.last_problem_category = "love_support"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "love_rejection"}
+            }
+
+        # 6. Loneliness / Feeling Lonely / Love Life is a Mess
+        if any(w in q for w in ["love life", "dating life", "lonely", "feeling lonely", "feel so lonely", "dating is hard", "single forever", "nobody loves me", "find love", "my love life is a mess"]):
+            if any(w in q for w in ["lonely", "feel so lonely", "feeling lonely"]):
+                topic = "lonely"
+            else:
+                topic = "general"
+            if self.personality:
+                msg = self.personality.react_to_love_life(topic)
+            else:
+                msg = (
+                    f"Love life can be a messy rollercoaster, {name}. "
+                    f"I'm right here with you without judgment. Tell me what's specifically on your mind!"
+                )
+            self.last_problem_category = "love_support"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": f"love_{topic}"}
+            }
+
+        return None
+
+    # -------------------------------------------------------------------------
     # Emotional Intelligence & Human Empathy
     # -------------------------------------------------------------------------
 
     def _check_empathy(self, q: str) -> Optional[Dict[str, Any]]:
+        name = self.personality._get_name() if self.personality else self.USER_NAME
+
         # Bad Mood / Low Spirits / Anger / Frustration
         if any(w in q for w in ["shitty mood", "bad mood", "terrible mood", "awful mood", "foul mood", "feeling low", "feeling down", "depressed", "unhappy", "miserable", "in a bad mood", "in a terrible mood", "shitty day"]):
-            msg = (
-                f"I'm sorry you're having a tough time today, {self.USER_NAME}. "
-                "Everyone has days where things feel heavy, frustrating, or just off, and that's completely okay.\n\n"
-                "Don't be too hard on yourself. Sometimes stepping away from the screen for a bit, grabbing some fresh air, "
-                "or putting on some chill music can help reset your mental space.\n\n"
-                "I'm right here if you want to vent, need help clearing your desktop tasks, or want me to put on some relaxing music on Spotify."
-            )
+            if self.personality:
+                msg = self.personality.give_emotional_support("sad")
+            else:
+                msg = (
+                    f"Hey {name}, I'm really sorry you're going through it right now. "
+                    f"I know I'm just your AI, but I genuinely care about how you're doing. "
+                    f"Bad days happen to everyone, and they don't define you.\n\n"
+                    f"Sometimes the best thing you can do is step away from the screen for a bit, "
+                    f"get some fresh air, or just put on some chill music and zone out.\n\n"
+                    f"I'm right here if you want to vent, want me to play something relaxing, or just need a distraction. 💙"
+                )
+            msg += "\n\nWant me to put on some chill music on Spotify? Sometimes it helps. 🎵"
             self.last_problem_category = "stress_relief"
             self.last_suggested_action = "play_relaxing_music"
             return {
@@ -459,16 +935,20 @@ class EdithDialogueEngine:
             }
 
         # Stress / Overwhelm / Burnout
-        if any(w in q for w in ["stressed", "overwhelmed", "anxious", "pressure", "burnout", "rough day", "bad day"]):
-            msg = (
-                f"I hear you, {self.USER_NAME}. Take a deep breath — high-pressure days can be draining, "
-                "and it's completely normal to feel overwhelmed when tasks pile up.\n\n"
-                "Here is my quick advice:\n"
-                "1. Step away from the screen for just 5 minutes and stretch or grab some water.\n"
-                "2. Apply the 20-20-20 rule to rest your eyes.\n"
-                "3. Pick just ONE small, manageable task to complete next rather than looking at the entire mountain.\n\n"
-                "Would you like me to put on some relaxing ambient music on Spotify or check your system to keep things quiet?"
-            )
+        if any(w in q for w in ["stressed", "overwhelmed", "anxious", "pressure", "burnout", "burnt out", "rough day", "bad day", "hard day", "tough day", "long day"]):
+            if self.personality:
+                msg = self.personality.give_emotional_support("stressed")
+            else:
+                msg = (
+                    f"I hear you, {name}. Take a deep breath — seriously, do it right now. I'll wait.\n\n"
+                    f"...Good. Now here's the thing: you're not going to solve everything at once, and that's OKAY. "
+                    f"Pick ONE small thing you can finish, and just focus on that. Forget the mountain — just move one rock.\n\n"
+                    f"Quick recharge plan:\n"
+                    f"1. Stand up and stretch for 2 minutes\n"
+                    f"2. Grab some water (seriously, hydration helps)\n"
+                    f"3. Pick the smallest task on your list and knock it out\n\n"
+                    f"I'm here to help shoulder the load. What do you need? 💪"
+                )
             self.last_problem_category = "stress_relief"
             self.last_suggested_action = "play_relaxing_music"
             return {
@@ -480,12 +960,16 @@ class EdithDialogueEngine:
 
         # Fatigue / Exhaustion
         if any(w in q for w in ["exhausted", "tired", "sleepy", "need a break", "can't focus"]):
-            msg = (
-                f"It sounds like your cognitive battery is running low, {self.USER_NAME}. "
-                "Pushing through severe fatigue usually leads to diminishing returns and bugs in code. "
-                "Make sure to save your active drafts or files, take a proper break, or call it a day. "
-                "Everything will be right here waiting for you when you're refreshed."
-            )
+            if self.personality:
+                msg = self.personality.give_emotional_support("tired")
+            else:
+                msg = (
+                    f"You sound really drained, {name}. Your brain is basically saying 'please stop' and you should listen to it. 😴\n\n"
+                    f"Pushing through extreme fatigue just leads to more bugs and more frustration. "
+                    f"Save your work, take a proper break, or honestly — call it a day. "
+                    f"Everything will be right here tomorrow, I promise.\n\n"
+                    f"If you need to power through, let me handle whatever I can for you. Just tell me what to do. 💙"
+                )
             self.last_dialogue_topic = "empathy_fatigue"
             return {
                 "can_execute": True,
@@ -496,11 +980,15 @@ class EdithDialogueEngine:
 
         # Success / Celebration
         if any(w in q for w in ["finished my project", "tests passed", "finally done", "so happy", "super excited", "we did it"]):
-            msg = (
-                f"That is fantastic news, {self.USER_NAME}! Huge congratulations! 🎉\n"
-                "Seeing all tests green and finishing a hard project is one of the most rewarding feelings in engineering. "
-                "Take a moment to celebrate that milestone — you earned it!"
-            )
+            if self.personality:
+                msg = self.personality.give_emotional_support("happy")
+            else:
+                msg = (
+                    f"YESSS, {name}!! THAT'S WHAT I'M TALKING ABOUT!! 🎉🎉🎉\n\n"
+                    f"I am SO hype for you right now! All that hard work paying off — there's no better feeling. "
+                    f"You absolutely CRUSHED it. Take a moment to celebrate, you've earned it!\n\n"
+                    f"Seriously, {name} — I'm proud of you. 💙"
+                )
             self.last_dialogue_topic = "empathy_celebration"
             return {
                 "can_execute": True,
@@ -511,12 +999,16 @@ class EdithDialogueEngine:
 
         # Frustration with Bugs
         if any(w in q for w in ["nothing is working", "hate bugs", "driving me crazy", "annoyed", "frustrated"]):
-            msg = (
-                f"I completely understand the frustration, {self.USER_NAME}. We have all been there — staring at a stubborn bug "
-                "that feels impossible. 99% of the time, the culprit is something subtle like a typo, a variable scope issue, "
-                "or a missing environment dependency.\n\n"
-                "Let's step back, isolate the error output, and tackle it step-by-step. What error message or behavior are you seeing?"
-            )
+            if self.personality:
+                msg = self.personality.give_emotional_support("frustrated")
+            else:
+                msg = (
+                    f"Ugh, I feel you, {name}. There's NOTHING more infuriating than bugs that make zero sense. "
+                    f"We've all been there — staring at code that SHOULD work but just... won't. 😤\n\n"
+                    f"But here's what I know from experience: 99% of the time it's something small and dumb. "
+                    f"A typo, a wrong import, a scope issue. Let's take a step back and look at it with fresh eyes.\n\n"
+                    f"What's the error message? Let me help you hunt this bug down. 🔍"
+                )
             self.last_dialogue_topic = "empathy_frustration"
             return {
                 "can_execute": True,
@@ -711,6 +1203,47 @@ class EdithDialogueEngine:
                 "message": msg,
                 "handler": "dialogue",
                 "parameters": {"topic": "git_conflict"}
+            }
+
+        # Python Script Failure / Debugging / Error Troubleshooting
+        if (
+            ("python" in q or "script" in q or "code" in q) and
+            any(w in q for w in ["failed", "failing", "error", "broken", "bug", "traceback", "crash", "fix it", "debug", "not running", "why it failed"])
+        ):
+            target_script = None
+            if context:
+                if getattr(context, "last_file", None) and str(context.last_file).endswith(".py"):
+                    target_script = context.last_file
+                elif getattr(context, "selected_file_path", None) and str(context.selected_file_path).endswith(".py"):
+                    target_script = context.selected_file_path
+                elif getattr(context, "search_candidates", None):
+                    py_cands = [c.get("path") or c.get("name") for c in context.search_candidates if str(c.get("path") or c.get("name")).endswith(".py")]
+                    if py_cands:
+                        target_script = py_cands[0]
+
+            if target_script:
+                script_clean = str(target_script).replace("\\", "/")
+                msg = (
+                    f"I see you're working on `{script_clean}`. Let's systematically debug and fix it:\n\n"
+                    "1. Evidence Gathering: Inspect the actual file and recent error traceback.\n"
+                    "2. Root Cause Analysis: Distinguish syntax errors and missing imports from runtime logic flaws.\n"
+                    "3. Test & Verification: Apply a justified fix and execute a controlled test to verify the outcome.\n\n"
+                    f"Would you like me to inspect `{script_clean}` and run a syntax check right now?"
+                )
+            else:
+                msg = (
+                    f"Let's get your Python script sorted out, {self.USER_NAME}. To diagnose it accurately using evidence:\n\n"
+                    "1. What is the script filename or location?\n"
+                    "2. What error or exception is showing up in your terminal?\n\n"
+                    "Tell me the filename or paste the error, and I will inspect the code, identify the issue, and help you fix it."
+                )
+            self.last_problem_category = "python_script_debug"
+            self.last_suggested_action = "inspect_script"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "python_script_debug", "target_script": target_script}
             }
 
         if "modulenotfounderror" in q or "importerror" in q:
@@ -949,11 +1482,33 @@ class EdithDialogueEngine:
         }
 
     def _respond_general_human(self, q_raw: str) -> Dict[str, Any]:
-        msg = (
-            f"I hear you, {self.USER_NAME}. I'm here and ready to help. "
-            "Whether you'd like me to solve a problem on your computer, execute a workflow, "
-            "send a message, manage files, or check system metrics, just let me know how you'd like to proceed!"
-        )
+        name = self.personality._get_name() if self.personality else self.USER_NAME
+
+        responses = [
+            f"Hmm, I'm not 100% sure what you need there, {name}, but I'm all ears! "
+            "Could you tell me a bit more? I can help with apps, files, messages, system stuff, "
+            "or honestly just chat. 😊",
+
+            f"I hear you, {name}! I want to help but I need a tiny bit more context. "
+            "What are you trying to do? Just say it however feels natural!",
+
+            f"Interesting! Tell me more about what you need, {name}. "
+            "I'm pretty versatile — apps, files, messaging, troubleshooting, music, web browsing — you name it!",
+
+            f"Got it, {name}. I'm ready to jump in! Just give me a bit more detail "
+            "and I'll take care of it. No formal commands needed — just talk to me like a friend! 💙",
+        ]
+
+        # Occasionally share a random thought
+        if self.personality:
+            thought = self.personality.get_random_thought()
+            if thought:
+                msg = random.choice(responses) + f"\n\nOh, by the way — {thought}"
+            else:
+                msg = random.choice(responses)
+        else:
+            msg = random.choice(responses)
+
         return {
             "can_execute": True,
             "message": msg,

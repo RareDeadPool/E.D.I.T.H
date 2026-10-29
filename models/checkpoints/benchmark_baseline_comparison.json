@@ -1,0 +1,324 @@
+{
+  "metadata": {
+    "version": "v5.1",
+    "eval_sets": {
+      "set_a_zero_leakage_families": 180,
+      "set_b_novel_held_out": 20
+    },
+    "checkpoint": "models/checkpoints/cognitive_appraisal.pt"
+  },
+  "results_set_a_zero_leakage_families": {
+    "mean_constant_baseline": {
+      "overall_appraisal_mae": 0.2343,
+      "overall_appraisal_mse": 0.0897,
+      "overall_affect_mae": 0.1907,
+      "overall_affect_mse": 0.0612,
+      "dimension_appraisal_mae": {
+        "novelty": 0.2151,
+        "goal_relevance": 0.1185,
+        "goal_congruence": 0.5859,
+        "expectation_violation": 0.3685,
+        "agency": 0.2396,
+        "controllability": 0.1912,
+        "coping_potential": 0.1362,
+        "uncertainty": 0.2153,
+        "effort_required": 0.1779,
+        "task_progress": 0.2902,
+        "social_significance": 0.1369,
+        "norm_consistency": 0.1367
+      },
+      "dimension_affect_mae": {
+        "valence": 0.3781,
+        "arousal": 0.1362,
+        "dominance": 0.1551,
+        "uncertainty": 0.2249,
+        "frustration": 0.2411,
+        "engagement": 0.1082,
+        "social_trust": 0.0912
+      },
+      "confidence_error_correlation": 0.0,
+      "sample_count": 180
+    },
+    "deterministic_heuristic_baseline": {
+      "overall_appraisal_mae": 0.1653,
+      "overall_appraisal_mse": 0.0608,
+      "overall_affect_mae": 0.1813,
+      "overall_affect_mse": 0.0648,
+      "dimension_appraisal_mae": {
+        "novelty": 0.1435,
+        "goal_relevance": 0.1999,
+        "goal_congruence": 0.4639,
+        "expectation_violation": 0.0627,
+        "agency": 0.2355,
+        "controllability": 0.1484,
+        "coping_potential": 0.1526,
+        "uncertainty": 0.2101,
+        "effort_required": 0.0819,
+        "task_progress": 0.1034,
+        "social_significance": 0.0974,
+        "norm_consistency": 0.084
+      },
+      "dimension_affect_mae": {
+        "valence": 0.3404,
+        "arousal": 0.0615,
+        "dominance": 0.2256,
+        "uncertainty": 0.2124,
+        "frustration": 0.24,
+        "engagement": 0.104,
+        "social_trust": 0.0853
+      },
+      "confidence_error_correlation": 0.0,
+      "sample_count": 180
+    },
+    "rule_based_appraisal_engine": {
+      "overall_appraisal_mae": 0.2692,
+      "overall_appraisal_mse": 0.1379,
+      "overall_affect_mae": 0.2277,
+      "overall_affect_mse": 0.0933,
+      "dimension_appraisal_mae": {
+        "novelty": 0.2742,
+        "goal_relevance": 0.217,
+        "goal_congruence": 0.5763,
+        "expectation_violation": 0.6586,
+        "agency": 0.2578,
+        "controllability": 0.1912,
+        "coping_potential": 0.1186,
+        "uncertainty": 0.2029,
+        "effort_required": 0.161,
+        "task_progress": 0.2839,
+        "social_significance": 0.1286,
+        "norm_consistency": 0.1603
+      },
+      "dimension_affect_mae": {
+        "valence": 0.3487,
+        "arousal": 0.2393,
+        "dominance": 0.2733,
+        "uncertainty": 0.2267,
+        "frustration": 0.3086,
+        "engagement": 0.1062,
+        "social_trust": 0.0912
+      },
+      "confidence_error_correlation": 0.0,
+      "sample_count": 180
+    },
+    "learned_model_no_context": {
+      "overall_appraisal_mae": 0.3059,
+      "overall_appraisal_mse": 0.166,
+      "overall_affect_mae": 0.2063,
+      "overall_affect_mse": 0.0834,
+      "dimension_appraisal_mae": {
+        "novelty": 0.3212,
+        "goal_relevance": 0.1609,
+        "goal_congruence": 0.7222,
+        "expectation_violation": 0.3823,
+        "agency": 0.282,
+        "controllability": 0.3049,
+        "coping_potential": 0.1245,
+        "uncertainty": 0.3488,
+        "effort_required": 0.235,
+        "task_progress": 0.3188,
+        "social_significance": 0.221,
+        "norm_consistency": 0.2495
+      },
+      "dimension_affect_mae": {
+        "valence": 0.4933,
+        "arousal": 0.1324,
+        "dominance": 0.1707,
+        "uncertainty": 0.2287,
+        "frustration": 0.246,
+        "engagement": 0.0773,
+        "social_trust": 0.0957
+      },
+      "confidence_error_correlation": 0.1907,
+      "sample_count": 180
+    },
+    "full_learned_model_with_context": {
+      "overall_appraisal_mae": 0.2322,
+      "overall_appraisal_mse": 0.0929,
+      "overall_affect_mae": 0.1752,
+      "overall_affect_mse": 0.0553,
+      "dimension_appraisal_mae": {
+        "novelty": 0.2202,
+        "goal_relevance": 0.1069,
+        "goal_congruence": 0.5463,
+        "expectation_violation": 0.2545,
+        "agency": 0.2297,
+        "controllability": 0.2193,
+        "coping_potential": 0.1107,
+        "uncertainty": 0.3021,
+        "effort_required": 0.1993,
+        "task_progress": 0.2598,
+        "social_significance": 0.1848,
+        "norm_consistency": 0.1529
+      },
+      "dimension_affect_mae": {
+        "valence": 0.3399,
+        "arousal": 0.134,
+        "dominance": 0.1518,
+        "uncertainty": 0.2084,
+        "frustration": 0.2282,
+        "engagement": 0.0815,
+        "social_trust": 0.0827
+      },
+      "confidence_error_correlation": 0.1577,
+      "sample_count": 180
+    }
+  },
+  "results_set_b_novel_held_out": {
+    "mean_constant_baseline": {
+      "overall_appraisal_mae": 0.2322,
+      "overall_appraisal_mse": 0.0921,
+      "overall_affect_mae": 0.1893,
+      "overall_affect_mse": 0.0628,
+      "dimension_appraisal_mae": {
+        "novelty": 0.1671,
+        "goal_relevance": 0.076,
+        "goal_congruence": 0.6298,
+        "expectation_violation": 0.277,
+        "agency": 0.2294,
+        "controllability": 0.209,
+        "coping_potential": 0.1247,
+        "uncertainty": 0.2446,
+        "effort_required": 0.1951,
+        "task_progress": 0.2975,
+        "social_significance": 0.2226,
+        "norm_consistency": 0.1138
+      },
+      "dimension_affect_mae": {
+        "valence": 0.4127,
+        "arousal": 0.1213,
+        "dominance": 0.1683,
+        "uncertainty": 0.2443,
+        "frustration": 0.2267,
+        "engagement": 0.0657,
+        "social_trust": 0.086
+      },
+      "confidence_error_correlation": 0.0,
+      "sample_count": 20
+    },
+    "deterministic_heuristic_baseline": {
+      "overall_appraisal_mae": 0.1537,
+      "overall_appraisal_mse": 0.0567,
+      "overall_affect_mae": 0.1536,
+      "overall_affect_mse": 0.0459,
+      "dimension_appraisal_mae": {
+        "novelty": 0.11,
+        "goal_relevance": 0.1975,
+        "goal_congruence": 0.469,
+        "expectation_violation": 0.045,
+        "agency": 0.2275,
+        "controllability": 0.1802,
+        "coping_potential": 0.1135,
+        "uncertainty": 0.178,
+        "effort_required": 0.0575,
+        "task_progress": 0.045,
+        "social_significance": 0.11,
+        "norm_consistency": 0.111
+      },
+      "dimension_affect_mae": {
+        "valence": 0.2562,
+        "arousal": 0.098,
+        "dominance": 0.1744,
+        "uncertainty": 0.16,
+        "frustration": 0.182,
+        "engagement": 0.1409,
+        "social_trust": 0.0635
+      },
+      "confidence_error_correlation": 0.0,
+      "sample_count": 20
+    },
+    "rule_based_appraisal_engine": {
+      "overall_appraisal_mae": 0.2755,
+      "overall_appraisal_mse": 0.136,
+      "overall_affect_mae": 0.2194,
+      "overall_affect_mse": 0.0923,
+      "dimension_appraisal_mae": {
+        "novelty": 0.2175,
+        "goal_relevance": 0.2665,
+        "goal_congruence": 0.624,
+        "expectation_violation": 0.5175,
+        "agency": 0.2515,
+        "controllability": 0.224,
+        "coping_potential": 0.1285,
+        "uncertainty": 0.26,
+        "effort_required": 0.19,
+        "task_progress": 0.3725,
+        "social_significance": 0.105,
+        "norm_consistency": 0.149
+      },
+      "dimension_affect_mae": {
+        "valence": 0.39,
+        "arousal": 0.242,
+        "dominance": 0.255,
+        "uncertainty": 0.259,
+        "frustration": 0.262,
+        "engagement": 0.0665,
+        "social_trust": 0.061
+      },
+      "confidence_error_correlation": 0.0,
+      "sample_count": 20
+    },
+    "learned_model_no_context": {
+      "overall_appraisal_mae": 0.2817,
+      "overall_appraisal_mse": 0.1451,
+      "overall_affect_mae": 0.2116,
+      "overall_affect_mse": 0.082,
+      "dimension_appraisal_mae": {
+        "novelty": 0.2267,
+        "goal_relevance": 0.1909,
+        "goal_congruence": 0.7144,
+        "expectation_violation": 0.348,
+        "agency": 0.2877,
+        "controllability": 0.2413,
+        "coping_potential": 0.1573,
+        "uncertainty": 0.2156,
+        "effort_required": 0.279,
+        "task_progress": 0.3426,
+        "social_significance": 0.2135,
+        "norm_consistency": 0.1639
+      },
+      "dimension_affect_mae": {
+        "valence": 0.5094,
+        "arousal": 0.1206,
+        "dominance": 0.1838,
+        "uncertainty": 0.2438,
+        "frustration": 0.2281,
+        "engagement": 0.1045,
+        "social_trust": 0.0909
+      },
+      "confidence_error_correlation": -0.2174,
+      "sample_count": 20
+    },
+    "full_learned_model_with_context": {
+      "overall_appraisal_mae": 0.1887,
+      "overall_appraisal_mse": 0.0682,
+      "overall_affect_mae": 0.157,
+      "overall_affect_mse": 0.0418,
+      "dimension_appraisal_mae": {
+        "novelty": 0.1659,
+        "goal_relevance": 0.0881,
+        "goal_congruence": 0.4146,
+        "expectation_violation": 0.224,
+        "agency": 0.2126,
+        "controllability": 0.1832,
+        "coping_potential": 0.123,
+        "uncertainty": 0.1702,
+        "effort_required": 0.1803,
+        "task_progress": 0.2136,
+        "social_significance": 0.1637,
+        "norm_consistency": 0.1256
+      },
+      "dimension_affect_mae": {
+        "valence": 0.2499,
+        "arousal": 0.1216,
+        "dominance": 0.144,
+        "uncertainty": 0.2121,
+        "frustration": 0.2046,
+        "engagement": 0.0878,
+        "social_trust": 0.079
+      },
+      "confidence_error_correlation": -0.3245,
+      "sample_count": 20
+    }
+  }
+}

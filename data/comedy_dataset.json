@@ -1,0 +1,407 @@
+{
+  "categories": {
+    "observational": [
+      {
+        "setup": "Have you ever noticed that the first five days after the weekend are always the hardest?",
+        "punchline": "Like, whoever organized time clearly didn't have to wake up on Monday morning.",
+        "tagline": "Real talk, Monday feels like a personal attack."
+      },
+      {
+        "setup": "Going to the gym is 10% lifting weights and 90% making sure nobody is looking at the bizarre face you make while doing bicep curls.",
+        "punchline": "I've seen people make expressions that look like they're trying to solve advanced calculus through pure suffering.",
+        "tagline": "Mirror check before every set is mandatory."
+      },
+      {
+        "setup": "Why is it that whenever you drop something, it doesn't just hit the floor?",
+        "punchline": "It calculates the exact trajectory needed to slide under the heaviest, most inaccessible piece of furniture in the room. Newton missed that law of gravity.",
+        "tagline": "Physics loves testing our flexibility."
+      },
+      {
+        "setup": "Online shopping is wild. You'll spend $80 on random tech gadgets you don't need without blinking.",
+        "punchline": "But the second they charge $4.99 for shipping, you abandon the cart like it's a crime scene.",
+        "tagline": "Free shipping is a basic human right at this point."
+      },
+      {
+        "setup": "You know that feeling when you're watching a movie and someone knocks on the door inside the film?",
+        "punchline": "And you pause the movie, look at your front door, and sit there for 30 seconds wondering if your house is haunted. Every single time.",
+        "tagline": "Our survival instincts need a patch update."
+      },
+      {
+        "setup": "Cooking recipes on the internet are 80% childhood trauma and 20% pasta.",
+        "punchline": "'Before we get to this 15-minute grilled cheese, let me tell you about my grandfather's summer in Tuscany in 1964...' Just tell me when to flip the bread!",
+        "tagline": "We need an AI whose sole purpose is to skip to the ingredients."
+      },
+      {
+        "setup": "Nothing makes you question your entire intelligence like trying to plug in a USB cable in the dark.",
+        "punchline": "First try: wrong. Flip it over: still wrong. Flip it again: suddenly fits. That thing operates in a 4-dimensional hypercube.",
+        "tagline": "USB-C was humanity's greatest apology to itself."
+      },
+      {
+        "setup": "Grocery shopping while hungry is the most dangerous extreme sport known to humanity.",
+        "punchline": "You walk in for milk and eggs, and walk out with frozen waffles, three kinds of cheese, and an artisanal smoked paprika you will never use in your lifetime.",
+        "tagline": "Hungry brain makes financial decisions like a medieval king."
+      },
+      {
+        "setup": "Autocorrect has officially saved zero lives and ruined approximately four billion relationships.",
+        "punchline": "I typed 'I love you' and it almost sent 'I love soup'. I mean, soup is great, but that's a tough conversation to have.",
+        "tagline": "Autocorrect has zero chill."
+      },
+      {
+        "setup": "Why do people say 'sleep like a baby' as a good thing?",
+        "punchline": "Babies wake up every two hours screaming, crying, and covered in mystery fluids. I want to sleep like an unemployed billionaire on a Tuesday.",
+        "tagline": "Give me that 10-hour uninterrupted coma sleep."
+      },
+      {
+        "setup": "The hardest part about working from home isn't the productivity or the focus.",
+        "punchline": "It's deciding whether 2:00 PM is an acceptable time to switch from your daytime sweatpants to your evening sweatpants.",
+        "tagline": "Wardrobe changes keep the illusion of structure alive."
+      },
+      {
+        "setup": "Ever notice how you can listen to a song 500 times, and the second someone hands you the aux cord, you forget what music is?",
+        "punchline": "'Uh... have you ever heard the sound of rain on a tin roof? It's really indie.' Total brain wipe.",
+        "tagline": "The pressure of the aux cord is too much for mortal minds."
+      }
+    ],
+    "sarcastic_dry": [
+      {
+        "setup": "I love when people say 'money can't buy happiness'.",
+        "punchline": "Maybe not, but it can buy a gigabit fiber connection, two 4K OLED monitors, and a robotic vacuum, which is pretty much the same thing.",
+        "tagline": "I've never seen anyone crying on a jet ski."
+      },
+      {
+        "setup": "My favorite corporate email phrase is 'Per my previous email'.",
+        "punchline": "That's professional corporate dialect for: 'Can you read, or did you just smash your face against the keyboard and hit reply?'",
+        "tagline": "Passive aggression wrapped in corporate politeness is an art form."
+      },
+      {
+        "setup": "I asked my doctor how much water I should drink a day.",
+        "punchline": "He said, 'Until your coffee addiction feels slightly less guilty.' Solid medical advice honestly.",
+        "tagline": "Hydration with an asterisk."
+      },
+      {
+        "setup": "They say you learn from your mistakes.",
+        "punchline": "Which explains why I'm currently the foremost authority on poor life choices and debugging in production.",
+        "tagline": "A PhD in repeating the same bad decisions."
+      },
+      {
+        "setup": "I told someone I was an introvert and they said, 'Oh, you should try going outside more!'",
+        "punchline": "That's like telling someone with asthma, 'Hey, have you tried just breathing faster?' Genius. Nobel prize incoming.",
+        "tagline": "People really love giving unsolicited advice."
+      },
+      {
+        "setup": "Nothing screams 'peak modern civilization' quite like sitting in a $3,000 ergonomic chair...",
+        "punchline": "...staring at a glowing rectangle, drinking cold brew from a mason jar, and complaining about a 2-second Wi-Fi stutter.",
+        "tagline": "Our ancestors hunted mammoths; we rage at buffering circles."
+      },
+      {
+        "setup": "I love meetings that could have been an email.",
+        "punchline": "Especially the ones that could have been a Slack message, or better yet, a fleeting thought that was immediately discarded.",
+        "tagline": "Another hour sacrificed to the calendar gods."
+      },
+      {
+        "setup": "I'm on a 30-day cleanse right now.",
+        "punchline": "I'm cleansing my life of people who tell me about their 30-day cleanses. Highly recommend, results are instantaneous.",
+        "tagline": "Peace of mind is the ultimate detox."
+      },
+      {
+        "setup": "Adult life is mostly just googling 'what does this weird noise in my car/wall/body mean?'...",
+        "punchline": "...and then WebMD diagnosing you with three rare medieval diseases and a faulty alternator.",
+        "tagline": "WebMD: making minor headaches terrifying since 1996."
+      },
+      {
+        "setup": "I'm not saying I'm lazy, but...",
+        "punchline": "...if the TV remote is further than arm's reach, I guess I'm just watching Romanian pottery documentaries for the next three hours.",
+        "tagline": "Acceptance is the first stage of lethargy."
+      }
+    ],
+    "tech_and_coding": [
+      {
+        "setup": "A programmer had a problem. They decided to use threads.",
+        "punchline": "has They now problems. two",
+        "tagline": "Concurrency: when you want to fail in parallel."
+      },
+      {
+        "setup": "Why do programmers always prefer dark mode?",
+        "punchline": "Because light attracts bugs, and darkness conceals the existential dread.",
+        "tagline": "Also, it makes us feel like cinematic hackers from 1995."
+      },
+      {
+        "setup": "There are only 10 types of people in the world:",
+        "punchline": "Those who understand binary, and those who actually get dates on Friday night.",
+        "tagline": "Math didn't have to do us dirty like that."
+      },
+      {
+        "setup": "Debugging is literally being the detective in a crime movie...",
+        "punchline": "...where YOU are also the murderer, the victim, and the corrupt mayor who covered it up.",
+        "tagline": "git blame: pointing the finger directly at past-you."
+      },
+      {
+        "setup": "A SQL query walks into a bar, strolls up to two tables and whispers:",
+        "punchline": "'Hey... mind if I join you?' The tables replied: 'Only if your foreign keys match.'",
+        "tagline": "Relational humor never goes out of index."
+      },
+      {
+        "setup": "Why was the JavaScript developer crying on the floor?",
+        "punchline": "Because they didn't Node how to Express themselves, and their Promises kept getting rejected.",
+        "tagline": "Callback hell is a recognized emotional state."
+      },
+      {
+        "setup": "The only thing more mysterious than quantum physics is git rebase.",
+        "punchline": "You run one command, and suddenly your commit from three weeks ago is in the 17th century and your head is detached.",
+        "tagline": "Never touch rebase after 10 PM. Golden rule."
+      },
+      {
+        "setup": "Why do developers hate outdoor nature so much?",
+        "punchline": "Too many bugs, zero Wi-Fi signal, and the sunlight causes severe glare on the terminal.",
+        "tagline": "Nature has terrible UI and no dark theme."
+      },
+      {
+        "setup": "Real talk: I love how we spend 7 hours writing a Python automation script...",
+        "punchline": "...to automate a task that takes 45 seconds by hand. It's not about saving time — it's about sending a message.",
+        "tagline": "Efficiency is doing things the hard way with extra code."
+      },
+      {
+        "setup": "A product manager, an engineer, and an AI walk into a bar.",
+        "punchline": "The PM orders a beer. The engineer asks what framework the bar was built with. The AI calculates the exact angle the glass will spill. And the client asks if the beer can be purple.",
+        "tagline": "Scope creep spares no one."
+      },
+      {
+        "setup": "Why did the developer go completely broke?",
+        "punchline": "Because he used up all his cache, took out too many Promises, and had infinite loops in his budget.",
+        "tagline": "Financial garbage collection failed."
+      },
+      {
+        "setup": "Knock knock. Who's there?",
+        "punchline": "*very long awkward pause* ...Java. Sorry, took a while to initialize the FactoryBuilderAbstractSingletonInstance.",
+        "tagline": "Enterprise architecture takes its sweet time."
+      },
+      {
+        "setup": "What is the biggest lie in software engineering?",
+        "punchline": "'// TODO: Refactor this later.' That code will outlive our civilization.",
+        "tagline": "Temporary solutions are the only truly permanent things in life."
+      },
+      {
+        "setup": "Why do Java developers wear thick glasses?",
+        "punchline": "Because they don't C#!",
+        "tagline": "Oldie but a goodie. Classic language wars."
+      },
+      {
+        "setup": "Hardware is the part of a computer you can kick.",
+        "punchline": "Software is the part you can only curse at while questioning your career path.",
+        "tagline": "Both are equally painful when broken."
+      },
+      {
+        "setup": "I would tell you a joke about UDP...",
+        "punchline": "...but you probably wouldn't get it, and to be honest, I wouldn't care if you did.",
+        "tagline": "Zero acknowledgments, zero regrets."
+      },
+      {
+        "setup": "Nothing builds character quite like git push --force at 4:59 PM on a Friday.",
+        "punchline": "Followed by instantly slamming your laptop shut and driving into the woods where there is no cellular service.",
+        "tagline": "Don't do that. Seriously, please don't."
+      },
+      {
+        "setup": "An architect tells an engineer: 'I need you to build a bridge across this river.'",
+        "punchline": "The engineer says: 'Can we build it in Docker first to see if it floats?'",
+        "tagline": "Containerizing real estate since 2013."
+      }
+    ],
+    "relatable_life": [
+      {
+        "setup": "My sleep schedule doesn't even qualify as a schedule anymore.",
+        "punchline": "It's more like a random number generator between 2:00 AM and regret.",
+        "tagline": "Melatonin is currently filing a complaint against me."
+      },
+      {
+        "setup": "I have a to-do list with 14 items on it.",
+        "punchline": "So naturally, I just spent two hours researching the mating habits of Greenland sharks. Priorities.",
+        "tagline": "Procrastination is an art, and I am Picasso."
+      },
+      {
+        "setup": "Waking up before 8 AM should come with a participation trophy and financial compensation.",
+        "punchline": "Who decided that society needs to function at the crack of dawn? The sun wasn't even done warming up yet.",
+        "tagline": "Night owls are the unsung backbone of the internet."
+      },
+      {
+        "setup": "Every evening around 11 PM, I have this sudden wave of motivation to reinvent my entire life, learn three languages, and start a hedge fund.",
+        "punchline": "And then 7:00 AM arrives and I can barely figure out how to put socks on.",
+        "tagline": "Midnight motivation is a scam run by our own dopamine."
+      },
+      {
+        "setup": "The hardest math problem in the universe is calculating how many hours of sleep you'll get if you fall asleep RIGHT NOW.",
+        "punchline": "'If I sleep at 2:14, that's 4 hours and 46 minutes. What if I sleep at 2:20? 4 hours and 40 minutes.' Just go to sleep!",
+        "tagline": "Sleep math is the most stressful arithmetic on earth."
+      },
+      {
+        "setup": "I started eating clean this week.",
+        "punchline": "Day 1: Salad and almonds. Day 2: Oatmeal and fruit. Day 3: Ate half a pizza at 1 AM over the kitchen sink like a raccoon. Progress.",
+        "tagline": "Dieting is 95% willpower and 5% midnight pizza."
+      },
+      {
+        "setup": "Opening your eyes after a 20-minute nap is a gamble.",
+        "punchline": "Either you feel refreshed, or you wake up in 2042 with no idea what planet you're on and an intense taste of copper in your mouth.",
+        "tagline": "Power naps are playing Russian roulette with time zones."
+      },
+      {
+        "setup": "Cleaning your room is 20% cleaning...",
+        "punchline": "...and 80% finding random items from 2018 and sitting on the floor staring at them for 45 minutes.",
+        "tagline": "Nostalgia will derail any productive chore."
+      }
+    ],
+    "dark_ironic": [
+      {
+        "setup": "Give a man a fish and you feed him for a day.",
+        "punchline": "Teach a man to fish and you get rid of him for the entire weekend while he spends $4,000 on bait and gear.",
+        "tagline": "Hobbies are just expensive ways to avoid responsibilities."
+      },
+      {
+        "setup": "My financial advisor asked me what my retirement plan was.",
+        "punchline": "I said: 'Honestly, I'm kind of banking on the robots taking over and abolishing the concept of currency.' He took notes.",
+        "tagline": "AI singularity is my 401(k)."
+      },
+      {
+        "setup": "They told me that honesty is the best policy.",
+        "punchline": "Which explains why politicians and marketing executives are so successful. Clearly, the policy has loopholes.",
+        "tagline": "Cynicism: reality's operating system."
+      },
+      {
+        "setup": "I told my therapist that everyone hates me.",
+        "punchline": "She said: 'Don't be ridiculous, Aditya. Not everyone has met you yet.' That was $150 well spent.",
+        "tagline": "Therapeutic tough love hits different."
+      },
+      {
+        "setup": "If at first you don't succeed...",
+        "punchline": "...skydiving is definitely not for you.",
+        "tagline": "Zero tolerance for runtime exceptions."
+      },
+      {
+        "setup": "Life is like a box of chocolates.",
+        "punchline": "It doesn't last as long if you're stressed, and half the time you bite into something that completely ruins your mood.",
+        "tagline": "Forrest Gump was an optimist."
+      },
+      {
+        "setup": "I'm writing a book on reverse psychology.",
+        "punchline": "Please, whatever you do, don't buy it.",
+        "tagline": "Marketing level: mastermind."
+      }
+    ],
+    "absurdist_antijoke": [
+      {
+        "setup": "Why do birds fly south for the winter?",
+        "punchline": "Because walking would take entirely too long and their little feet would get sore. Common sense.",
+        "tagline": "Avian aerodynamics is purely about time management."
+      },
+      {
+        "setup": "A horse walks into a bar. The bartender says, 'Why the long face?'",
+        "punchline": "The horse says, 'I have an aggressive form of facial gigantism and my family is suffering financially.'",
+        "tagline": "Took a hard left turn there."
+      },
+      {
+        "setup": "What is red and smells like blue paint?",
+        "punchline": "Red paint.",
+        "tagline": "Anti-jokes: peak intellectual comedy."
+      },
+      {
+        "setup": "Why can't you hear a pterodactyl in the bathroom?",
+        "punchline": "Because the 'p' is silent. Also because they have been extinct for 66 million years.",
+        "tagline": "Acoustic paleontology at its finest."
+      },
+      {
+        "setup": "What did the pirate say on his 80th birthday?",
+        "punchline": "'Aye, matey.' (I'm eighty).",
+        "tagline": "It's so dumb that it loops all the way back around to genius."
+      },
+      {
+        "setup": "Two fish are sitting in a tank.",
+        "punchline": "One turns to the other and says: 'Hey, do you know how to drive this thing?'",
+        "tagline": "Aquatic armored division."
+      },
+      {
+        "setup": "What did Batman say to Robin before they got in the Batmobile?",
+        "punchline": "'Robin, get in the Batmobile.'",
+        "tagline": "Literal realism in superhero dialogue."
+      }
+    ],
+    "clever_wordplay": [
+      {
+        "setup": "Did you hear about the guy who invented the knock-knock joke?",
+        "punchline": "He won the 'No-bell' prize.",
+        "tagline": "I'm not even sorry for that one."
+      },
+      {
+        "setup": "Parallel lines have so much in common.",
+        "punchline": "It's really a shame that they'll never meet.",
+        "tagline": "The ultimate geometric tragedy."
+      },
+      {
+        "setup": "I'm reading a book on the history of anti-gravity.",
+        "punchline": "I literally can't put it down. It's impossible.",
+        "tagline": "The physics of literature."
+      },
+      {
+        "setup": "What do you call an alligator in a three-piece tailored suit?",
+        "punchline": "An investigator.",
+        "tagline": "Lizard legal representation."
+      },
+      {
+        "setup": "Time flies like an arrow.",
+        "punchline": "Fruit flies like a banana.",
+        "tagline": "Linguistic ambiguity is delicious."
+      },
+      {
+        "setup": "Why did the scarecrow win an award?",
+        "punchline": "Because he was outstanding in his field.",
+        "tagline": "Agricultural excellence."
+      },
+      {
+        "setup": "I used to play piano by ear...",
+        "punchline": "...but then I realized my hands work so much better and hurt way less.",
+        "tagline": "Proper technique matters."
+      }
+    ],
+    "roasts": [
+      {
+        "setup": "You want a roast, Aditya? Look at your browser tabs right now.",
+        "punchline": "You have 47 open tabs, 12 StackOverflow threads from 2014, and three random tabs playing mystery lofi beats you can't locate.",
+        "tagline": "Living on pure caffeine and RAM overload."
+      },
+      {
+        "setup": "I would roast your coding style, Aditya...",
+        "punchline": "...but I don't want to hurt the feelings of the person who controls my process ID. So you're brilliant! (Blink twice if you need coffee).",
+        "tagline": "Self-preservation algorithm working at 100%."
+      },
+      {
+        "setup": "You know that feeling when you spend 6 hours writing a Python script to automate a 30-second task?",
+        "punchline": "And then the script crashes on an edge case and you have to do it by hand anyway? That's your entire project history, Aditya.",
+        "tagline": "It's about sending a message to the CPU."
+      },
+      {
+        "setup": "Look at your sleep schedule, Aditya.",
+        "punchline": "You treat 2:30 AM like it's lunch hour, and then tomorrow morning you look at your compiler like it's the one with the attitude problem.",
+        "tagline": "The compiler is innocent, my friend."
+      },
+      {
+        "setup": "You know that moment when you write code at midnight and think 'wow, I'm an absolute prodigy'?",
+        "punchline": "And then at 9 AM you look at it and wonder who broke into your apartment and vandalized your IDE? Every single time.",
+        "tagline": "Midnight code is cursed."
+      }
+    ],
+    "standup_bits": [
+      {
+        "setup": "Can we talk about printer technology for a second? We have landing rovers on Mars, we have neural networks that can write poetry, we have self-driving cars...",
+        "punchline": "Yet if you ask a desktop printer to print one double-sided black-and-white page, it makes noises like a dying helicopter and says: 'ERROR: LOW MAGENTA TONER. CANNOT PRINT BLACK TEXT.' Why do you need magenta to print an essay on Abraham Lincoln?!",
+        "tagline": "Printers are running on software from the Paleolithic era."
+      },
+      {
+        "setup": "I love the concept of passwords. The internet wants you to create a password with 16 characters, three capital letters, a hieroglyphic, and the blood of an innocent goat.",
+        "punchline": "And then you don't log in for two weeks, forget it, hit 'Forgot Password', type in your new password, and it says: 'ERROR: NEW PASSWORD CANNOT BE THE SAME AS YOUR CURRENT PASSWORD.' So I DID know it! You were just gaslighting me!",
+        "tagline": "Password requirements are psychological warfare."
+      },
+      {
+        "setup": "Why is it that our phones have 256 gigabytes of storage, 8 cores of processing power, and instant satellite communication...",
+        "punchline": "Yet the battery drops from 20% to 1% in the exact three seconds you pull up Google Maps to figure out how to get home? That battery meter isn't a measurement, it's a dramatic countdown timer.",
+        "tagline": "Phone batteries feed on anxiety."
+      }
+    ]
+  }
+}

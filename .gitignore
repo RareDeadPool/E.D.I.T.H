@@ -58,3 +58,8 @@ logs/traces/
 
 # Scratch testing scripts
 scratch/test_*.py
+scratch/tts_cache/
+scratch/*.onnx
+
+# Diagnostics and runtime logs
+config/diagnostics/

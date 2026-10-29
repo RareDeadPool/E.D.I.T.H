@@ -217,6 +217,14 @@ class UnderstandingNormalizer:
         ("system_processes", "list_apps"): "inspect_processes",
         ("system_processes", "check_app_running"): "inspect_processes",
         ("system_processes", "network_info"): "inspect_network",
+        ("screen_understanding", "screen_understanding"): "screen_understanding",
+        ("storage_intelligence", "storage_audit"): "storage_audit",
+        ("storage_intelligence", "storage_cleanup"): "storage_cleanup",
+        ("file_organization", "semantic_file_organize"): "semantic_file_organize",
+        ("file_organization", "file_organize_rollback"): "file_organize_rollback",
+        ("task_manager", "task_list"): "task_list",
+        ("task_manager", "task_cancel"): "task_cancel",
+        ("task_manager", "task_status"): "task_status",
     }
 
     @classmethod
@@ -356,6 +364,65 @@ class UnderstandingNormalizer:
             goal = "search_youtube"
             intent = "web_navigation"
             action = "exec_web_navigation"
+            confidence = 0.99
+
+        # 00-i. Screen Understanding & UI Reasoning
+        elif any(p in q_lower for p in [
+            "what is going on on my screen", "what's on my screen", "what is on my screen",
+            "what do you think of this", "explain what i'm looking at", "explain what i am looking at",
+            "why isn't this working", "why is this not working", "can you fix this error",
+            "what does this chart tell us", "read my screen", "inspect active window", "inspect screen"
+        ]):
+            goal = "screen_understanding"
+            intent = "screen_understanding"
+            action = "screen_understanding"
+            confidence = 0.99
+
+        # 00-j. Safe Storage Intelligence & Cleanup
+        elif any(p in q_lower for p in [
+            "clean up temporary files", "clean temporary files", "clean up my disk",
+            "clean up disk", "clean disk space", "clean storage"
+        ]):
+            goal = "storage_cleanup"
+            intent = "storage_intelligence"
+            action = "storage_cleanup"
+            confidence = 0.99
+        elif any(p in q_lower for p in [
+            "analyze my storage", "storage audit", "audit storage", "check storage space",
+            "analyze storage", "storage analysis", "storage report", "check disk space"
+        ]):
+            goal = "storage_audit"
+            intent = "storage_intelligence"
+            action = "storage_audit"
+            confidence = 0.99
+
+        # 00-k. Semantic File Organization & Rollback
+        elif any(p in q_lower for p in [
+            "undo file organization", "rollback file organization", "revert file organization", "restore organized files"
+        ]):
+            goal = "file_organize_rollback"
+            intent = "file_organization"
+            action = "file_organize_rollback"
+            confidence = 0.99
+        elif any(p in q_lower for p in [
+            "organize these files", "organize my downloads", "organize files", "propose file organization",
+            "sort these files", "organize folder"
+        ]):
+            goal = "semantic_file_organize"
+            intent = "file_organization"
+            action = "semantic_file_organize"
+            confidence = 0.99
+
+        # 00-l. Multitasking & Background Task Manager
+        elif any(p in q_lower for p in ["list tasks", "active tasks", "background tasks", "list running tasks", "show tasks"]):
+            goal = "task_list"
+            intent = "task_manager"
+            action = "task_list"
+            confidence = 0.99
+        elif any(p in q_lower for p in ["cancel task", "abort task", "stop task", "terminate task"]):
+            goal = "task_cancel"
+            intent = "task_manager"
+            action = "task_cancel"
             confidence = 0.99
 
         # 00. Draft Revision / Notepad Writing
@@ -518,6 +585,24 @@ class UnderstandingNormalizer:
             intent = "chitchat"
             action = "respond_dialogue"
             confidence = 0.99
+        elif ctx and ctx.get("current_topic") in [
+            "love_support", "love_text_ex", "love_breakup", "love_reflection",
+            "personal_relationship", "empathy", "emotional_support", "personal_advice", "chitchat", "problem_solving"
+        ]:
+            sys_metric_keys = ["cpu", "ram", "memory", "battery", "storage", "disk", "specs", "hardware", "power status", "system metrics"]
+            if not any(k in q_lower for k in sys_metric_keys) and not any(q_lower.startswith(v) for v in ["open ", "close ", "kill ", "delete ", "play "]):
+                goal = "dialogue"
+                intent = "chitchat"
+                action = "respond_dialogue"
+                confidence = 0.99
+
+        # Guard: Invalidate false-positive neural system_query if query has no hardware/system keywords
+        sys_metric_keys = ["cpu", "ram", "memory", "battery", "storage", "disk", "specs", "hardware", "system info", "power status", "system metrics", "system status"]
+        if (intent == "system_query" or action == "exec_read_metrics") and not any(k in q_lower for k in sys_metric_keys):
+            goal = "dialogue"
+            intent = "chitchat"
+            action = "respond_dialogue"
+            confidence = 0.95
 
         # Check for corrections and cancellations
         is_correction = any(w in q_lower for w in [
