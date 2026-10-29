@@ -219,6 +219,12 @@ class EdithDialogueEngine:
             r"\b(?:fight\s+with\s+my\s+(?:girlfriend|boyfriend|partner)|relationship\s+problems?|dating\s+advice|love\s+advice)\b",
             r"\b(?:lonely|feeling\s+lonely|feel\s+so\s+lonely|feel\s+really\s+lonely|find\s+love|nobody\s+loves\s+me|single\s+forever)\b",
             r"\b(?:why\s+is\s+(?:dating|love)\s+so\s+hard|my\s+love\s+life\s+is\s+a\s+mess)\b",
+            # Everyday life, routines, assignments, all-nighters, day check-ins
+            r"\b(?:my\s+day\s+is\s+going|day\s+is\s+going|doing\s+pretty\s+normal|pretty\s+normal|normal\s+day|just\s+a\s+normal\s+day)\b",
+            r"\b(?:all[\s\-]nighter|pull(?:ing)?\s+(?:an?\s+)?all[\s\-]night(?:er)?|stay(?:ing)?\s+up\s+all\s+night)\b",
+            r"\b(?:completing|finishing|working\s+on|doing)\s+(?:my\s+)?(?:assignments?|homework|project|studies|submission)\b",
+            r"\b(?:nothing\s+interesting\s+happened|nothing\s+special\s+today|just\s+another\s+day)\b",
+            r"\b(?:recall(?:ing)?\s+the\s+days|passed\s+with\s+my\s+girlfriend|sad\s+of\s+recalling|sad\s+remembering)\b",
         ]):
             return True
 
@@ -1051,6 +1057,29 @@ class EdithDialogueEngine:
                 "message": msg,
                 "handler": "dialogue",
                 "parameters": {"topic": "empathy_stress", "suggested_action": "play_relaxing_music"}
+            }
+
+        # All-Nighter / Study Grind / Assignments / Late-Night Routine
+        if any(w in q for w in [
+            "all-nighter", "all nighter", "all night", "pulling an all", "pull an all",
+            "assignments", "assignment", "homework", "studying all night",
+            "completing my assignments", "pretty normal"
+        ]):
+            msg = (
+                f"Pulling an all-nighter for assignments? I hear you, {name}! ☕💻\n\n"
+                f"Respect the grind, but pace yourself: make sure you drink plenty of water, stretch your legs every hour, "
+                f"and give your eyes a quick break from the screen.\n\n"
+                f"I'm right here with you throughout the night. If you need focus music on Spotify, quick summaries, "
+                f"code debugging, or just a 2-minute reality check to stay awake, just shout! We've got this. 💪"
+            )
+            self.last_problem_category = "study_support"
+            self.last_dialogue_topic = "empathy_study_all_nighter"
+            self.last_suggested_action = "play_focus_music"
+            return {
+                "can_execute": True,
+                "message": msg,
+                "handler": "dialogue",
+                "parameters": {"topic": "empathy_study_all_nighter", "suggested_action": "play_focus_music"}
             }
 
         # Fatigue / Exhaustion

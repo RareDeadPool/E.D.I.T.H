@@ -258,7 +258,12 @@ class ContactResolver:
             if m_send_to:
                 cand_text = m_send_to.group(1).strip()
                 cand_recip = m_send_to.group(2).strip()
-                if not cand_text or cand_text.lower() in ["message", "a message", "draft", "a draft", "revised message", "that", "the message"]:
+                generic_bodies = [
+                    "message", "a message", "draft", "a draft", "revised message", "that", "the message",
+                    "a whatsapp message", "whatsapp message", "a whatsapp text", "whatsapp text",
+                    "a text", "text", "a note", "note", "a quick message", "a quick text", "a whatsapp", "whatsapp"
+                ]
+                if not cand_text or cand_text.lower() in generic_bodies or re.match(r"^(?:a\s+)?(?:whatsapp\s+)?(?:message|text|draft|note)$", cand_text, re.IGNORECASE):
                     extracted_text = None
                 else:
                     extracted_text = cand_text
@@ -312,6 +317,8 @@ class ContactResolver:
         if extracted_text:
             # Strip outer quotes if present
             extracted_text = re.sub(r'^["\']|["\']$', '', extracted_text).strip()
+            if re.match(r"^(?:a\s+)?(?:whatsapp\s+)?(?:message|text|note|draft)$", extracted_text, re.IGNORECASE):
+                extracted_text = None
 
         return {
             "action_type": action_type,
