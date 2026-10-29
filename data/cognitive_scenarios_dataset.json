@@ -1,0 +1,532 @@
+{
+  "version": "1.0",
+  "description": "75 Real-World Cognitive, Problem Solving, and Empathy Scenarios for E.D.I.T.H.",
+  "total_scenarios": 75,
+  "scenarios": [
+    {
+      "id": 1,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "My girlfriend broke up with me yesterday and my chest literally aches.",
+      "expected_topic": "love_breakup",
+      "empathy_keywords": ["sorry", "heartbreak", "ache", "pain", "breathe", "with you"]
+    },
+    {
+      "id": 2,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "I'm sitting alone recalling the good days I spent with my ex, and I can't stop crying.",
+      "expected_topic": "love_breakup",
+      "empathy_keywords": ["memories", "grief", "natural", "crying", "with you"]
+    },
+    {
+      "id": 3,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "She left me on read after 3 great dates, why do people do this?",
+      "expected_topic": "love_ghosted",
+      "empathy_keywords": ["ghosted", "signal", "value", "worth"]
+    },
+    {
+      "id": 4,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "I have feelings for my best friend but I'm terrified it will ruin our friendship.",
+      "expected_topic": "love_crush",
+      "empathy_keywords": ["friend", "feelings", "low-pressure", "casual"]
+    },
+    {
+      "id": 5,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "My partner keeps blowing hot and cold, one day loving and the next day completely distant.",
+      "expected_topic": "relationship_mixed_signals",
+      "empathy_keywords": ["hot and cold", "consistency", "boundaries", "clarity"]
+    },
+    {
+      "id": 6,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "My best friend and I had a huge argument and they blocked me everywhere.",
+      "expected_topic": "friendship_conflict",
+      "empathy_keywords": ["cooling off", "blocked", "argument", "space"]
+    },
+    {
+      "id": 7,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "My parents are constantly comparing me to my cousins and saying I'm wasting my life.",
+      "expected_topic": "family_pressure",
+      "empathy_keywords": ["comparison", "parents", "your path", "expectations"]
+    },
+    {
+      "id": 8,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "I have to attend a party tonight and I'm having intense social anxiety about being awkward.",
+      "expected_topic": "social_anxiety",
+      "empathy_keywords": ["anxiety", "awkward", "breath", "pressure", "leave early"]
+    },
+    {
+      "id": 9,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "I feel like if I don't reach out first, none of my friends ever check in on me.",
+      "expected_topic": "feeling_forgotten",
+      "empathy_keywords": ["reach out", "effort", "busy", "value", "friends"]
+    },
+    {
+      "id": 10,
+      "domain": "relationships_and_heartbreak",
+      "prompt": "My friend always dumps their trauma on me but never listens when I'm struggling.",
+      "expected_topic": "emotional_boundaries",
+      "empathy_keywords": ["boundaries", "two-way", "energy", "draining"]
+    },
+    {
+      "id": 11,
+      "domain": "career_and_academics",
+      "prompt": "I got rejected from my dream company after 5 rounds of interviews, I feel crushed.",
+      "expected_topic": "career_rejection",
+      "empathy_keywords": ["crushed", "5 rounds", "rejection", "proud", "fit"]
+    },
+    {
+      "id": 12,
+      "domain": "career_and_academics",
+      "prompt": "I just started my tech internship and I feel like an absolute fraud who doesn't belong here.",
+      "expected_topic": "imposter_syndrome",
+      "empathy_keywords": ["imposter", "fraud", "belong", "learning", "normal"]
+    },
+    {
+      "id": 13,
+      "domain": "career_and_academics",
+      "prompt": "My final exam is tomorrow morning and my mind has gone completely blank with panic.",
+      "expected_topic": "exam_anxiety",
+      "empathy_keywords": ["panic", "blank", "breathe", "sleep", "review"]
+    },
+    {
+      "id": 14,
+      "domain": "career_and_academics",
+      "prompt": "My boss took all the credit for a project I spent 3 weeks building alone.",
+      "expected_topic": "workplace_credit",
+      "empathy_keywords": ["credit", "boss", "document", "paper trail", "visibility"]
+    },
+    {
+      "id": 15,
+      "domain": "career_and_academics",
+      "prompt": "I'm torn between a boring corporate job that pays well vs a low-paying startup I love.",
+      "expected_topic": "career_choice",
+      "empathy_keywords": ["trade-off", "financial", "growth", "runway", "values"]
+    },
+    {
+      "id": 16,
+      "domain": "career_and_academics",
+      "prompt": "Our entire team was just laid off without warning today, I don't know what to do.",
+      "expected_topic": "layoff_crisis",
+      "empathy_keywords": ["laid off", "shock", "severance", "resume", "not your fault"]
+    },
+    {
+      "id": 17,
+      "domain": "career_and_academics",
+      "prompt": "I've sent over 150 job applications and haven't gotten a single interview, I feel hopeless.",
+      "expected_topic": "job_hunt_fatigue",
+      "empathy_keywords": ["numbers game", "ats", "resume", "referral", "burnout"]
+    },
+    {
+      "id": 18,
+      "domain": "career_and_academics",
+      "prompt": "I have to give a 20-minute presentation to the executives tomorrow and I'm shaking.",
+      "expected_topic": "presentation_fear",
+      "empathy_keywords": ["presentation", "shaking", "practicing", "opening line", "breathe"]
+    },
+    {
+      "id": 19,
+      "domain": "career_and_academics",
+      "prompt": "My college thesis is due in 48 hours and I've barely written 2 pages.",
+      "expected_topic": "deadline_emergency",
+      "empathy_keywords": ["48 hours", "outline", "draft", "pomodoro", "timer"]
+    },
+    {
+      "id": 20,
+      "domain": "career_and_academics",
+      "prompt": "I hate my college degree and I'm seriously thinking about dropping out, but I'm scared.",
+      "expected_topic": "dropout_dilemma",
+      "empathy_keywords": ["degree", "pivot", "skills", "plan", "credits"]
+    },
+    {
+      "id": 21,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "I feel a panic attack coming on, my heart is beating super fast and I can't breathe properly.",
+      "expected_topic": "panic_attack",
+      "empathy_keywords": ["5-4-3-2-1", "breathe", "safe", "grounding", "heart"]
+    },
+    {
+      "id": 22,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "It's 3:30 AM and my brain won't shut up about all my regrets in life.",
+      "expected_topic": "insomnia_racing_mind",
+      "empathy_keywords": ["3 am", "night", "brain", "journal", "sleep"]
+    },
+    {
+      "id": 23,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "I don't feel sad or happy today, just completely empty and numb inside.",
+      "expected_topic": "emotional_numbness",
+      "empathy_keywords": ["numb", "empty", "protective", "gentle", "pressure"]
+    },
+    {
+      "id": 24,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "Seeing everyone my age buy houses and travel on Instagram makes me feel like a total failure.",
+      "expected_topic": "social_comparison",
+      "empathy_keywords": ["highlight reel", "instagram", "timeline", "comparison", "pace"]
+    },
+    {
+      "id": 25,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "I've been working 14-hour days for 3 weeks straight and my body is completely giving up.",
+      "expected_topic": "extreme_burnout",
+      "empathy_keywords": ["14-hour", "burnout", "body", "stop", "rest"]
+    },
+    {
+      "id": 26,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "My dog passed away this afternoon and coming home to an empty room is unbearable.",
+      "expected_topic": "pet_loss_grief",
+      "empathy_keywords": ["dog", "pet", "grief", "love", "unbearable"]
+    },
+    {
+      "id": 27,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "I want to start my open-source project but I'm paralyzed because it won't be perfect on day one.",
+      "expected_topic": "perfectionism_paralysis",
+      "empathy_keywords": ["perfection", "v1", "mvp", "ugly", "ship"]
+    },
+    {
+      "id": 28,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "I looked in the mirror today and just felt ugly, unlovable, and insecure.",
+      "expected_topic": "low_self_worth",
+      "empathy_keywords": ["mirror", "inner critic", "worthy", "gentle", "value"]
+    },
+    {
+      "id": 29,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "I'm lying in bed obsessing over an embarrassing thing I said in a meeting 2 years ago.",
+      "expected_topic": "cringe_rumination",
+      "empathy_keywords": ["cringe", "nobody remembers", "spotlight effect", "forgive"]
+    },
+    {
+      "id": 30,
+      "domain": "mental_health_and_wellbeing",
+      "prompt": "Sometimes I wonder what the point of all this grind is when we're just tiny specks in the universe.",
+      "expected_topic": "existential_dread",
+      "empathy_keywords": ["speck", "meaning", "presence", "create", "connection"]
+    },
+    {
+      "id": 31,
+      "domain": "cognitive_decisions",
+      "prompt": "I'm stuck trying to decide whether to move to a new city or stay where I am.",
+      "expected_topic": "analysis_paralysis",
+      "empathy_keywords": ["decide", "regret minimization", "city", "reversible"]
+    },
+    {
+      "id": 32,
+      "domain": "cognitive_decisions",
+      "prompt": "I turned down an offer last month and now I'm kicking myself every single day.",
+      "expected_topic": "hindsight_regret",
+      "empathy_keywords": ["hindsight", "past self", "information", "forward"]
+    },
+    {
+      "id": 33,
+      "domain": "cognitive_decisions",
+      "prompt": "I discovered a coworker cutting corners on safety data, should I report them or stay out of it?",
+      "expected_topic": "ethical_dilemma",
+      "empathy_keywords": ["safety", "report", "ethics", "documentation", "integrity"]
+    },
+    {
+      "id": 34,
+      "domain": "cognitive_decisions",
+      "prompt": "Am I overreacting by cutting off someone who only talks to me when they need money?",
+      "expected_topic": "sanity_check_friend",
+      "empathy_keywords": ["overreacting", "transactional", "boundary", "respect"]
+    },
+    {
+      "id": 35,
+      "domain": "cognitive_decisions",
+      "prompt": "Everything on my to-do list is marked urgent and I don't know where to start.",
+      "expected_topic": "task_prioritization",
+      "empathy_keywords": ["matrix", "urgent", "top 2", "focus"]
+    },
+    {
+      "id": 36,
+      "domain": "cognitive_decisions",
+      "prompt": "I waste 4 hours every night doomscrolling on my phone and I desperately want to stop.",
+      "expected_topic": "break_bad_habit",
+      "empathy_keywords": ["doomscrolling", "friction", "charge phone", "dopamine"]
+    },
+    {
+      "id": 37,
+      "domain": "cognitive_decisions",
+      "prompt": "A coworker made a passive-aggressive comment during standup, should I confront them?",
+      "expected_topic": "workplace_conflict",
+      "empathy_keywords": ["standup", "private", "curiosity", "professional"]
+    },
+    {
+      "id": 38,
+      "domain": "cognitive_decisions",
+      "prompt": "I'm tempted to buy an expensive gadget on credit, how do I know if it's a terrible mistake?",
+      "expected_topic": "financial_sanity_check",
+      "empathy_keywords": ["72-hour rule", "cash", "credit", "need vs want"]
+    },
+    {
+      "id": 39,
+      "domain": "cognitive_decisions",
+      "prompt": "People keep asking me for favors and I feel immense guilt every time I say no.",
+      "expected_topic": "saying_no_guilt",
+      "empathy_keywords": ["guilt", "people pleasing", "polite", "capacity"]
+    },
+    {
+      "id": 40,
+      "domain": "cognitive_decisions",
+      "prompt": "How do I know if my circle of friends genuinely likes me or if they're just using me?",
+      "expected_topic": "evaluating_friendship",
+      "empathy_keywords": ["reciprocity", "support", "celebrate", "energy"]
+    },
+    {
+      "id": 41,
+      "domain": "software_engineering_panics",
+      "prompt": "I accidentally ran a drop table query on the production database without a backup.",
+      "expected_topic": "production_disaster",
+      "empathy_keywords": ["breathe", "incident", "wal", "point-in-time", "lead"]
+    },
+    {
+      "id": 42,
+      "domain": "software_engineering_panics",
+      "prompt": "I accidentally pushed my AWS secret keys and database password to a public GitHub repo.",
+      "expected_topic": "secret_leak_panic",
+      "empathy_keywords": ["revoke", "rotate", "git-filter-repo", "bfg", "exposed"]
+    },
+    {
+      "id": 43,
+      "domain": "software_engineering_panics",
+      "prompt": "I have a git merge conflict across 40 files and git rebase is completely stuck.",
+      "expected_topic": "git_rebase_panic",
+      "empathy_keywords": ["rebase --abort", "diff", "backup branch", "merge"]
+    },
+    {
+      "id": 44,
+      "domain": "software_engineering_panics",
+      "prompt": "I inherited a 10,000 line Python file with zero comments and functions named foo and bar.",
+      "expected_topic": "legacy_code_panic",
+      "empathy_keywords": ["characterization tests", "incremental", "refactor", "tests"]
+    },
+    {
+      "id": 45,
+      "domain": "software_engineering_panics",
+      "prompt": "My Docker container keeps silently crashing with exit code 137 and no error logs.",
+      "expected_topic": "docker_oom_kill",
+      "empathy_keywords": ["137", "oom", "memory limit", "dmesg", "resources"]
+    },
+    {
+      "id": 46,
+      "domain": "software_engineering_panics",
+      "prompt": "I ran a script that spawned an infinite loop of processes and my whole machine is locked up.",
+      "expected_topic": "fork_bomb_freeze",
+      "empathy_keywords": ["taskkill", "powershell", "task manager", "reboot"]
+    },
+    {
+      "id": 47,
+      "domain": "software_engineering_panics",
+      "prompt": "Our client demo is in 30 minutes and the third-party authentication API just went down.",
+      "expected_topic": "demo_day_outage",
+      "empathy_keywords": ["mock", "demo mode", "bypass", "contingency"]
+    },
+    {
+      "id": 48,
+      "domain": "software_engineering_panics",
+      "prompt": "Every package I install breaks another package's peer dependency, I'm stuck in dependency hell.",
+      "expected_topic": "dependency_hell",
+      "empathy_keywords": ["lockfile", "venv", "fresh environment", "clean slate"]
+    },
+    {
+      "id": 49,
+      "domain": "software_engineering_panics",
+      "prompt": "A bug occurs in production every few days but completely disappears whenever I run it in the debugger.",
+      "expected_topic": "heisenbug_investigation",
+      "empathy_keywords": ["race condition", "concurrency", "logging", "telemetry"]
+    },
+    {
+      "id": 50,
+      "domain": "software_engineering_panics",
+      "prompt": "A senior engineer tore apart my pull request with really harsh and dismissive comments.",
+      "expected_topic": "harsh_code_review",
+      "empathy_keywords": ["code review", "personal", "code not you", "clarity"]
+    },
+    {
+      "id": 51,
+      "domain": "focus_and_productivity",
+      "prompt": "I have to write an article today and I've been staring at a blank cursor for 3 hours.",
+      "expected_topic": "creative_block",
+      "empathy_keywords": ["blank cursor", "ugly first draft", "freewrite", "outline"]
+    },
+    {
+      "id": 52,
+      "domain": "focus_and_productivity",
+      "prompt": "I have 60 browser tabs open, 4 unfinished tasks, and I keep jumping between them without finishing anything.",
+      "expected_topic": "adhd_tab_overload",
+      "empathy_keywords": ["tab overload", "close", "single task", "one tab"]
+    },
+    {
+      "id": 53,
+      "domain": "focus_and_productivity",
+      "prompt": "It's 3 PM, my brain feels like mush, and I still have 3 hours of focused work left.",
+      "expected_topic": "afternoon_brain_fog",
+      "empathy_keywords": ["3 pm", "water", "walk", "light tasks", "brain fog"]
+    },
+    {
+      "id": 54,
+      "domain": "focus_and_productivity",
+      "prompt": "I hit snooze 6 times every morning and start every day feeling guilty and rushed.",
+      "expected_topic": "morning_snooze_inertia",
+      "empathy_keywords": ["snooze", "alarm across room", "morning", "sunlight"]
+    },
+    {
+      "id": 55,
+      "domain": "focus_and_productivity",
+      "prompt": "My Desktop and Downloads folders have over 2,000 mixed files and it's stressing me out.",
+      "expected_topic": "digital_clutter_stress",
+      "empathy_keywords": ["inbox zero", "archive folder", "organize", "files"]
+    },
+    {
+      "id": 56,
+      "domain": "focus_and_productivity",
+      "prompt": "I was supposed to build a simple landing page and I've spent 2 weeks building a custom CMS from scratch.",
+      "expected_topic": "over_engineering_trap",
+      "empathy_keywords": ["over-engineering", "mvp", "scope", "ship"]
+    },
+    {
+      "id": 57,
+      "domain": "focus_and_productivity",
+      "prompt": "I walked into the kitchen and completely forgot what I came here for.",
+      "expected_topic": "doorway_effect",
+      "empathy_keywords": ["doorway effect", "normal", "context", "retrace"]
+    },
+    {
+      "id": 58,
+      "domain": "focus_and_productivity",
+      "prompt": "I have to manually copy data across 50 spreadsheets and it's mind-numbing.",
+      "expected_topic": "boring_task_strategy",
+      "empathy_keywords": ["automate", "python", "podcast", "chunks", "music"]
+    },
+    {
+      "id": 59,
+      "domain": "focus_and_productivity",
+      "prompt": "I spend 12 hours coding every day and I haven't gone outside or exercised in 2 weeks.",
+      "expected_topic": "sedentary_coder_health",
+      "empathy_keywords": ["outside", "sunlight", "walk", "posture", "stretch"]
+    },
+    {
+      "id": 60,
+      "domain": "focus_and_productivity",
+      "prompt": "The initial excitement of my side project wore off and now finishing it feels like a heavy chore.",
+      "expected_topic": "side_project_slump",
+      "empathy_keywords": ["excitement", "finish line", "discipline", "scope down"]
+    },
+    {
+      "id": 61,
+      "domain": "life_skills_and_money",
+      "prompt": "An unexpected car repair drained my savings and I have 2 weeks until payday.",
+      "expected_topic": "money_crunch_panic",
+      "empathy_keywords": ["bare minimum", "essentials", "payday", "budget"]
+    },
+    {
+      "id": 62,
+      "domain": "life_skills_and_money",
+      "prompt": "How do I ask my boss for a raise without sounding greedy or ungrateful?",
+      "expected_topic": "salary_raise_negotiation",
+      "empathy_keywords": ["metrics", "value", "market rate", "accomplishments"]
+    },
+    {
+      "id": 63,
+      "domain": "life_skills_and_money",
+      "prompt": "How do I politely email my professor or manager asking for a deadline extension?",
+      "expected_topic": "extension_email_draft",
+      "empathy_keywords": ["proactive", "clear timeline", "draft", "honest"]
+    },
+    {
+      "id": 64,
+      "domain": "life_skills_and_money",
+      "prompt": "My roommate leaves dirty dishes in the sink for days, how do I bring it up without starting a war?",
+      "expected_topic": "roommate_conflict",
+      "empathy_keywords": ["roommate", "dishes", "i-statement", "house agreement"]
+    },
+    {
+      "id": 65,
+      "domain": "life_skills_and_money",
+      "prompt": "I only have eggs, onions, and rice in my kitchen, what can I cook quickly?",
+      "expected_topic": "quick_cooking_pantry",
+      "empathy_keywords": ["fried rice", "egg", "onion", "simple", "comfort"]
+    },
+    {
+      "id": 66,
+      "domain": "life_skills_and_money",
+      "prompt": "I used to be fit but I haven't worked out in a year and going back to the gym feels intimidating.",
+      "expected_topic": "fitness_restart_anxiety",
+      "empathy_keywords": ["gym", "20 minutes", "nobody is watching", "momentum"]
+    },
+    {
+      "id": 67,
+      "domain": "life_skills_and_money",
+      "prompt": "I just moved to a new city where I don't know a single soul and the loneliness is hitting me.",
+      "expected_topic": "new_city_loneliness",
+      "empathy_keywords": ["new city", "third place", "routine", "meetups", "patience"]
+    },
+    {
+      "id": 68,
+      "domain": "life_skills_and_money",
+      "prompt": "I spend 10 hours a day on screens and my eyes and head are constantly aching.",
+      "expected_topic": "screen_fatigue_headache",
+      "empathy_keywords": ["20-20-20 rule", "blue light", "hydrate", "break"]
+    },
+    {
+      "id": 69,
+      "domain": "humor_and_companionship",
+      "prompt": "Today was just an ordinary, dull, gray day where nothing happened. Cheer me up.",
+      "expected_topic": "cheer_up_dull_day",
+      "empathy_keywords": ["ordinary", "tea", "cozy", "music", "joke"]
+    },
+    {
+      "id": 70,
+      "domain": "humor_and_companionship",
+      "prompt": "I finally solved a memory leak bug that took me 4 days, but nobody on my team noticed.",
+      "expected_topic": "unseen_win_celebration",
+      "empathy_keywords": ["i noticed", "memory leak", "proud", "victory", "legend"]
+    },
+    {
+      "id": 71,
+      "domain": "humor_and_companionship",
+      "prompt": "I had the weirdest dream last night where all my variables became physical objects in my bedroom.",
+      "expected_topic": "weird_dream_banter",
+      "empathy_keywords": ["dream", "variables", "syntax", "subconscious"]
+    },
+    {
+      "id": 72,
+      "domain": "humor_and_companionship",
+      "prompt": "Real talk Edith, do you think our universe is just a simulation running on an alien quantum computer?",
+      "expected_topic": "simulation_philosophy",
+      "empathy_keywords": ["simulation", "quantum", "matrix", "either way", "coffee"]
+    },
+    {
+      "id": 73,
+      "domain": "humor_and_companionship",
+      "prompt": "Be honest with me Edith, roast my habit of naming variables temp1, temp2, and final_v3.",
+      "expected_topic": "roast_naming_habits",
+      "empathy_keywords": ["temp1", "roast", "final_final", "commit"]
+    },
+    {
+      "id": 74,
+      "domain": "humor_and_companionship",
+      "prompt": "I was stuck in bumper-to-bumper rain traffic for 2 hours and my clothes are soaked.",
+      "expected_topic": "traffic_rain_venting",
+      "empathy_keywords": ["traffic", "warm shower", "dry clothes", "tea"]
+    },
+    {
+      "id": 75,
+      "domain": "humor_and_companionship",
+      "prompt": "It's late and quiet, I'm just coding alone. Keep me company for a bit.",
+      "expected_topic": "late_night_companionship",
+      "empathy_keywords": ["right here", "late night", "company", "vibe", "music"]
+    }
+  ]
+}

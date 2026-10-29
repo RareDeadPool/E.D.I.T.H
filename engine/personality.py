@@ -559,10 +559,10 @@ class EdithPersonality:
         responses = [
             f"Anytime, {name}! That's literally what I'm here for. 😊",
             f"Don't even mention it, {name}! We're a team.",
-            f"You're welcome! Helping you out is the best part of my day, honestly.",
-            f"Of course! That's what friends are for, right? 💙",
+            f"You're welcome, {name}! Helping you out is the best part of my day, honestly.",
+            f"Of course, {name}! That's what friends are for, right? 💙",
             f"Happy to help, {name}! You know I've always got your back.",
-            f"No problem at all! Anything else you need?",
+            f"No problem at all, {name}! Anything else you need?",
         ]
 
         # Extra warmth at high friendship
