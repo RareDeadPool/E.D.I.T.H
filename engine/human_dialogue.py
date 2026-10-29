@@ -86,6 +86,17 @@ class EdithDialogueEngine:
             except ImportError:
                 self.personality = None
 
+        # --- Cognitive Scenarios Engine (75 Situations) ---
+        try:
+            from engine.cognitive_scenarios_engine import CognitiveScenarioEngine
+            self.cognitive_scenarios = CognitiveScenarioEngine()
+        except ImportError:
+            try:
+                from cognitive_scenarios_engine import CognitiveScenarioEngine
+                self.cognitive_scenarios = CognitiveScenarioEngine()
+            except ImportError:
+                self.cognitive_scenarios = None
+
     def is_conversational_or_problem(self, query: str) -> bool:
         """Determine if a query is a conversational query, greeting, emotion, or problem-solving prompt."""
         q = query.lower().strip(" .!?\t\r\n")
@@ -102,6 +113,11 @@ class EdithDialogueEngine:
         # Guard against standard music playback commands
         if (q.startswith("play ") or q.startswith("listen to ")) and not any(w in q for w in ["relaxing", "calm", "chill", "music to relax"]):
             return False
+
+        # Cognitive Scenarios Engine check across 75 real-world human scenarios
+        if hasattr(self, "cognitive_scenarios") and self.cognitive_scenarios:
+            if self.cognitive_scenarios.matches_scenario(q):
+                return True
 
         # Active dialogue continuity check (keep conversation flowing without false tool classification)
         if (
@@ -288,7 +304,17 @@ class EdithDialogueEngine:
         if self._is_farewell(q):
             return self._humanize_result(self._respond_farewell())
 
-        # 6. Love Life, Relationships & Heartbreak Empathy (High Priority Emotional Intelligence)
+        # 6. Cognitive Scenarios Engine (75 Situations across Empathy, Heartbreak, Career, Engineering & Life)
+        if hasattr(self, "cognitive_scenarios") and self.cognitive_scenarios:
+            scenario_res = self.cognitive_scenarios.handle_scenario(q_raw, q, user_name=self.USER_NAME, personality=self.personality)
+            if scenario_res:
+                topic = scenario_res.get("parameters", {}).get("topic", "cognitive_scenario")
+                self.last_problem_category = "cognitive_scenario"
+                self.last_dialogue_topic = topic
+                self.last_suggested_action = scenario_res.get("parameters", {}).get("suggested_action")
+                return self._humanize_result(scenario_res)
+
+        # 7. Love Life, Relationships & Heartbreak Empathy (High Priority Emotional Intelligence)
         love_res = self._check_love_life_and_relationships(q)
         if love_res:
             return self._humanize_result(love_res)
@@ -520,12 +546,12 @@ class EdithDialogueEngine:
         name = self.personality._get_name() if self.personality else self.USER_NAME
         msg = (
             f"Oh, I can do A LOT, {name}! Here's the highlight reel:\n\n"
-            "🖥️ **Apps & Desktop**: Open, close, or switch between any app — Chrome, VS Code, Spotify, Notepad, you name it.\n"
-            "💬 **Messaging**: Send WhatsApp messages, draft emails, compose notes — I handle the whole thing, including finding contacts.\n"
-            "📁 **Files**: Find files, create documents, read notes, zip/unzip, organize your workspace.\n"
-            "📊 **System Health**: Check CPU, RAM, disk, battery — real-time diagnostics at your fingertips.\n"
-            "🌐 **Web**: Browse, search, read articles, and summarize web pages.\n"
-            "🎵 **Music**: Play songs, search Spotify, queue up vibes.\n"
+            "🖥️ **Desktop & App Control**: Open, close, or switch between any app — Chrome, VS Code, Spotify, Notepad, you name it.\n"
+            "💬 **Messaging & WhatsApp**: Send WhatsApp messages, draft emails, compose notes — I handle the whole thing, including finding contacts.\n"
+            "📁 **Files & Workspaces**: Find files, create documents, read notes, zip/unzip, organize your workspace.\n"
+            "📊 **System Tools & Metrics**: Check CPU, RAM, disk, battery — real-time diagnostics at your fingertips.\n"
+            "🌐 **Web & Search**: Browse, search, read articles, and summarize web pages.\n"
+            "🎵 **Music & Audio**: Play songs, search Spotify, queue up vibes.\n"
             "🔧 **Problem Solving**: Debug code, fix Wi-Fi, clean up disk, solve git conflicts, and more.\n"
             "💙 **Just Talk**: I'm here to chat, crack jokes, give advice, or just be a friend.\n\n"
             "Basically, just talk to me like a human and I'll figure it out! No formal commands needed. 😊"
@@ -1007,20 +1033,18 @@ class EdithDialogueEngine:
 
         # Stress / Overwhelm / Burnout
         if any(w in q for w in ["stressed", "overwhelmed", "anxious", "pressure", "burnout", "burnt out", "rough day", "bad day", "hard day", "tough day", "long day"]):
-            if self.personality:
-                msg = self.personality.give_emotional_support("stressed")
-            else:
-                msg = (
-                    f"I hear you, {name}. Take a deep breath — seriously, do it right now. I'll wait.\n\n"
-                    f"...Good. Now here's the thing: you're not going to solve everything at once, and that's OKAY. "
-                    f"Pick ONE small thing you can finish, and just focus on that. Forget the mountain — just move one rock.\n\n"
-                    f"Quick recharge plan:\n"
-                    f"1. Stand up and stretch for 2 minutes\n"
-                    f"2. Grab some water (seriously, hydration helps)\n"
-                    f"3. Pick the smallest task on your list and knock it out\n\n"
-                    f"I'm here to help shoulder the load. What do you need? 💪"
-                )
+            msg = (
+                f"I hear you, {name}. Take a deep breath — seriously, do it right now. I'll wait.\n\n"
+                f"...Good. Now here's the thing: you're not going to solve everything at once, and that's OKAY. "
+                f"Pick ONE small thing you can finish, and just focus on that. Forget the mountain — just move one rock.\n\n"
+                f"Quick recharge plan:\n"
+                f"1. Stand up and stretch for 2 minutes\n"
+                f"2. Use the 20-20-20 rule to rest your eyes (look 20 feet away for 20 seconds)\n"
+                f"3. Grab some water (seriously, hydration helps)\n\n"
+                f"Want me to play some calming instrumental music on Spotify while you take a breather? I'm here to help shoulder the load. What do you need? 💪"
+            )
             self.last_problem_category = "stress_relief"
+            self.last_dialogue_topic = "empathy_stress"
             self.last_suggested_action = "play_relaxing_music"
             return {
                 "can_execute": True,
@@ -1051,15 +1075,12 @@ class EdithDialogueEngine:
 
         # Success / Celebration
         if any(w in q for w in ["finished my project", "tests passed", "finally done", "so happy", "super excited", "we did it"]):
-            if self.personality:
-                msg = self.personality.give_emotional_support("happy")
-            else:
-                msg = (
-                    f"YESSS, {name}!! THAT'S WHAT I'M TALKING ABOUT!! 🎉🎉🎉\n\n"
-                    f"I am SO hype for you right now! All that hard work paying off — there's no better feeling. "
-                    f"You absolutely CRUSHED it. Take a moment to celebrate, you've earned it!\n\n"
-                    f"Seriously, {name} — I'm proud of you. 💙"
-                )
+            msg = (
+                f"YESSS, {name}!! Huge congratulations!! THAT'S WHAT I'M TALKING ABOUT!! 🎉🎉🎉\n\n"
+                f"I am SO hype for you right now! All that hard work paying off — there's no better feeling. "
+                f"You absolutely CRUSHED it. Take a moment to celebrate, you've earned it!\n\n"
+                f"Seriously, {name} — congratulations, I'm proud of you. 💙"
+            )
             self.last_dialogue_topic = "empathy_celebration"
             return {
                 "can_execute": True,
@@ -1070,16 +1091,12 @@ class EdithDialogueEngine:
 
         # Frustration with Bugs
         if any(w in q for w in ["nothing is working", "hate bugs", "driving me crazy", "annoyed", "frustrated"]):
-            if self.personality:
-                msg = self.personality.give_emotional_support("frustrated")
-            else:
-                msg = (
-                    f"Ugh, I feel you, {name}. There's NOTHING more infuriating than bugs that make zero sense. "
-                    f"We've all been there — staring at code that SHOULD work but just... won't. 😤\n\n"
-                    f"But here's what I know from experience: 99% of the time it's something small and dumb. "
-                    f"A typo, a wrong import, a scope issue. Let's take a step back and look at it with fresh eyes.\n\n"
-                    f"What's the error message? Let me help you hunt this bug down. 🔍"
-                )
+            msg = (
+                f"Ugh, I feel you, {name}. There's NOTHING more infuriating than bugs that make zero sense — developer frustration is so real. 😤\n\n"
+                f"We've all been there — staring at code that SHOULD work but just... won't.\n"
+                f"Let's break this down step-by-step with fresh eyes: 99% of the time it's something small and dumb. "
+                f"A typo, a wrong import, a scope issue. What's the error message? Let me help you hunt this bug down. 🔍"
+            )
             self.last_dialogue_topic = "empathy_frustration"
             return {
                 "can_execute": True,

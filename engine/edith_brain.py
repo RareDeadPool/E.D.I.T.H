@@ -1468,17 +1468,23 @@ class EdithBrain:
                     self._record_trace(user_command, cmd_clean, res, (time.time() - t_start) * 1000.0)
                     return res
 
+        # Conversational dialogue & cognitive scenarios check
+        is_conv_or_dialogue = bool(
+            self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(cmd_clean.lower())
+        )
+
         # Multi-turn context and reference resolution (anaphora, ordinals, pronouns, alternatives)
         detected_refs = []
         is_ref_ambiguous = False
         resolved_cmd = cmd_clean
-        if self.context and hasattr(self.context, "resolve_references_structured"):
-            resolved_cmd, detected_refs, is_ref_ambiguous = self.context.resolve_references_structured(cmd_clean)
-        elif self.context:
-            resolved_cmd = self.context.resolve_anaphora(cmd_clean)
+        if not is_conv_or_dialogue:
+            if self.context and hasattr(self.context, "resolve_references_structured"):
+                resolved_cmd, detected_refs, is_ref_ambiguous = self.context.resolve_references_structured(cmd_clean)
+            elif self.context:
+                resolved_cmd = self.context.resolve_anaphora(cmd_clean)
 
-        # Multi-step command decomposition
-        steps = split_multi_step_command(resolved_cmd)
+        # Multi-step command decomposition (only for commands, never for conversational dialogue/empathy)
+        steps = split_multi_step_command(resolved_cmd) if not is_conv_or_dialogue else [resolved_cmd]
         if len(steps) > 1:
             res = self._process_multi_step(steps, user_command, execute=execute)
             if self.context:
@@ -1510,13 +1516,22 @@ class EdithBrain:
         result = self.engine.predict(user_command)
 
         # Structured Understanding Normalization & Validation
+        is_conv_or_dialogue = bool(
+            self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(user_command.lower())
+        )
         structured = None
         if self.normalizer:
             structured = self.normalizer.normalize(result, context=ctx_dict, references=detected_refs or [])
-            if is_ref_ambiguous:
+            if is_ref_ambiguous and not is_conv_or_dialogue:
                 structured.requires_clarification = True
                 structured.clarification_prompt = "I need clarification: the item referenced is ambiguous or not found in recent context."
                 structured.validation_errors.append("Ambiguous reference without prior context.")
+
+            if is_conv_or_dialogue:
+                structured.requires_clarification = False
+                structured.intent = "chitchat"
+                structured.action = "respond_dialogue"
+                structured.goal = "dialogue"
 
             result["structured_understanding"] = structured.to_dict()
             result["intent"] = structured.intent
@@ -1524,7 +1539,7 @@ class EdithBrain:
             result["goal"] = structured.goal
 
             # Ambiguity & Missing Entity Clarification Gate
-            if structured.requires_clarification:
+            if structured.requires_clarification and not is_conv_or_dialogue:
                 res = {
                     "query": user_command,
                     "intent": structured.intent,
