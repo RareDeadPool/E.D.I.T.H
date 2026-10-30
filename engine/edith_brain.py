@@ -2044,6 +2044,11 @@ class EdithBrain:
             if any(low.startswith(w) for w in ["make ", "revise ", "edit ", "update ", "change ", "shorten "]):
                 return None
 
+        # Reject volume, audio, brightness, and system settings queries that start with "make" or "turn"
+        if any(k in low for k in ["volume", "sound", "audio", "noise", "brightness", "screen"]):
+            if any(low.startswith(w) for w in ["make ", "turn ", "set ", "adjust ", "put "]):
+                return None
+
         subaction = None
         verb_pattern = None
 

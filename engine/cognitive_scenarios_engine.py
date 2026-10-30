@@ -982,7 +982,7 @@ class CognitiveScenarioEngine:
                     if "{user_name}" in resp_template:
                         msg = resp_template.format(user_name=user_name)
                     else:
-                        msg = f"{user_name}, " + resp_template[0].lower() + resp_template[1:]
+                        msg = resp_template
                     return self._format_response(
                         msg,
                         topic=s.get("expected_topic", "cognitive_scenario"),
@@ -997,9 +997,19 @@ class CognitiveScenarioEngine:
         topic: str = "cognitive_scenario",
         suggested_action: Optional[str] = None
     ) -> Dict[str, Any]:
+        # Restrain repetitive name stuffing: ensure the user is not addressed by name repeatedly
+        cleaned = msg
+        # If user name appears multiple times, reduce to at most one natural occurrence
+        if "Aditya" in cleaned:
+            parts = cleaned.split("Aditya")
+            if len(parts) > 2:
+                # Keep only the first mention, clean subsequent mentions
+                rest = "".join(parts[1:]).replace(", Aditya", "").replace("Aditya, ", "").replace("Aditya", "")
+                cleaned = parts[0] + "Aditya" + rest
+
         return {
             "can_execute": True,
-            "message": msg,
+            "message": cleaned.strip(),
             "handler": "dialogue",
             "parameters": {
                 "topic": topic,

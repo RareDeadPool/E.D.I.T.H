@@ -33,8 +33,9 @@ class EdithTokenizer:
             self.inv_vocab = {idx: tok for idx, tok in enumerate(self.SPECIAL_TOKENS)}
 
         # Pattern separating words, filepaths, urls, symbols, punctuation, and contractions
+        # Correctly separates sentence-ending punctuation while preserving internal dots in filenames, decimals, urls, and paths
         self.token_pattern = re.compile(
-            r"[A-Za-z0-9_:\.\-\\/\~%\^\+\*\=]+|'(?:s|t|m|d|ll|re|ve)|[^\s\w]"
+            r"[A-Za-z0-9_:\-\\/\~%\^\+\*\=]+(?:\.[A-Za-z0-9_:\-\\/\~%\^\+\*\=]+)*|'(?:s|t|m|d|ll|re|ve)|n't|[^\s\w]"
         )
 
         # Common inflectional suffixes for morphological fallback
