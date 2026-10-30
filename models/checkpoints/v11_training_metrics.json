@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-10-30T19:04:57Z",
+  "model_version": "V11 Candidate",
+  "vocab_size": 1015,
+  "total_parameters": 3568911,
+  "epochs_trained": 5,
+  "best_composite_score": 94.4,
+  "baseline_metrics": {
+    "intent_macro_f1": 94.02,
+    "action_accuracy": 94.59,
+    "slot_accuracy": 88.9,
+    "entity_span_precision": 44.08,
+    "entity_span_recall": 83.39,
+    "entity_span_f1": 57.68,
+    "exact_sequence_match": 63.94,
+    "ood_accuracy": 99.29
+  },
+  "candidate_metrics_clean_test": {
+    "intent_accuracy": 93.24,
+    "intent_macro_f1": 93.33,
+    "action_accuracy": 94.88,
+    "token_slot_accuracy": 93.84,
+    "entity_span_precision": 66.88,
+    "entity_span_recall": 89.11,
+    "entity_span_f1": 76.42,
+    "exact_sequence_match": 81.06,
+    "ood_accuracy": 99.94
+  },
+  "candidate_metrics_challenge_set": {
+    "intent_accuracy": 55.0,
+    "intent_macro_f1": 28.74,
+    "action_accuracy": 45.0,
+    "token_slot_accuracy": 91.33,
+    "ood_accuracy": 86.4
+  },
+  "onnx_parity_verified": true,
+  "max_onnx_difference": 4e-06,
+  "promotion_decision": "PROMOTION WITHHELD (intent macro-f1 93.33% vs 93.5% gate threshold)",
+  "active_production_checkpoint": "models/checkpoints/edith_ann_best.pt (Preserved V10 weights)"
+}

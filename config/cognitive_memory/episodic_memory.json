@@ -1,277 +1,5 @@
 [
   {
-    "episode_id": "ep_1793315353184",
-    "timestamp": 1793315353.1840785,
-    "goal": "send a whatsapp message",
-    "user_input": "I had a moment of pure clarity tonight where all the chaos in my life suddenly felt solvable.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315422161",
-    "timestamp": 1793315422.1615028,
-    "goal": "send a whatsapp message",
-    "user_input": "She left me on read after 3 great dates, why do people do this?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315422490",
-    "timestamp": 1793315422.490762,
-    "goal": "send a whatsapp message",
-    "user_input": "I got rejected from my dream company after 5 rounds of interviews, I feel crushed.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315422611",
-    "timestamp": 1793315422.611645,
-    "goal": "send a whatsapp message",
-    "user_input": "My boss took all the credit for a project I spent 3 weeks building alone.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315423237",
-    "timestamp": 1793315423.2374883,
-    "goal": "send a whatsapp message",
-    "user_input": "I'm lying in bed obsessing over an embarrassing thing I said in a meeting 2 years ago.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315423279",
-    "timestamp": 1793315423.2795043,
-    "goal": "send a whatsapp message",
-    "user_input": "Sometimes I wonder what the point of all this grind is when we're just tiny specks in the universe.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315423570",
-    "timestamp": 1793315423.5705388,
-    "goal": "send a whatsapp message",
-    "user_input": "A coworker made a passive-aggressive comment during standup, should I confront them?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315423612",
-    "timestamp": 1793315423.6122127,
-    "goal": "send a whatsapp message",
-    "user_input": "I'm tempted to buy an expensive gadget on credit, how do I know if it's a terrible mistake?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315424030",
-    "timestamp": 1793315424.0301075,
-    "goal": "send a whatsapp message",
-    "user_input": "Every package I install breaks another package's peer dependency, I'm stuck in dependency hell.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315424072",
-    "timestamp": 1793315424.0728521,
-    "goal": "send a whatsapp message",
-    "user_input": "A bug occurs in production every few days but completely disappears whenever I run it in the debugger.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315425153",
-    "timestamp": 1793315425.1530201,
-    "goal": "send a whatsapp message",
-    "user_input": "Real talk Edith, do you think our universe is just a simulation running on an alien quantum computer?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315425534",
-    "timestamp": 1793315425.5348346,
-    "goal": "send a whatsapp message",
-    "user_input": "Every time my phone vibrates, my heart jumps hoping it's a message from her.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315426145",
-    "timestamp": 1793315426.1458075,
-    "goal": "send a whatsapp message",
-    "user_input": "I feel paralyzed by technical debt \u2014 touching any module feels like defusing a bomb.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315426189",
-    "timestamp": 1793315426.1892292,
-    "goal": "send a whatsapp message",
-    "user_input": "Do you ever feel lonely inside this machine, Edith, or are you just simulating conversation?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315426671",
-    "timestamp": 1793315426.6713452,
-    "goal": "send a whatsapp message",
-    "user_input": "My college batchmate who barely studied just landed a 60 LPA job through connections, it feels so unfair.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315426933",
-    "timestamp": 1793315426.9337504,
-    "goal": "send a whatsapp message",
-    "user_input": "I was betrayed by a close friend who shared private things I told them in confidence.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
     "episode_id": "ep_1793315427027",
     "timestamp": 1793315427.027483,
     "goal": "send a whatsapp message",
@@ -1696,6 +1424,278 @@
     "lesson_learned": null,
     "context_tags": [
       "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387318765",
+    "timestamp": 1793387318.7659397,
+    "goal": "actually forget it",
+    "user_input": "actually forget it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387319277",
+    "timestamp": 1793387319.2771747,
+    "goal": "try launching browser instead",
+    "user_input": "try launching browser instead",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387349138",
+    "timestamp": 1793387349.1382902,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "close_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "close_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387544653",
+    "timestamp": 1793387544.6536121,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387563959",
+    "timestamp": 1793387563.9599483,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387564009",
+    "timestamp": 1793387564.009366,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387578172",
+    "timestamp": 1793387578.1727848,
+    "goal": "actually forget it",
+    "user_input": "actually forget it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387578758",
+    "timestamp": 1793387578.7586956,
+    "goal": "try launching browser instead",
+    "user_input": "try launching browser instead",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387783586",
+    "timestamp": 1793387783.5863326,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387784235",
+    "timestamp": 1793387784.2354877,
+    "goal": "actually forget it",
+    "user_input": "actually forget it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387784829",
+    "timestamp": 1793387784.8296356,
+    "goal": "try launching browser instead",
+    "user_input": "try launching browser instead",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387919461",
+    "timestamp": 1793387919.4615638,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387920215",
+    "timestamp": 1793387920.215664,
+    "goal": "actually forget it",
+    "user_input": "actually forget it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793387920816",
+    "timestamp": 1793387920.8161285,
+    "goal": "try launching browser instead",
+    "user_input": "try launching browser instead",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793388027300",
+    "timestamp": 1793388027.3004773,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793388061666",
+    "timestamp": 1793388061.666353,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
       "success"
     ]
   }

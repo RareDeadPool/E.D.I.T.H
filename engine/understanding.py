@@ -522,10 +522,21 @@ class UnderstandingNormalizer:
             confidence = 0.99
 
         # 1b. Volume Control (English & Hinglish)
-        elif bool(re.search(r"\b(?:volume|sound|audio|awaaz)\s+(?:badhao|tez\s+karo|kam\s+karo|mute\s+karo|dheeme\s+karo|up|down|increase|decrease|mute|unmute)\b", q_lower)) or bool(re.search(r"\b(?:mute|unmute|increase|decrease|raise|lower)\s+(?:the\s+)?(?:volume|sound|audio|awaaz)\b", q_lower)):
+        elif (
+            bool(re.search(r"\b(?:volume|sound|audio|awaaz)\s+(?:badhao|tez\s+karo|kam\s+karo|mute\s+karo|dheeme\s+karo|up|down|increase|decrease|mute|unmute|high|low|louder|lower)\b", q_lower)) or
+            bool(re.search(r"\b(?:mute|unmute|increase|decrease|raise|lower|turn\s+up|turn\s+down|make)\s+(?:the\s+)?(?:volume|sound|audio|awaaz)(?:\s+(?:a\s+bit\s+|a\s+little\s+)?(?:low|high|up|down|louder|quieter))?\b", q_lower)) or
+            bool(re.search(r"\b(?:volume|sound|audio)\s+(?:a\s+bit\s+|a\s+little\s+)?(?:low|high|up|down|kam|tez)\b", q_lower))
+        ):
             goal = "control_volume"
-            intent = "system_utility"
-            action = "exec_system_utility"
+            intent = "system_control"
+            action = "exec_sys_command"
+            confidence = 0.99
+
+        # 1c. Process Management / Termination (English & Hinglish)
+        elif bool(re.search(r"\b(?:kill|terminate|stop|end)\s+(?:the\s+)?(?:process|task|pid)\s*([a-zA-Z0-9_\-\.]+)?\b", q_lower)) or bool(re.search(r"\b(?:ye|yeh|this)?\s*(?:process|task)\s*(?:ko)?\s*(?:terminate|kill|band|khatam)\s*(?:kar\s*do|karo)\b", q_lower)):
+            goal = "manage_processes"
+            intent = "process_manage"
+            action = "exec_process_kill"
             confidence = 0.99
 
         # 2. Coding Environment / Dev IDE (use word boundaries to avoid matching 'president')
@@ -598,8 +609,12 @@ class UnderstandingNormalizer:
             action = "exec_play_music"
             confidence = 0.99
 
-        # 7b. App Launch (Hinglish: <APP> kholo / chalao / start karo / open karo)
-        m_app_launch = re.search(r"^([a-zA-Z0-9_\-\s]+?)\s+(?:kholo|chalao|start\s+karo|open\s+karo|shuru\s+karo)$", q_lower)
+        # 7b. App Launch (Hinglish: [bhai/edith] <APP> kholo / chalao / start karo / open karo [jaldi/please])
+        q_hinglish_clean = re.sub(r"^(?:bhai|yaar|edith|arre|please)\s*,?\s*", "", q_lower).strip()
+        q_hinglish_clean = re.sub(r"\s+(?:jaldi|bhai|yaar|please|quickly|thoda)$", "", q_hinglish_clean).strip()
+        m_app_launch = re.search(r"^([a-zA-Z0-9_\-\s]+?)\s+(?:kholo|chalao|start\s+karo|open\s+karo|shuru\s+karo)$", q_hinglish_clean)
+        if not m_app_launch:
+            m_app_launch = re.search(r"\b([a-zA-Z0-9_\-]+)\s+(?:kholo|chalao|start\s+karo|open\s+karo)\b", q_lower)
         if m_app_launch:
             cand_app = m_app_launch.group(1).strip()
             if cand_app not in ["gaana", "gana", "music", "song", "video", "track"]:

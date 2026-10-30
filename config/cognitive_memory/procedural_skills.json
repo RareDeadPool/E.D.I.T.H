@@ -5,11 +5,11 @@
     "action_sequence": [
       "launch_app"
     ],
-    "success_count": 129,
+    "success_count": 149,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301788.9631016
+    "last_used": 1793388061.666353
   },
   "exec_workflow_script": {
     "skill_name": "exec_workflow_script",
@@ -17,11 +17,11 @@
     "action_sequence": [
       "exec_workflow_script"
     ],
-    "success_count": 56,
+    "success_count": 70,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301400.5915382
+    "last_used": 1793387920.627321
   },
   "safety_gate": {
     "skill_name": "safety_gate",
@@ -29,11 +29,11 @@
     "action_sequence": [
       "safety_gate"
     ],
-    "success_count": 11,
+    "success_count": 15,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793223476.3483043
+    "last_used": 1793387920.8710754
   },
   "file_operation": {
     "skill_name": "file_operation",
@@ -41,7 +41,7 @@
     "action_sequence": [
       "file_operation"
     ],
-    "success_count": 42,
+    "success_count": 58,
     "failure_count": 15,
     "common_failure_reasons": [
       "Found 5 matching files:\n  1. resume_latest.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  2. resume_editable.docx (in documents) - Filename matches 'resume', Format matches '.docx'\n  3. resme_backup.txt (in documents) - Typo/fuzzy match on 'resume' (90%), Format matches '.txt'\n  4. resume_v1.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  5. project_notes.txt (in documents) - Format matches '.txt', Recently modified (1 min ago)\nSay 'open the first one' or specify which.",
@@ -53,7 +53,7 @@
       "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.pdf'\n  3. project_report.docx (in edith_v4_conv_e4enqr7l) - Format matches '.docx'\n  4. project_summary.pdf (in edith_v4_conv_e4enqr7l) - Format matches '.pdf'\nSay 'open the first one' or specify which."
     ],
     "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793223412.0103028
+    "last_used": 1793387920.5673902
   },
   "draft_content": {
     "skill_name": "draft_content",
@@ -85,11 +85,11 @@
     "action_sequence": [
       "system_metrics"
     ],
-    "success_count": 25,
+    "success_count": 26,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301788.998256
+    "last_used": 1793387945.2663999
   },
   "network_task": {
     "skill_name": "network_task",
@@ -97,11 +97,11 @@
     "action_sequence": [
       "network_task"
     ],
-    "success_count": 10,
+    "success_count": 12,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301402.8898566
+    "last_used": 1793387945.3091671
   },
   "system_control": {
     "skill_name": "system_control",
@@ -109,11 +109,11 @@
     "action_sequence": [
       "system_control"
     ],
-    "success_count": 15,
+    "success_count": 20,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793311897.4339619
+    "last_used": 1793387945.4427218
   },
   "web_search": {
     "skill_name": "web_search",
@@ -121,11 +121,11 @@
     "action_sequence": [
       "web_search"
     ],
-    "success_count": 24,
+    "success_count": 30,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793289628.5526865
+    "last_used": 1793387945.5608215
   },
   "web_fetch": {
     "skill_name": "web_fetch",
@@ -207,11 +207,11 @@
     "action_sequence": [
       "dialogue"
     ],
-    "success_count": 2817,
+    "success_count": 2861,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793317691.906976
+    "last_used": 1793388007.1450624
   },
   "ffmpeg_transcode": {
     "skill_name": "ffmpeg_transcode",
@@ -274,11 +274,11 @@
     "action_sequence": [
       "close_app"
     ],
-    "success_count": 1,
+    "success_count": 2,
     "failure_count": 1,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301400.2535858
+    "last_used": 1793387349.1382902
   },
   "context_control": {
     "skill_name": "context_control",
@@ -286,13 +286,13 @@
     "action_sequence": [
       "context_control"
     ],
-    "success_count": 6,
+    "success_count": 14,
     "failure_count": 5,
     "common_failure_reasons": [
       "Action handler 'context_control' is recognized by ANN but not yet bound in runtime."
     ],
     "recovery_strategy": "strategy_defect: abort_and_notify",
-    "last_used": 1793311908.6836488
+    "last_used": 1793387920.8161285
   },
   "whatsapp_send": {
     "skill_name": "whatsapp_send",
@@ -365,11 +365,11 @@
     "action_sequence": [
       "system_utility"
     ],
-    "success_count": 15,
+    "success_count": 19,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793291535.934577
+    "last_used": 1793387920.215664
   },
   "whatsapp_draft": {
     "skill_name": "whatsapp_draft",
@@ -389,11 +389,11 @@
     "action_sequence": [
       "clarification"
     ],
-    "success_count": 16,
+    "success_count": 18,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793317711.9659612
+    "last_used": 1793387961.7887108
   },
   "compute_math": {
     "skill_name": "compute_math",
@@ -581,11 +581,11 @@
     "action_sequence": [
       "workflow_script"
     ],
-    "success_count": 8,
+    "success_count": 9,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301402.80655
+    "last_used": 1793387212.1932242
   },
   "play_music": {
     "skill_name": "play_music",
@@ -593,10 +593,22 @@
     "action_sequence": [
       "play_music"
     ],
-    "success_count": 0,
+    "success_count": 12,
     "failure_count": 1,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793311933.1248844
+    "last_used": 1793387920.6926668
+  },
+  "exec_process_kill": {
+    "skill_name": "exec_process_kill",
+    "goal_pattern": "ye process terminate kar do",
+    "action_sequence": [
+      "exec_process_kill"
+    ],
+    "success_count": 4,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793387919.8931246
   }
 }

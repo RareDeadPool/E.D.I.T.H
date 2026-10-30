@@ -1,25 +1,25 @@
 {
-  "version": 5886,
-  "timestamp": 1793317711.9679682,
+  "version": 6174,
+  "timestamp": 1793388061.6683643,
   "session_id": "edith_v5_main",
   "perception": {
-    "current_interpretation": "communication -> send_whatsapp",
+    "current_interpretation": "app_launch -> exec_launch_app",
     "entities": {
-      "APP": "whatsapp"
+      "APP": "chrome"
     },
     "belief_confidence": 1.0,
     "competing_interpretations": [],
     "observed_events": [],
     "inferred_events": [],
     "prior_expectations": {
-      "expected_outcome": true,
-      "calibrated_confidence": 0.713,
-      "action": "send_whatsapp"
+      "expected_outcome": false,
+      "calibrated_confidence": 0.536,
+      "action": "exec_launch_app"
     },
     "detected_contradictions": []
   },
   "goals": {
-    "active_goal": "send a whatsapp message",
+    "active_goal": "bhai chrome kholo jaldi",
     "desired_outcome": null,
     "intermediate_objectives": [],
     "priority": 0.7,
@@ -38,30 +38,30 @@
     "task_complexity": 0.2,
     "unresolved_questions": [],
     "cognitive_load": 0.2,
-    "plan_confidence": 0.713,
-    "prediction_error": 0.0,
-    "error_accumulation": 0.0,
+    "plan_confidence": 0.536,
+    "prediction_error": 1.0,
+    "error_accumulation": 0.51,
     "task_switching_cost": 0.1,
     "inhibition_active": false,
     "deep_reasoning_needed": false
   },
   "momentary_affect": {
-    "valence": 0.5251668593008365,
-    "arousal": 0.4753959021958521,
-    "dominance": 0.5788133103927566,
-    "uncertainty": 0.24103315288850707,
-    "frustration": 1.118397536136847e-59,
-    "engagement": 0.7114210496518749,
-    "social_trust": 0.8147412449176823
+    "valence": 0.39527960332186574,
+    "arousal": 0.72381316525239,
+    "dominance": 0.48832298810149594,
+    "uncertainty": 0.3520299398724433,
+    "frustration": 4.102954263855375e-30,
+    "engagement": 0.6865486903358187,
+    "social_trust": 0.800512693449137
   },
   "baseline_mood": {
-    "valence": 0.42152832720428085,
-    "arousal": 0.4997764525042883,
-    "dominance": 0.6401791265099633,
-    "uncertainty": 0.2279247548449191,
+    "valence": 0.38948020179510556,
+    "arousal": 0.5131521712832049,
+    "dominance": 0.630426621285466,
+    "uncertainty": 0.23239800002981703,
     "frustration": 0.0,
-    "engagement": 0.7325482207142048,
-    "social_trust": 0.8337206231272221
+    "engagement": 0.7532119918683902,
+    "social_trust": 0.822944408785687
   },
   "user_estimate": {
     "detected_user_mood": "operational_neutral",
@@ -69,41 +69,41 @@
     "user_arousal": 0.3,
     "confidence_in_user_estimate": 0.6,
     "perceived_user_goal": null,
-    "communicative_need": "practical_solution",
+    "communicative_need": "collaborative_dialogue",
     "preferred_directness": 0.7,
     "prior_user_attempts": []
   },
   "operational": {
-    "cpu_percent": 38.5,
-    "memory_percent": 59.2,
+    "cpu_percent": 63.5,
+    "memory_percent": 57.7,
     "task_queue_depth": 0,
     "recent_latency_ms": 50.0,
     "retry_count": 0,
     "consecutive_failures": 0,
-    "available_compute_budget": 0.604
+    "available_compute_budget": 0.51
   },
   "in_flow_state": true,
-  "flow_intensity": 0.793,
+  "flow_intensity": 0.692,
   "last_appraisal_trace": {
-    "novelty": 0.2,
+    "novelty": 0.75,
     "goal_relevance": 0.55,
     "goal_congruence": 0.85,
-    "expectation_violation": 0.05,
+    "expectation_violation": 1.0,
     "agency": "user",
     "controllability": 0.3,
     "coping_potential": 0.25,
-    "uncertainty": 0.287,
+    "uncertainty": 0.464,
     "effort_required": 0.4,
     "task_progress": 0.7,
     "social_significance": 0.3,
     "norm_consistency": 1.0,
-    "confidence": 0.713,
+    "confidence": 0.536,
     "provenance_notes": [
       "Task succeeded and was verified closed-loop: highly goal-congruent",
-      "Outcome matched expectation",
+      "Outcome violation: expected success=False, observed success=True",
       "No immediate automated recovery available; requires clarification or user intervention",
       "Neural appraisal bypass/fallback: 'CognitiveState' object has no attribute 'affect'"
     ]
   },
-  "state_update_reason": "Congruence=+0.85, Violation=0.05, Coping=0.25 [neural_gru_fused] -> engaged_flow"
+  "state_update_reason": "Congruence=+0.85, Violation=1.00, Coping=0.25 [neural_gru_fused] -> engaged_flow"
 }

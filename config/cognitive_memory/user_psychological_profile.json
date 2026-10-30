@@ -30,7 +30,7 @@
     "relational_needs": "Values genuine, unfiltered companionship, witty banter, and deep understanding over corporate cheeriness"
   },
   "emotional_state": {
-    "current_mood": "late-night contemplative flow",
+    "current_mood": "vulnerable and processing emotional grief",
     "baseline": "deeply thoughtful, passionate, slightly sleep-deprived, resilient",
     "active_struggles": [
       "Heartbreak healing and lingering emotional processing of past relationship/ex",
@@ -43,54 +43,6 @@
       "Authentic connection and meaningful banter with close people like Sakshi and E.D.I.T.H."
     ],
     "recent_sentiments": [
-      {
-        "timestamp": 1793317672.4908307,
-        "user_text": "I feel distant from my childhood friends because our goals and mindsets are in completely different universes now.",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.5118778,
-        "user_text": "Why do I feel this burning need to build systems that automate and master everything around me?",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.5340366,
-        "user_text": "Why do I feel this burning need to build systems that automate and master everything around me?",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.5550807,
-        "user_text": "Sometimes I wonder if being this intensely ambitious will make it impossible to have a peaceful, simple life.",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.58047,
-        "user_text": "Sometimes I wonder if being this intensely ambitious will make it impossible to have a peaceful, simple life.",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.6021214,
-        "user_text": "I don't just want a normal career, Edith. I want to build technology that outlasts me.",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.6240377,
-        "user_text": "I don't just want a normal career, Edith. I want to build technology that outlasts me.",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
-      {
-        "timestamp": 1793317672.645079,
-        "user_text": "How do I deal with the crushing disappointment when an update breaks right in front of people?",
-        "inferred_mood": "late-night contemplative flow",
-        "tag": "late_night"
-      },
       {
         "timestamp": 1793317672.667627,
         "user_text": "How do I deal with the crushing disappointment when an update breaks right in front of people?",
@@ -222,6 +174,54 @@
         "user_text": "send a whatsapp message",
         "inferred_mood": "late-night contemplative flow",
         "tag": "late_night"
+      },
+      {
+        "timestamp": 1793387318.1700246,
+        "user_text": "i am feeling really overwhelmed with my exams",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387318.9391203,
+        "user_text": "could you please navigate to my documents folder, locate the latest quarterly budget spreadsheet, and prepare a summary ",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387577.5981832,
+        "user_text": "i am feeling really overwhelmed with my exams",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387578.3488736,
+        "user_text": "could you please navigate to my documents folder, locate the latest quarterly budget spreadsheet, and prepare a summary ",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387783.3665714,
+        "user_text": "i am feeling really overwhelmed with my exams",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387784.4036298,
+        "user_text": "could you please navigate to my documents folder, locate the latest quarterly budget spreadsheet, and prepare a summary ",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387919.2965841,
+        "user_text": "i am feeling really overwhelmed with my exams",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793387920.435942,
+        "user_text": "could you please navigate to my documents folder, locate the latest quarterly budget spreadsheet, and prepare a summary ",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
       }
     ]
   },
@@ -235,7 +235,7 @@
       "significance": "A past relationship that left deep emotional impressions; memories still surface late at night, but he recognizes they've outgrown the past.",
       "dynamic": "Processing closure; learning to let go while honoring the lessons.",
       "notes": "Recalls the good days with nostalgia, but logic knows she hasn't changed.",
-      "last_reflection_timestamp": 1793317672.1389422
+      "last_reflection_timestamp": 1793387920.435942
     }
   },
   "habits_and_quirks": {
@@ -258,6 +258,16 @@
     {
       "timestamp": 1793317660.1180348,
       "summary": "User engaged: 'My girlfriend broke up with me yesterday and my chest literally aches....'",
+      "mood": "vulnerable and processing emotional grief"
+    },
+    {
+      "timestamp": 1793387212.217557,
+      "summary": "User engaged: 'Could you please open Visual Studio Code for me?...'",
+      "mood": "late-night contemplative flow"
+    },
+    {
+      "timestamp": 1793387905.8661418,
+      "summary": "User engaged: 'make the volume a bit low...'",
       "mood": "vulnerable and processing emotional grief"
     }
   ]

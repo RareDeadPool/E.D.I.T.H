@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": "2026-10-30T19:06:52Z",
+    "outcome": "correct",
+    "notes": "Verified via diagnostic test",
+    "query": "Could you please open Visual Studio Code for me?",
+    "intent": "automation_workflow",
+    "entities": {
+      "APP": "visual studio code"
+    },
+    "action": "exec_workflow_script",
+    "confidence": 0.9996,
+    "tool": "workflow_script",
+    "unknown_token_percentage": 10.0,
+    "latency_ms": 221.85
+  }
+]
