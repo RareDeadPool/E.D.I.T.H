@@ -1,0 +1,31 @@
+{
+  "total_samples": 9602,
+  "train_samples": 8641,
+  "val_samples": 961,
+  "categories": {
+    "dolly_brainstorming": 1311,
+    "how_are_you_extended": 320,
+    "dolly_creative_writing": 303,
+    "wikitext_prose": 1716,
+    "dolly_open_qa": 2911,
+    "dolly_general_qa": 1315,
+    "stt_mishear_extended": 240,
+    "how_are_you": 40,
+    "curiosity_smalltalk_extended": 192,
+    "hinglish_chat_extended": 192,
+    "witty_banter_extended": 192,
+    "capability_limits_extended": 240,
+    "self_reference_memory_extended": 192,
+    "third_person_distress_extended": 144,
+    "hinglish_chat": 24,
+    "witty_banter": 24,
+    "first_person_venting": 15,
+    "first_person_venting_extended": 90,
+    "third_person_distress": 24,
+    "stt_mishear": 30,
+    "curiosity_smalltalk": 24,
+    "dialogue_repair": 9,
+    "capability_limits": 30,
+    "self_reference_memory": 24
+  }
+}

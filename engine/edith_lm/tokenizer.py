@@ -99,6 +99,9 @@ class EdithByteBPETokenizer:
     def vocab_size(self) -> int:
         return len(self.encoder)
 
+    def __len__(self) -> int:
+        return self.vocab_size
+
     @property
     def pad_id(self) -> int:
         return self.special_token_to_id["<pad>"]
@@ -389,6 +392,14 @@ class EdithByteBPETokenizer:
                 pair = (parts[0], parts[1])
                 self.merges.append(pair)
                 self.bpe_ranks[pair] = idx
+
+    @classmethod
+    def from_file(cls, filepath: str) -> "EdithByteBPETokenizer":
+        """Instantiates and loads an EdithByteBPETokenizer from a JSON file."""
+        tok = cls()
+        tok.load(filepath)
+        return tok
+
 
 
 def build_default_edith_tokenizer(corpus_texts: Optional[List[str]] = None, save_path: Optional[str] = None) -> EdithByteBPETokenizer:

@@ -71,8 +71,10 @@ models/pocket_tts/*.safetensors
 
 # Heavy local LLM weights (>100MB)
 models/llm/*.gguf
+models/checkpoints/edith_lm_v14/*.pt
 
 # Local SQLite databases
 *.db
+
 
 
