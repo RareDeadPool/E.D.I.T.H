@@ -658,6 +658,7 @@ class EdithBrain:
         tokenizer_path: Optional[str] = None,
         enable_execution: bool = True
     ):
+        self.enable_execution: bool = enable_execution
         self.engine = EdithInferenceEngine(checkpoint_path=checkpoint_path, tokenizer_path=tokenizer_path)
         self.executor = EdithTaskExecutor() if (enable_execution and EdithTaskExecutor is not None) else None
         self.pending_suggestions: List[Dict[str, str]] = []
