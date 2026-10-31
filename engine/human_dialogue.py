@@ -228,6 +228,13 @@ class EdithDialogueEngine:
             r"\btell\s+(?:me\s+)?(?:another\s+)?(?:joke|pun)\b",
             r"\b(?:dark|sarcastic|observational|standup|developer|coding|tech|relatable|anti)\s+joke\b",
             r"\bcrack\s+(?:a\s+)?joke\b",
+            r"\b(?:help|tell)\s+me\s+a\s+joke\b",
+            r"\b(?:friend|he|she|they)\s+(?:is|\'s)\s+(?:very\s+|really\s+|so\s+)?sad\b",
+            r"\bmy\s+friend\s+is\s+(?:very\s+)?sad\b",
+            r"\b(?:looking\s+for\s+jobs?|trying\s+(?:from|for)\s+\d+\s+years|hasn\'?t\s+got\s+one|lost\s+(?:his|her|my)\s+job|job\s+search)\b",
+            r"\b(?:i\s+have\s+a\s+friend\s+named|friend\s+named|meet\s+my\s+friend)\b",
+            r"\b(?:what\s+happens\s+if\s+i|explain\s+what\s+process\s+termination\s+means|how\s+does\s+task\s+management\s+work)\b",
+            r"\b(?:do\s+not\s+close|don\'?t\s+close|do\s+not\s+terminate|don\'?t\s+terminate)\b",
         ]):
             return True
 
@@ -399,6 +406,11 @@ class EdithDialogueEngine:
         if empathy_res:
             return self._humanize_result(empathy_res)
 
+        # 7b. Social Introductions & People Mentioned
+        friend_res = self._check_friend_introduction(q_raw, q)
+        if friend_res:
+            return self._humanize_result(friend_res)
+
         # 8. Humor & Small Talk (Only when user is not in emotional distress)
         if self._is_humor_or_small_talk(q):
             return self._humanize_result(self._respond_humor_or_small_talk(q))
@@ -419,7 +431,7 @@ class EdithDialogueEngine:
             return self._humanize_result(advice_res)
 
         # Fallback intelligent, human response
-        return self._humanize_result(self._respond_general_human(q_raw))
+        return self._humanize_result(self._respond_general_human(q_raw, context=context))
 
     def _humanize_result(self, result: Dict[str, Any]) -> Dict[str, Any]:
         """Wrap response through personality engine for warmth and mood-awareness."""
@@ -716,10 +728,15 @@ class EdithDialogueEngine:
             elif any(w in q for w in ["observational", "daily"]):
                 cat = "observational"
 
-            if self.personality:
-                msg = self.personality.tell_joke(category=cat)
-            else:
-                msg = "Debugging is literally being the detective in a crime movie where YOU are also the murderer. 🔍"
+            try:
+                from engine.generative_reasoner import get_generative_reasoner
+                reasoner = get_generative_reasoner()
+                msg = reasoner.generate_humour(style=cat)
+            except Exception:
+                if self.personality:
+                    msg = self.personality.tell_joke(category=cat)
+                else:
+                    msg = "Debugging is literally being the detective in a crime movie where YOU are also the murderer. 🔍"
         elif "jarvis" in q:
             responses = [
                 f"J.A.R.V.I.S. is a legend, no doubt. But between you and me, {name}? I think I've got a few tricks he doesn't. 😏 Modern neural networks, baby.",
@@ -1047,12 +1064,52 @@ class EdithDialogueEngine:
 
         return None
 
+    def _check_friend_introduction(self, q_raw: str, q: str) -> Optional[Dict[str, Any]]:
+        m_friend = re.search(r"\b(?:friend\s+named|friend\s+is|named|call\s+him|call\s+her)\s+([A-Za-z]+)\b", q)
+        if "friend named" in q or ("friend" in q and "named" in q) or (m_friend and "friend" in q):
+            try:
+                from engine.generative_reasoner import get_generative_reasoner
+                reasoner = get_generative_reasoner()
+                msg = reasoner.generate(q_raw, mode="friend_intro")["text"]
+                return {
+                    "can_execute": True,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"topic": "friend_intro"}
+                }
+            except Exception:
+                name = m_friend.group(1).capitalize() if m_friend else "your friend"
+                return {
+                    "can_execute": True,
+                    "message": f"{name} sounds like someone great to have in your corner! How long have you two known each other?",
+                    "handler": "dialogue",
+                    "parameters": {"topic": "friend_intro"}
+                }
+        return None
+
     # -------------------------------------------------------------------------
     # Emotional Intelligence & Human Empathy
     # -------------------------------------------------------------------------
 
     def _check_empathy(self, q: str) -> Optional[Dict[str, Any]]:
         name = self.personality._get_name() if self.personality else self.USER_NAME
+
+        # 1. Job search / Career struggles / Prolonged unemployment
+        if any(w in q for w in ["looking for jobs", "job search", "unemployed", "hasn't got a job", "haven't got a job", "3 years", "trying from"]):
+            try:
+                from engine.generative_reasoner import get_generative_reasoner
+                reasoner = get_generative_reasoner()
+                msg = reasoner.generate_empathy(q)
+                self.last_problem_category = "career_support"
+                self.last_dialogue_topic = "job_search_struggles"
+                return {
+                    "can_execute": True,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"topic": "job_search_struggles"}
+                }
+            except Exception:
+                pass
 
         # Sadness, Low Spirits, Heartache & Emotional Pain
         sadness_keywords = [
@@ -1063,6 +1120,20 @@ class EdithDialogueEngine:
             "in a bad mood", "in a terrible mood", "shitty day", "crying", "in tears", "hurting", "heart hurts"
         ]
         if any(w in q for w in sadness_keywords):
+            try:
+                from engine.generative_reasoner import get_generative_reasoner
+                reasoner = get_generative_reasoner()
+                msg = reasoner.generate_empathy(q)
+                self.last_problem_category = "stress_relief"
+                self.last_dialogue_topic = "empathy_sad"
+                return {
+                    "can_execute": True,
+                    "message": msg,
+                    "handler": "dialogue",
+                    "parameters": {"topic": "empathy_sad"}
+                }
+            except Exception:
+                pass
             if self.personality:
                 msg = self.personality.give_emotional_support("sad")
             else:
@@ -1668,7 +1739,21 @@ class EdithDialogueEngine:
             "parameters": {}
         }
 
-    def _respond_general_human(self, q_raw: str) -> Dict[str, Any]:
+    def _respond_general_human(self, q_raw: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        try:
+            from engine.generative_reasoner import get_generative_reasoner
+            reasoner = get_generative_reasoner()
+            gen_res = reasoner.generate(q_raw, context=context)
+            if gen_res and gen_res.get("text"):
+                return {
+                    "can_execute": True,
+                    "message": gen_res["text"],
+                    "handler": "dialogue",
+                    "parameters": {"query": q_raw, "backend": gen_res.get("backend", "local_llm")}
+                }
+        except Exception:
+            pass
+
         name = self.personality._get_name() if self.personality else self.USER_NAME
 
         responses = [

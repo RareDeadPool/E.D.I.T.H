@@ -686,6 +686,15 @@ class EdithPersonality:
         If no category is specified, picks dynamically across all genres.
         Guarantees no repeats by tracking joke history in persistent state.
         """
+        # V12 Local Generative Reasoner Integration for fresh, non-repetitive humor
+        try:
+            from engine.generative_reasoner import get_generative_reasoner
+            reasoner = get_generative_reasoner()
+            if reasoner.is_available():
+                return reasoner.generate_humour(style=category)
+        except Exception:
+            pass
+
         name = self._get_name()
 
         # 1. Gather jokes matching category (or all categories)

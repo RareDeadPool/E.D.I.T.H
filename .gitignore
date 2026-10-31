@@ -68,3 +68,7 @@ config/diagnostics/
 
 # Heavy local TTS weights (>100MB)
 models/pocket_tts/*.safetensors
+
+# Heavy local LLM weights (>100MB)
+models/llm/*.gguf
+
