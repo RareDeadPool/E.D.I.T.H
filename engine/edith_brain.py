@@ -1583,8 +1583,10 @@ class EdithBrain:
                     return res
 
         # Conversational dialogue & cognitive scenarios check
+        from engine.safety_routing_guard import ActionSafetyAndCompatibilityGuard
         is_conv_or_dialogue = bool(
-            self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(cmd_clean.lower())
+            ActionSafetyAndCompatibilityGuard.is_conversational_statement(cmd_clean) or
+            (self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(cmd_clean.lower()))
         )
 
         # Multi-turn context and reference resolution (anaphora, ordinals, pronouns, alternatives)
@@ -1630,8 +1632,10 @@ class EdithBrain:
         result = self.engine.predict(user_command)
 
         # Structured Understanding Normalization & Validation
+        from engine.safety_routing_guard import ActionSafetyAndCompatibilityGuard
         is_conv_or_dialogue = bool(
-            self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(user_command.lower())
+            ActionSafetyAndCompatibilityGuard.is_conversational_statement(user_command) or
+            (self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(user_command.lower()))
         )
         structured = None
         if self.normalizer:
@@ -2050,6 +2054,10 @@ class EdithBrain:
             if any(low.startswith(w) for w in ["make ", "turn ", "set ", "adjust ", "put "]):
                 return None
 
+        # Reject running processes, system tasks, and process inspection queries
+        if any(k in low for k in ["running processes", "processes", "process list", "running apps", "tasks"]):
+            return None
+
         subaction = None
         verb_pattern = None
 
@@ -2347,17 +2355,21 @@ class EdithBrain:
             }
 
         # 0. V7 Multitasking & Task Manager gate
-        is_task_list = any(p in cmd_lower for p in ["list tasks", "active tasks", "background tasks", "list running tasks", "show tasks"])
+        is_task_list = any(p in cmd_lower for p in [
+            "list tasks", "active tasks", "background tasks", "list running tasks", "show tasks",
+            "show me the running processes", "show running processes", "list running processes",
+            "running processes", "running apps", "active processes", "show processes", "list processes"
+        ])
         is_task_cancel = any(p in cmd_lower for p in ["cancel task", "abort task", "stop task", "terminate task"])
         if is_task_list:
-            prediction["intent"] = "task_manager"
-            prediction["action"] = "task_list"
+            prediction["intent"] = "system_processes"
+            prediction["action"] = "list_apps"
             prediction["operational_confidence"] = 1.0
             return {
                 "can_execute": True,
-                "message": "Retrieving active and background task states...",
-                "handler": "task_list",
-                "parameters": {}
+                "message": "Inspecting running processes and active tasks...",
+                "handler": "inspect_processes",
+                "parameters": {"command": cmd_text}
             }
         elif is_task_cancel:
             prediction["intent"] = "task_manager"
@@ -3704,9 +3716,33 @@ class EdithBrain:
             }
         elif action == "exec_process_kill":
             pid = entities.get("PID", "")
+            cmd_text = prediction.get("query", "")
+            
+            # Precondition check: valid PID or executable target required!
+            if not pid or not (str(pid).isdigit() or str(pid).endswith(".exe")):
+                from engine.safety_routing_guard import ActionSafetyAndCompatibilityGuard
+                if ActionSafetyAndCompatibilityGuard.is_conversational_statement(cmd_text):
+                    from engine.generative_reasoner import get_generative_reasoner
+                    reasoner = get_generative_reasoner()
+                    msg = reasoner.generate(cmd_text)["text"]
+                    prediction["intent"] = "chitchat"
+                    prediction["action"] = "respond_dialogue"
+                    return {
+                        "can_execute": False,
+                        "message": msg,
+                        "handler": "dialogue",
+                        "parameters": {"query": cmd_text}
+                    }
+                return {
+                    "can_execute": False,
+                    "needs_confirmation": True,
+                    "message": "Please specify the Process ID (PID) or application name to terminate.",
+                    "handler": "kill_process",
+                    "parameters": {"pid": pid}
+                }
             return {
                 "can_execute": True,
-                "message": f"Terminating process with PID {pid}." if pid else "Identifying target process to terminate.",
+                "message": f"Terminating process with PID {pid}.",
                 "handler": "kill_process",
                 "parameters": {"pid": pid}
             }

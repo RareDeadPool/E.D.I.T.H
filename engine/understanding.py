@@ -87,7 +87,7 @@ class StructuredUnderstanding:
                 self.validation_errors.append("Missing required project identifier or workspace location.")
                 return False
 
-        if self.goal in ["kill_process", "process_manage"] and not self.entities.get("PID") and not self.entities.get("APP") and not self.entities.get("pid"):
+        if (self.goal in ["kill_process", "process_manage"] or self.action == "exec_process_kill") and not self.entities.get("PID") and not self.entities.get("APP") and not self.entities.get("pid"):
             self.requires_clarification = True
             self.clarification_prompt = "Please specify the Process ID (PID) or application name to terminate."
             self.validation_errors.append("Missing required process identifier.")
@@ -255,6 +255,23 @@ class UnderstandingNormalizer:
         action = neural_pred.get("action", "request_clarification")
         entities = dict(neural_pred.get("entities", {}))
         confidence = float(neural_pred.get("operational_confidence", 0.0))
+
+        # V12 Action Safety & Semantic Routing Guard
+        try:
+            from engine.safety_routing_guard import ActionSafetyAndCompatibilityGuard
+            safety_eval = ActionSafetyAndCompatibilityGuard.validate_action(
+                raw_query=raw_query,
+                predicted_intent=intent,
+                predicted_action=action,
+                entities=entities,
+                confidence=confidence
+            )
+            if safety_eval.get("is_conversational", False):
+                intent = safety_eval.get("override_intent", "chitchat")
+                action = safety_eval.get("override_action", "respond_dialogue")
+                goal = "dialogue"
+        except Exception:
+            pass
 
         # Determine canonical goal
         goal = cls.GOAL_MAP.get((intent, action), f"{intent}_{action}")

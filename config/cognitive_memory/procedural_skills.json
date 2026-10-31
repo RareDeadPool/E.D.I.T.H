@@ -5,11 +5,11 @@
     "action_sequence": [
       "launch_app"
     ],
-    "success_count": 163,
+    "success_count": 167,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793433600.7588115
+    "last_used": 1793437752.711758
   },
   "exec_workflow_script": {
     "skill_name": "exec_workflow_script",
@@ -17,11 +17,11 @@
     "action_sequence": [
       "exec_workflow_script"
     ],
-    "success_count": 75,
+    "success_count": 76,
     "failure_count": 1,
     "common_failure_reasons": [],
     "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793434550.756326
+    "last_used": 1793437180.9547892
   },
   "safety_gate": {
     "skill_name": "safety_gate",
@@ -41,7 +41,7 @@
     "action_sequence": [
       "file_operation"
     ],
-    "success_count": 64,
+    "success_count": 66,
     "failure_count": 16,
     "common_failure_reasons": [
       "Found 5 matching files:\n  1. resume_latest.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  2. resume_editable.docx (in documents) - Filename matches 'resume', Format matches '.docx'\n  3. resme_backup.txt (in documents) - Typo/fuzzy match on 'resume' (90%), Format matches '.txt'\n  4. resume_v1.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  5. project_notes.txt (in documents) - Format matches '.txt', Recently modified (1 min ago)\nSay 'open the first one' or specify which.",
@@ -54,7 +54,7 @@
       "Could not find '' to open. Confirmed path does not exist on disk."
     ],
     "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793434193.1160226
+    "last_used": 1793437400.5218503
   },
   "draft_content": {
     "skill_name": "draft_content",
@@ -122,11 +122,11 @@
     "action_sequence": [
       "web_search"
     ],
-    "success_count": 35,
+    "success_count": 39,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793433415.3388014
+    "last_used": 1793437752.387398
   },
   "web_fetch": {
     "skill_name": "web_fetch",
@@ -208,11 +208,11 @@
     "action_sequence": [
       "dialogue"
     ],
-    "success_count": 3141,
+    "success_count": 3860,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793434683.26518
+    "last_used": 1793437803.9796495
   },
   "ffmpeg_transcode": {
     "skill_name": "ffmpeg_transcode",
@@ -275,11 +275,11 @@
     "action_sequence": [
       "close_app"
     ],
-    "success_count": 2,
+    "success_count": 6,
     "failure_count": 1,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387349.1382902
+    "last_used": 1793437752.7428372
   },
   "context_control": {
     "skill_name": "context_control",
@@ -620,12 +620,36 @@
     "action_sequence": [
       "kill_process"
     ],
-    "success_count": 0,
+    "success_count": 5,
     "failure_count": 2,
     "common_failure_reasons": [
       "No PID provided."
     ],
     "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793434782.545689
+    "last_used": 1793437752.9094143
+  },
+  "request_clarification": {
+    "skill_name": "request_clarification",
+    "goal_pattern": "My friend is very sad.",
+    "action_sequence": [
+      "request_clarification"
+    ],
+    "success_count": 1,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793435832.4756215
+  },
+  "inspect_processes": {
+    "skill_name": "inspect_processes",
+    "goal_pattern": "Show me the running processes.",
+    "action_sequence": [
+      "inspect_processes"
+    ],
+    "success_count": 2,
+    "failure_count": 0,
+    "common_failure_reasons": [],
+    "recovery_strategy": null,
+    "last_used": 1793437752.873842
   }
 }

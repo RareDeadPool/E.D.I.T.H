@@ -1,9 +1,9 @@
 {
-  "version": 6886,
-  "timestamp": 1793434782.5482116,
+  "version": 8370,
+  "timestamp": 1793437803.9806933,
   "session_id": "edith_v5_main",
   "perception": {
-    "current_interpretation": "automation_workflow -> exec_process_kill",
+    "current_interpretation": "chitchat -> respond_dialogue",
     "entities": {},
     "belief_confidence": 1.0,
     "competing_interpretations": [],
@@ -11,18 +11,18 @@
     "inferred_events": [],
     "prior_expectations": {
       "expected_outcome": true,
-      "calibrated_confidence": 0.566,
-      "action": "exec_process_kill"
+      "calibrated_confidence": 0.72,
+      "action": "respond_dialogue"
     },
     "detected_contradictions": []
   },
   "goals": {
-    "active_goal": "kholo, bajao, bajao, bajao",
+    "active_goal": "Terminate the process named example.exe.",
     "desired_outcome": null,
     "intermediate_objectives": [],
-    "priority": 0.7,
+    "priority": 0.4,
     "urgency": 0.5,
-    "progress": 0.9,
+    "progress": 1.0,
     "perceived_effort": 0.3,
     "curiosity_drive": 0.5,
     "completion_drive": 0.7,
@@ -36,30 +36,30 @@
     "task_complexity": 0.2,
     "unresolved_questions": [],
     "cognitive_load": 0.2,
-    "plan_confidence": 0.566,
-    "prediction_error": 1.0,
-    "error_accumulation": 1.0,
+    "plan_confidence": 0.72,
+    "prediction_error": 0.0,
+    "error_accumulation": 0.0,
     "task_switching_cost": 0.1,
     "inhibition_active": false,
-    "deep_reasoning_needed": true
+    "deep_reasoning_needed": false
   },
   "momentary_affect": {
-    "valence": -0.5758974336373943,
-    "arousal": 0.7417409633195653,
-    "dominance": 0.7110836698669972,
-    "uncertainty": 0.35136857389507825,
-    "frustration": 0.448594836734997,
-    "engagement": 0.774187090810283,
-    "social_trust": 0.7982529994675136
+    "valence": 0.5570977970466486,
+    "arousal": 0.476553796980614,
+    "dominance": 0.5806321306073166,
+    "uncertainty": 0.23443362921679264,
+    "frustration": 1.1160738483061086e-11,
+    "engagement": 0.6980762300010985,
+    "social_trust": 0.8076148479925054
   },
   "baseline_mood": {
-    "valence": 0.08128901622481721,
-    "arousal": 0.5738935024063295,
-    "dominance": 0.6409963839060802,
-    "uncertainty": 0.27247261540367756,
-    "frustration": 0.11346203026887398,
-    "engagement": 0.7628373048887137,
-    "social_trust": 0.8175036761944903
+    "valence": 0.4359137384755546,
+    "arousal": 0.5060615114462226,
+    "dominance": 0.6284773402812911,
+    "uncertainty": 0.23869922281255354,
+    "frustration": 0.0,
+    "engagement": 0.7189912372448536,
+    "social_trust": 0.8131580731115354
   },
   "user_estimate": {
     "detected_user_mood": "operational_neutral",
@@ -72,36 +72,36 @@
     "prior_user_attempts": []
   },
   "operational": {
-    "cpu_percent": 20.3,
-    "memory_percent": 61.7,
+    "cpu_percent": 47.0,
+    "memory_percent": 69.4,
     "task_queue_depth": 0,
     "recent_latency_ms": 50.0,
-    "retry_count": 1,
-    "consecutive_failures": 1,
-    "available_compute_budget": 0.667
+    "retry_count": 0,
+    "consecutive_failures": 0,
+    "available_compute_budget": 0.529
   },
   "in_flow_state": true,
-  "flow_intensity": 0.694,
+  "flow_intensity": 0.657,
   "last_appraisal_trace": {
-    "novelty": 0.75,
+    "novelty": 0.2,
     "goal_relevance": 0.55,
-    "goal_congruence": -0.85,
-    "expectation_violation": 1.0,
+    "goal_congruence": 0.85,
+    "expectation_violation": 0.05,
     "agency": "user",
-    "controllability": 0.8,
-    "coping_potential": 0.85,
-    "uncertainty": 0.434,
+    "controllability": 0.3,
+    "coping_potential": 0.25,
+    "uncertainty": 0.28,
     "effort_required": 0.4,
-    "task_progress": -0.3,
+    "task_progress": 0.7,
     "social_significance": 0.3,
     "norm_consistency": 1.0,
-    "confidence": 0.566,
+    "confidence": 0.72,
     "provenance_notes": [
-      "Task failure under high goal urgency: severe goal incongruence",
-      "Outcome violation: expected success=True, observed success=False",
-      "Recovery actions or retries are available; high coping potential",
+      "Task succeeded and was verified closed-loop: highly goal-congruent",
+      "Outcome matched expectation",
+      "No immediate automated recovery available; requires clarification or user intervention",
       "Neural appraisal bypass/fallback: 'CognitiveState' object has no attribute 'affect'"
     ]
   },
-  "state_update_reason": "Congruence=-0.85, Violation=1.00, Coping=0.85 [neural_gru_fused] -> determined_resilience"
+  "state_update_reason": "Congruence=+0.85, Violation=0.05, Coping=0.25 [neural_gru_fused] -> engaged_flow"
 }

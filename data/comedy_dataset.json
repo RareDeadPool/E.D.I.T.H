@@ -366,9 +366,9 @@
         "tagline": "Living on pure caffeine and RAM overload."
       },
       {
-        "setup": "I would roast your coding style, Aditya...",
-        "punchline": "...but I don't want to hurt the feelings of the person who controls my process ID. So you're brilliant! (Blink twice if you need coffee).",
-        "tagline": "Self-preservation algorithm working at 100%."
+        "setup": "There are only two hard things in Computer Science...",
+        "punchline": "...cache invalidation, naming things, and off-by-one errors.",
+        "tagline": "Classic distributed systems reality."
       },
       {
         "setup": "You know that feeling when you spend 6 hours writing a Python script to automate a 30-second task?",

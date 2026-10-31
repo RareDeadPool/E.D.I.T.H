@@ -30,7 +30,7 @@
     "relational_needs": "Values genuine, unfiltered companionship, witty banter, and deep understanding over corporate cheeriness"
   },
   "emotional_state": {
-    "current_mood": "vulnerable and processing emotional grief",
+    "current_mood": "carrying high cognitive stress",
     "baseline": "deeply thoughtful, passionate, slightly sleep-deprived, resilient",
     "active_struggles": [
       "Heartbreak healing and lingering emotional processing of past relationship/ex",
@@ -44,184 +44,184 @@
     ],
     "recent_sentiments": [
       {
-        "timestamp": 1793433394.7320719,
-        "user_text": "I have to manually copy data across 50 spreadsheets and it's mind-numbing.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.7500646,
-        "user_text": "I spend 12 hours coding every day and I haven't gone outside or exercised in 2 weeks.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.7720594,
-        "user_text": "I spend 12 hours coding every day and I haven't gone outside or exercised in 2 weeks.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.789061,
-        "user_text": "The initial excitement of my side project wore off and now finishing it feels like a heavy chore.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.809052,
-        "user_text": "The initial excitement of my side project wore off and now finishing it feels like a heavy chore.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.832617,
-        "user_text": "An unexpected car repair drained my savings and I have 2 weeks until payday.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.8541338,
-        "user_text": "An unexpected car repair drained my savings and I have 2 weeks until payday.",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.9171157,
-        "user_text": "How do I politely email my professor or manager asking for a deadline extension?",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433394.9374762,
-        "user_text": "How do I politely email my professor or manager asking for a deadline extension?",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793433395.046824,
-        "user_text": "I used to be fit but I haven't worked out in a year and going back to the gym feels intimidating.",
-        "inferred_mood": "accomplished, energized, and in flow",
-        "tag": "triumph"
-      },
-      {
-        "timestamp": 1793433395.0718808,
-        "user_text": "I used to be fit but I haven't worked out in a year and going back to the gym feels intimidating.",
-        "inferred_mood": "accomplished, energized, and in flow",
-        "tag": "triumph"
-      },
-      {
-        "timestamp": 1793433395.2121968,
-        "user_text": "I finally solved a memory leak bug that took me 4 days, but nobody on my team noticed.",
-        "inferred_mood": "accomplished, energized, and in flow",
-        "tag": "triumph"
-      },
-      {
-        "timestamp": 1793433395.2321901,
-        "user_text": "I finally solved a memory leak bug that took me 4 days, but nobody on my team noticed.",
-        "inferred_mood": "accomplished, energized, and in flow",
-        "tag": "triumph"
-      },
-      {
-        "timestamp": 1793433395.5974624,
-        "user_text": "I'm suffering from severe dating app burnout, it feels like an endless shallow interview.",
-        "inferred_mood": "physically drained and needing rest",
-        "tag": "fatigue"
-      },
-      {
-        "timestamp": 1793433395.6280344,
-        "user_text": "I'm suffering from severe dating app burnout, it feels like an endless shallow interview.",
-        "inferred_mood": "physically drained and needing rest",
-        "tag": "fatigue"
-      },
-      {
-        "timestamp": 1793433395.7427778,
+        "timestamp": 1793437614.4424515,
         "user_text": "She came back with a late-night 'I miss you' text after disappearing for 3 months. What do I do?",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433395.7627733,
-        "user_text": "She came back with a late-night 'I miss you' text after disappearing for 3 months. What do I do?",
+        "timestamp": 1793437614.8339367,
+        "user_text": "I accidentally pushed an unindexed full table scan query that spiked database CPU to 100%.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433395.9445863,
+        "timestamp": 1793437614.8965402,
+        "user_text": "I accidentally pushed an unindexed full table scan query that spiked database CPU to 100%.",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.1268108,
         "user_text": "Do you ever feel lonely inside this machine, Edith, or are you just simulating conversation?",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433395.9657137,
+        "timestamp": 1793437615.1496253,
         "user_text": "Do you ever feel lonely inside this machine, Edith, or are you just simulating conversation?",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433396.2304733,
+        "timestamp": 1793437615.2592797,
+        "user_text": "Camus said we must imagine Sisyphus happy. Is continuous software development our rolling boulder?",
+        "inferred_mood": "accomplished, energized, and in flow",
+        "tag": "triumph"
+      },
+      {
+        "timestamp": 1793437615.2819383,
+        "user_text": "Camus said we must imagine Sisyphus happy. Is continuous software development our rolling boulder?",
+        "inferred_mood": "accomplished, energized, and in flow",
+        "tag": "triumph"
+      },
+      {
+        "timestamp": 1793437615.4728272,
+        "user_text": "If you could experience one physical human sensation for five minutes, what would you choose?",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.4959881,
+        "user_text": "If you could experience one physical human sensation for five minutes, what would you choose?",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.5171356,
+        "user_text": "Does true altruism exist, or is every selfless action motivated by subtle dopamine and self-image?",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.539423,
+        "user_text": "Does true altruism exist, or is every selfless action motivated by subtle dopamine and self-image?",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.695153,
+        "user_text": "I've been feeling emotionally numb for weeks — neither sad nor happy, just flatlining.",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.7177083,
+        "user_text": "I've been feeling emotionally numb for weeks — neither sad nor happy, just flatlining.",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437615.738718,
+        "user_text": "I have a toxic perfectionist inner critic that tells me whatever I build is garbage.",
+        "inferred_mood": "frustrated and demanding perfection",
+        "tag": "frustration"
+      },
+      {
+        "timestamp": 1793437615.7594297,
+        "user_text": "I have a toxic perfectionist inner critic that tells me whatever I build is garbage.",
+        "inferred_mood": "frustrated and demanding perfection",
+        "tag": "frustration"
+      },
+      {
+        "timestamp": 1793437616.0326924,
         "user_text": "My co-founder wants to pivot our entire startup product while I think we just need to execute better.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433396.2544665,
+        "timestamp": 1793437616.053052,
         "user_text": "My co-founder wants to pivot our entire startup product while I think we just need to execute better.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433396.4374616,
+        "timestamp": 1793437616.5485811,
+        "user_text": "I experience extreme hyperfocus where I forget to eat or drink for 10 hours, followed by a 2-day crash.",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437616.570118,
+        "user_text": "I experience extreme hyperfocus where I forget to eat or drink for 10 hours, followed by a 2-day crash.",
+        "inferred_mood": "vulnerable and processing emotional grief",
+        "tag": "heartache"
+      },
+      {
+        "timestamp": 1793437616.587716,
+        "user_text": "How do I organize my daily tasks when todo lists just overwhelm me and make me anxious?",
+        "inferred_mood": "carrying high cognitive stress",
+        "tag": "stress"
+      },
+      {
+        "timestamp": 1793437616.6090562,
+        "user_text": "How do I organize my daily tasks when todo lists just overwhelm me and make me anxious?",
+        "inferred_mood": "carrying high cognitive stress",
+        "tag": "stress"
+      },
+      {
+        "timestamp": 1793437616.8701031,
         "user_text": "It's 4:30 AM, my eyes hurt, but I can't pull myself away because the logic is finally clicking.",
         "inferred_mood": "accomplished, energized, and in flow",
         "tag": "triumph"
       },
       {
-        "timestamp": 1793433396.4595757,
+        "timestamp": 1793437616.8916643,
         "user_text": "It's 4:30 AM, my eyes hurt, but I can't pull myself away because the logic is finally clicking.",
         "inferred_mood": "accomplished, energized, and in flow",
         "tag": "triumph"
       },
       {
-        "timestamp": 1793433475.6294558,
-        "user_text": "Can you explain what Spotify does?",
+        "timestamp": 1793437617.3386047,
+        "user_text": "I'm tired of playing small to make people around me feel comfortable.",
+        "inferred_mood": "physically drained and needing rest",
+        "tag": "fatigue"
+      },
+      {
+        "timestamp": 1793437617.3589728,
+        "user_text": "I'm tired of playing small to make people around me feel comfortable.",
+        "inferred_mood": "physically drained and needing rest",
+        "tag": "fatigue"
+      },
+      {
+        "timestamp": 1793437750.954476,
+        "user_text": "He's very sad.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433475.9970076,
-        "user_text": "I'm stressed about my exam.",
+        "timestamp": 1793437752.194266,
+        "user_text": "My friend is very sad.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433477.385429,
-        "user_text": "Can you explain what Spotify does?",
+        "timestamp": 1793437752.338837,
+        "user_text": "Explain what process termination means.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793433477.868018,
-        "user_text": "I'm stressed about my exam.",
+        "timestamp": 1793437752.9249969,
+        "user_text": "Terminate the process named example.exe.",
         "inferred_mood": "vulnerable and processing emotional grief",
         "tag": "heartache"
       },
       {
-        "timestamp": 1793434252.7065032,
-        "user_text": "send hi to mexican coke",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793434657.187984,
-        "user_text": "My friend is looking for jobs, he's trying from 3 years but he hasn't got one, he's very sad",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
-      },
-      {
-        "timestamp": 1793434669.1551003,
-        "user_text": "My friend is very sad",
-        "inferred_mood": "vulnerable and processing emotional grief",
-        "tag": "heartache"
+        "timestamp": 1793437786.8262734,
+        "user_text": "I feel really stressed today with all this work",
+        "inferred_mood": "carrying high cognitive stress",
+        "tag": "stress"
       }
     ]
   },
@@ -237,7 +237,7 @@
       "significance": "A past relationship that left deep emotional impressions; memories still surface late at night, but he recognizes they've outgrown the past.",
       "dynamic": "Processing closure; learning to let go while honoring the lessons.",
       "notes": "Recalls the good days with nostalgia, but logic knows she hasn't changed.",
-      "last_reflection_timestamp": 1793434252.7065032
+      "last_reflection_timestamp": 1793437752.9249969
     }
   },
   "habits_and_quirks": {
@@ -285,6 +285,21 @@
     {
       "timestamp": 1793434782.5672557,
       "summary": "User engaged: 'kholo, bajao, bajao, bajao...'",
+      "mood": "vulnerable and processing emotional grief"
+    },
+    {
+      "timestamp": 1793435831.5829518,
+      "summary": "User engaged: 'Come on, help me a joke....'",
+      "mood": "vulnerable and processing emotional grief"
+    },
+    {
+      "timestamp": 1793437016.242912,
+      "summary": "User engaged: 'Come on, help me a joke....'",
+      "mood": "vulnerable and processing emotional grief"
+    },
+    {
+      "timestamp": 1793437616.2500033,
+      "summary": "User engaged: 'My manager gave me a mediocre performance review based on subjective vibes rathe...'",
       "mood": "vulnerable and processing emotional grief"
     }
   ]
