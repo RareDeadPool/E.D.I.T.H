@@ -63,6 +63,11 @@ class MindRouter:
         """Convenience alias for route_query."""
         return self.route_query(user_query, *args, **kwargs)
 
+    def process_query(self, user_query: str, *args, **kwargs) -> Dict[str, Any]:
+        """Convenience alias for route_query."""
+        return self.route_query(user_query, *args, **kwargs)
+
+
     def route_query(
         self,
         user_query: str,

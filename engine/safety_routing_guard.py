@@ -198,3 +198,25 @@ class ActionSafetyAndCompatibilityGuard:
             "can_execute": True,
             "reason": "Action validated and compatible with intent and parameters."
         }
+
+    @classmethod
+    def inspect(
+        cls,
+        user_query: str,
+        predicted_intent: str = "",
+        predicted_action: str = "",
+        entities: Optional[Dict[str, Any]] = None,
+        confidence: float = 1.0,
+    ) -> Dict[str, Any]:
+        """Convenience evaluation alias."""
+        return cls.validate_action(
+            raw_query=user_query,
+            predicted_intent=predicted_intent,
+            predicted_action=predicted_action or predicted_intent,
+            entities=entities or {},
+            confidence=confidence,
+        )
+
+
+ActionSafetyRoutingGuard = ActionSafetyAndCompatibilityGuard
+
