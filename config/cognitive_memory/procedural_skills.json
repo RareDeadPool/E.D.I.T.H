@@ -5,11 +5,11 @@
     "action_sequence": [
       "launch_app"
     ],
-    "success_count": 149,
+    "success_count": 163,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793388061.666353
+    "last_used": 1793433600.7588115
   },
   "exec_workflow_script": {
     "skill_name": "exec_workflow_script",
@@ -17,11 +17,11 @@
     "action_sequence": [
       "exec_workflow_script"
     ],
-    "success_count": 70,
-    "failure_count": 0,
+    "success_count": 75,
+    "failure_count": 1,
     "common_failure_reasons": [],
-    "recovery_strategy": null,
-    "last_used": 1793387920.627321
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793434550.756326
   },
   "safety_gate": {
     "skill_name": "safety_gate",
@@ -29,11 +29,11 @@
     "action_sequence": [
       "safety_gate"
     ],
-    "success_count": 15,
+    "success_count": 18,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387920.8710754
+    "last_used": 1793433600.831869
   },
   "file_operation": {
     "skill_name": "file_operation",
@@ -41,8 +41,8 @@
     "action_sequence": [
       "file_operation"
     ],
-    "success_count": 58,
-    "failure_count": 15,
+    "success_count": 64,
+    "failure_count": 16,
     "common_failure_reasons": [
       "Found 5 matching files:\n  1. resume_latest.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  2. resume_editable.docx (in documents) - Filename matches 'resume', Format matches '.docx'\n  3. resme_backup.txt (in documents) - Typo/fuzzy match on 'resume' (90%), Format matches '.txt'\n  4. resume_v1.pdf (in documents) - Filename matches 'resume', Format matches '.pdf'\n  5. project_notes.txt (in documents) - Format matches '.txt', Recently modified (1 min ago)\nSay 'open the first one' or specify which.",
       "Found 5 matching files:\n  1. 3am coders  Resume (1).pdf (in Downloads) - Filename matches 'resume', Format matches '.pdf'\n  2. 3am coders  Resume.pdf (in Downloads) - Filename matches 'resume', Format matches '.pdf'\n  3. Aditya Sawant Resume.pdf (in resume) - Filename matches 'resume', Format matches '.pdf'\n  4. Aditya Sawant  Resume (3).pdf (in HACKATHON) - Filename matches 'resume', Format matches '.pdf'\n  5. YUVRAJ_DOGRA (Resume) (3).pdf (in HACKATHON) - Filename matches 'resume', Format matches '.pdf'\nSay 'open the first one' or specify which.",
@@ -50,10 +50,11 @@
       "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_jtqu6ody) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_jtqu6ody) - Filename matches 'resume', Format matches '.pdf'\n  3. project_report.docx (in edith_v4_conv_jtqu6ody) - Format matches '.docx'\n  4. project_summary.pdf (in edith_v4_conv_jtqu6ody) - Format matches '.pdf'\nSay 'open the first one' or specify which.",
       "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_5upvb5qv) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_5upvb5qv) - Filename matches 'resume', Format matches '.pdf'\n  3. project_summary.pdf (in edith_v4_conv_5upvb5qv) - Format matches '.pdf'\n  4. project_report.docx (in edith_v4_conv_5upvb5qv) - Format matches '.docx'\nSay 'open the first one' or specify which.",
       "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_5036cigb) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_5036cigb) - Filename matches 'resume', Format matches '.pdf'\n  3. project_summary.pdf (in edith_v4_conv_5036cigb) - Format matches '.pdf'\n  4. project_report.docx (in edith_v4_conv_5036cigb) - Format matches '.docx'\nSay 'open the first one' or specify which.",
-      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.pdf'\n  3. project_report.docx (in edith_v4_conv_e4enqr7l) - Format matches '.docx'\n  4. project_summary.pdf (in edith_v4_conv_e4enqr7l) - Format matches '.pdf'\nSay 'open the first one' or specify which."
+      "Found 4 matching files:\n  1. resume.docx (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.docx'\n  2. resume.pdf (in edith_v4_conv_e4enqr7l) - Filename matches 'resume', Format matches '.pdf'\n  3. project_report.docx (in edith_v4_conv_e4enqr7l) - Format matches '.docx'\n  4. project_summary.pdf (in edith_v4_conv_e4enqr7l) - Format matches '.pdf'\nSay 'open the first one' or specify which.",
+      "Could not find '' to open. Confirmed path does not exist on disk."
     ],
     "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793387920.5673902
+    "last_used": 1793434193.1160226
   },
   "draft_content": {
     "skill_name": "draft_content",
@@ -73,11 +74,11 @@
     "action_sequence": [
       "gui_action"
     ],
-    "success_count": 9,
+    "success_count": 11,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793223616.4829032
+    "last_used": 1793433477.9230132
   },
   "system_metrics": {
     "skill_name": "system_metrics",
@@ -85,11 +86,11 @@
     "action_sequence": [
       "system_metrics"
     ],
-    "success_count": 26,
+    "success_count": 27,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387945.2663999
+    "last_used": 1793433415.0542989
   },
   "network_task": {
     "skill_name": "network_task",
@@ -97,11 +98,11 @@
     "action_sequence": [
       "network_task"
     ],
-    "success_count": 12,
+    "success_count": 14,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387945.3091671
+    "last_used": 1793433415.088912
   },
   "system_control": {
     "skill_name": "system_control",
@@ -109,11 +110,11 @@
     "action_sequence": [
       "system_control"
     ],
-    "success_count": 20,
+    "success_count": 26,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387945.4427218
+    "last_used": 1793433477.5780313
   },
   "web_search": {
     "skill_name": "web_search",
@@ -121,11 +122,11 @@
     "action_sequence": [
       "web_search"
     ],
-    "success_count": 30,
+    "success_count": 35,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387945.5608215
+    "last_used": 1793433415.3388014
   },
   "web_fetch": {
     "skill_name": "web_fetch",
@@ -207,11 +208,11 @@
     "action_sequence": [
       "dialogue"
     ],
-    "success_count": 2861,
+    "success_count": 3141,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793388007.1450624
+    "last_used": 1793434683.26518
   },
   "ffmpeg_transcode": {
     "skill_name": "ffmpeg_transcode",
@@ -286,13 +287,13 @@
     "action_sequence": [
       "context_control"
     ],
-    "success_count": 14,
-    "failure_count": 5,
+    "success_count": 18,
+    "failure_count": 6,
     "common_failure_reasons": [
       "Action handler 'context_control' is recognized by ANN but not yet bound in runtime."
     ],
-    "recovery_strategy": "strategy_defect: abort_and_notify",
-    "last_used": 1793387920.8161285
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793434357.5595284
   },
   "whatsapp_send": {
     "skill_name": "whatsapp_send",
@@ -300,16 +301,18 @@
     "action_sequence": [
       "whatsapp_send"
     ],
-    "success_count": 23,
-    "failure_count": 13,
+    "success_count": 24,
+    "failure_count": 15,
     "common_failure_reasons": [
       "I have prepared this WhatsApp message for Rahul Sharma:\n\"Hi Rahul Sharma, I will be about 15 minutes late.\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')",
       "I have prepared this WhatsApp message for Sakshi:\n\"a whatsapp message\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')",
       "Duplicate send prevented: this exact message was already sent to Test Recipient less than 2 minutes ago.",
-      "I have prepared this WhatsApp message for Sakshi:\n\"i miss her\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')"
+      "I have prepared this WhatsApp message for Sakshi:\n\"i miss her\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')",
+      "I have prepared this WhatsApp message for Sakshi:\n\"a hi\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')",
+      "I have prepared this WhatsApp message for Mexican Coke:\n\"hi\"\n\nWould you like me to send this now? (Say 'Yes, send it' or 'Cancel')"
     ],
-    "recovery_strategy": "understanding_error: ask_user_clarification",
-    "last_used": 1793301788.4329858
+    "recovery_strategy": "strategy_defect: abort_and_notify",
+    "last_used": 1793434314.256373
   },
   "storage_audit": {
     "skill_name": "storage_audit",
@@ -329,11 +332,11 @@
     "action_sequence": [
       "screen_understanding"
     ],
-    "success_count": 12,
+    "success_count": 14,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793301789.4269323
+    "last_used": 1793433478.0047953
   },
   "semantic_file_organize": {
     "skill_name": "semantic_file_organize",
@@ -365,11 +368,11 @@
     "action_sequence": [
       "system_utility"
     ],
-    "success_count": 19,
+    "success_count": 21,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387920.215664
+    "last_used": 1793433367.9929776
   },
   "whatsapp_draft": {
     "skill_name": "whatsapp_draft",
@@ -389,11 +392,11 @@
     "action_sequence": [
       "clarification"
     ],
-    "success_count": 18,
+    "success_count": 27,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387961.7887108
+    "last_used": 1793434568.9106424
   },
   "compute_math": {
     "skill_name": "compute_math",
@@ -593,11 +596,11 @@
     "action_sequence": [
       "play_music"
     ],
-    "success_count": 12,
+    "success_count": 17,
     "failure_count": 1,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387920.6926668
+    "last_used": 1793433477.4506338
   },
   "exec_process_kill": {
     "skill_name": "exec_process_kill",
@@ -605,10 +608,24 @@
     "action_sequence": [
       "exec_process_kill"
     ],
-    "success_count": 4,
+    "success_count": 6,
     "failure_count": 0,
     "common_failure_reasons": [],
     "recovery_strategy": null,
-    "last_used": 1793387919.8931246
+    "last_used": 1793433315.4492645
+  },
+  "kill_process": {
+    "skill_name": "kill_process",
+    "goal_pattern": "My friend is looking for jobs, he's trying from 3 years but he hasn't got one, he's very sad",
+    "action_sequence": [
+      "kill_process"
+    ],
+    "success_count": 0,
+    "failure_count": 2,
+    "common_failure_reasons": [
+      "No PID provided."
+    ],
+    "recovery_strategy": "understanding_error: ask_user_clarification",
+    "last_used": 1793434782.545689
   }
 }

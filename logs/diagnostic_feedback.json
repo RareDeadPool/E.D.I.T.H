@@ -13,5 +13,35 @@
     "tool": "workflow_script",
     "unknown_token_percentage": 10.0,
     "latency_ms": 221.85
+  },
+  {
+    "timestamp": "2026-10-31T07:58:41Z",
+    "outcome": "correct",
+    "notes": "Automated verification test at 1793433521.746361",
+    "query": "bhai chrome kholo jaldi",
+    "intent": "app_launch",
+    "entities": {
+      "APP": "chrome"
+    },
+    "action": "exec_launch_app",
+    "confidence": 0.9974,
+    "tool": "launch_app",
+    "unknown_token_percentage": 75.0,
+    "latency_ms": 174.41
+  },
+  {
+    "timestamp": "2026-10-31T08:00:00Z",
+    "outcome": "correct",
+    "notes": "Automated verification test at 1793433600.852779",
+    "query": "bhai chrome kholo jaldi",
+    "intent": "app_launch",
+    "entities": {
+      "APP": "chrome"
+    },
+    "action": "exec_launch_app",
+    "confidence": 0.9974,
+    "tool": "launch_app",
+    "unknown_token_percentage": 75.0,
+    "latency_ms": 172.56
   }
 ]

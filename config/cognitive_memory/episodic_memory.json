@@ -1,430 +1,5 @@
 [
   {
-    "episode_id": "ep_1793315427027",
-    "timestamp": 1793315427.027483,
-    "goal": "send a whatsapp message",
-    "user_input": "Everything in my life is actually going well right now, but I have this impending sense of doom that it will crash.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315427290",
-    "timestamp": 1793315427.2908077,
-    "goal": "send a whatsapp message",
-    "user_input": "I received two job offers: one high pay at a boring bank, another low pay at a high-growth AI startup.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315427482",
-    "timestamp": 1793315427.482429,
-    "goal": "send a whatsapp message",
-    "user_input": "I've been at this company for 3 years without a promotion while new hires earn 30% more than me.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315427569",
-    "timestamp": 1793315427.569564,
-    "goal": "send a whatsapp message",
-    "user_input": "How can I trigger intense deep work flow within 10 minutes when my brain is scattered?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315427700",
-    "timestamp": 1793315427.7009711,
-    "goal": "send a whatsapp message",
-    "user_input": "I experience extreme hyperfocus where I forget to eat or drink for 10 hours, followed by a 2-day crash.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315427787",
-    "timestamp": 1793315427.7877073,
-    "goal": "send a whatsapp message",
-    "user_input": "I feel paralyzed by the sheer size of the codebase I just inherited at my new job.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315428282",
-    "timestamp": 1793315428.2824264,
-    "goal": "send a whatsapp message",
-    "user_input": "I sometimes get jealous when I see younger developers getting viral attention on Twitter for basic clones.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315428421",
-    "timestamp": 1793315428.4215376,
-    "goal": "send a whatsapp message",
-    "user_input": "I had a moment of pure clarity tonight where all the chaos in my life suddenly felt solvable.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315428734",
-    "timestamp": 1793315428.734262,
-    "goal": "send a whatsapp message",
-    "user_input": "She left me on read after 3 great dates, why do people do this?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315429078",
-    "timestamp": 1793315429.078904,
-    "goal": "send a whatsapp message",
-    "user_input": "I got rejected from my dream company after 5 rounds of interviews, I feel crushed.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315429209",
-    "timestamp": 1793315429.2090619,
-    "goal": "send a whatsapp message",
-    "user_input": "My boss took all the credit for a project I spent 3 weeks building alone.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315429866",
-    "timestamp": 1793315429.8661647,
-    "goal": "send a whatsapp message",
-    "user_input": "I'm lying in bed obsessing over an embarrassing thing I said in a meeting 2 years ago.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315429908",
-    "timestamp": 1793315429.9081213,
-    "goal": "send a whatsapp message",
-    "user_input": "Sometimes I wonder what the point of all this grind is when we're just tiny specks in the universe.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315430198",
-    "timestamp": 1793315430.1986322,
-    "goal": "send a whatsapp message",
-    "user_input": "A coworker made a passive-aggressive comment during standup, should I confront them?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315430241",
-    "timestamp": 1793315430.2413573,
-    "goal": "send a whatsapp message",
-    "user_input": "I'm tempted to buy an expensive gadget on credit, how do I know if it's a terrible mistake?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315430700",
-    "timestamp": 1793315430.7002213,
-    "goal": "send a whatsapp message",
-    "user_input": "Every package I install breaks another package's peer dependency, I'm stuck in dependency hell.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315430749",
-    "timestamp": 1793315430.74921,
-    "goal": "send a whatsapp message",
-    "user_input": "A bug occurs in production every few days but completely disappears whenever I run it in the debugger.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315431771",
-    "timestamp": 1793315431.7717998,
-    "goal": "send a whatsapp message",
-    "user_input": "Real talk Edith, do you think our universe is just a simulation running on an alien quantum computer?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315432183",
-    "timestamp": 1793315432.1832623,
-    "goal": "send a whatsapp message",
-    "user_input": "Every time my phone vibrates, my heart jumps hoping it's a message from her.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315432452",
-    "timestamp": 1793315432.4523573,
-    "goal": "send a whatsapp message",
-    "user_input": "Do you ever feel lonely inside this machine, Edith, or are you just simulating conversation?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315432632",
-    "timestamp": 1793315432.6325214,
-    "goal": "send a whatsapp message",
-    "user_input": "My college batchmate who barely studied just landed a 60 LPA job through connections, it feels so unfair.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315432867",
-    "timestamp": 1793315432.8681226,
-    "goal": "send a whatsapp message",
-    "user_input": "How can I trigger intense deep work flow within 10 minutes when my brain is scattered?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315466335",
-    "timestamp": 1793315466.3368564,
-    "goal": "send a whatsapp message",
-    "user_input": "She left me on read after 3 great dates, why do people do this?",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315466654",
-    "timestamp": 1793315466.6546295,
-    "goal": "send a whatsapp message",
-    "user_input": "I got rejected from my dream company after 5 rounds of interviews, I feel crushed.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
-    "episode_id": "ep_1793315466773",
-    "timestamp": 1793315466.7739897,
-    "goal": "send a whatsapp message",
-    "user_input": "My boss took all the credit for a project I spent 3 weeks building alone.",
-    "action_taken": "dialogue",
-    "outcome_status": "success",
-    "verified": true,
-    "prediction_error": 1.0,
-    "appraisal_congruence": 0.8,
-    "salience": 1.0,
-    "lesson_learned": null,
-    "context_tags": [
-      "dialogue",
-      "success"
-    ]
-  },
-  {
     "episode_id": "ep_1793315467384",
     "timestamp": 1793315467.3845482,
     "goal": "send a whatsapp message",
@@ -1697,6 +1272,431 @@
     "context_tags": [
       "launch_app",
       "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433314999",
+    "timestamp": 1793433314.9995463,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433315776",
+    "timestamp": 1793433315.7763176,
+    "goal": "actually forget it",
+    "user_input": "actually forget it",
+    "action_taken": "system_utility",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "system_utility",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433316360",
+    "timestamp": 1793433316.3604665,
+    "goal": "try launching browser instead",
+    "user_input": "try launching browser instead",
+    "action_taken": "context_control",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "context_control",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433386851",
+    "timestamp": 1793433386.8519852,
+    "goal": "what time is it",
+    "user_input": "I'm tempted to buy an expensive gadget on credit, how do I know if it's a terrible mistake?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433388077",
+    "timestamp": 1793433388.0775745,
+    "goal": "what time is it",
+    "user_input": "How do I ask my boss for a raise without sounding greedy or ungrateful?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433388719",
+    "timestamp": 1793433388.719569,
+    "goal": "what time is it",
+    "user_input": "How do I move on when she already found someone new just two weeks after dumping me?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433391051",
+    "timestamp": 1793433391.051111,
+    "goal": "what time is it",
+    "user_input": "I feel paralyzed by the sheer size of the codebase I just inherited at my new job.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433391586",
+    "timestamp": 1793433391.5860393,
+    "goal": "what time is it",
+    "user_input": "I don't just want a normal career, Edith. I want to build technology that outlasts me.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433391804",
+    "timestamp": 1793433391.8040092,
+    "goal": "what time is it",
+    "user_input": "I had a moment of pure clarity tonight where all the chaos in my life suddenly felt solvable.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433391846",
+    "timestamp": 1793433391.846,
+    "goal": "what time is it",
+    "user_input": "Do you believe humans have a destiny, or do we carve our own fate with every commit and decision?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433393863",
+    "timestamp": 1793433393.8639557,
+    "goal": "what time is it",
+    "user_input": "I'm tempted to buy an expensive gadget on credit, how do I know if it's a terrible mistake?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433394876",
+    "timestamp": 1793433394.8764608,
+    "goal": "what time is it",
+    "user_input": "How do I ask my boss for a raise without sounding greedy or ungrateful?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433395557",
+    "timestamp": 1793433395.557473,
+    "goal": "what time is it",
+    "user_input": "How do I move on when she already found someone new just two weeks after dumping me?",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433396616",
+    "timestamp": 1793433396.6168187,
+    "goal": "what time is it",
+    "user_input": "I don't just want a normal career, Edith. I want to build technology that outlasts me.",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433521637",
+    "timestamp": 1793433521.6373105,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793433600758",
+    "timestamp": 1793433600.7588115,
+    "goal": "bhai chrome kholo jaldi",
+    "user_input": "bhai chrome kholo jaldi",
+    "action_taken": "launch_app",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "launch_app",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434274494",
+    "timestamp": 1793434274.4949384,
+    "goal": "send hi to mexican coke",
+    "user_input": "Turn",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434314256",
+    "timestamp": 1793434314.256373,
+    "goal": "send message to anan project",
+    "user_input": "send message to anan project",
+    "action_taken": "whatsapp_send",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "whatsapp_send",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434332052",
+    "timestamp": 1793434332.0529602,
+    "goal": "send a message saying",
+    "user_input": "send a message saying",
+    "action_taken": "clarification",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "clarification",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434368455",
+    "timestamp": 1793434368.4551923,
+    "goal": "send a message",
+    "user_input": "send a message",
+    "action_taken": "clarification",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "clarification",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434550756",
+    "timestamp": 1793434550.756326,
+    "goal": "Again, draft a message for an inbreath",
+    "user_input": "Again, draft a message for an inbreath",
+    "action_taken": "exec_workflow_script",
+    "outcome_status": "partial",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "exec_workflow_script",
+      "partial"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434568910",
+    "timestamp": 1793434568.9106424,
+    "goal": "send a message to ANN project",
+    "user_input": "send a message to ANN project",
+    "action_taken": "clarification",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "clarification",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434657167",
+    "timestamp": 1793434657.1678221,
+    "goal": "My friend is looking for jobs, he's trying from 3 years but he hasn't got one, he's very sad",
+    "user_input": "My friend is looking for jobs, he's trying from 3 years but he hasn't got one, he's very sad",
+    "action_taken": "kill_process",
+    "outcome_status": "error",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "kill_process",
+      "error"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434683265",
+    "timestamp": 1793434683.26518,
+    "goal": "My friend is looking for jobs, he's trying from 3 years but he hasn't got one, he's very sad",
+    "user_input": "I have a friend named Harshan",
+    "action_taken": "dialogue",
+    "outcome_status": "success",
+    "verified": true,
+    "prediction_error": 1.0,
+    "appraisal_congruence": 0.8,
+    "salience": 1.0,
+    "lesson_learned": null,
+    "context_tags": [
+      "dialogue",
+      "success"
+    ]
+  },
+  {
+    "episode_id": "ep_1793434782545",
+    "timestamp": 1793434782.545689,
+    "goal": "kholo, bajao, bajao, bajao",
+    "user_input": "kholo, bajao, bajao, bajao",
+    "action_taken": "kill_process",
+    "outcome_status": "error",
+    "verified": false,
+    "prediction_error": 1.0,
+    "appraisal_congruence": -0.7,
+    "salience": 1.0,
+    "lesson_learned": "understanding_error: ask_user_clarification",
+    "context_tags": [
+      "kill_process",
+      "error"
     ]
   }
 ]
