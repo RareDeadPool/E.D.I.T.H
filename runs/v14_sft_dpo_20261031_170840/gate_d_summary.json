@@ -1,0 +1,13 @@
+{
+  "run_id": "v14_sft_dpo_20261031_170840",
+  "total_steps": 150,
+  "initial_val_loss": 5.625939591725667,
+  "final_val_loss": 3.57190336227417,
+  "initial_val_ppl": 277.5329296982783,
+  "final_val_ppl": 35.58425847051986,
+  "leak_free_rate": 99.5,
+  "total_audited_generations": 200,
+  "leak_failures": 1,
+  "checkpoint_path": "C:\\Users\\Aditya Sawant\\Desktop\\E.D.I.T.H\\models\\checkpoints\\edith_lm_v14\\edith_lm_v14_chat.pt",
+  "samples_path": "C:\\Users\\Aditya Sawant\\Desktop\\E.D.I.T.H\\runs\\v14_sft_dpo_20261031_170840\\samples.md"
+}

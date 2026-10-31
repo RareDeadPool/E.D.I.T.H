@@ -17,7 +17,7 @@ class LeakLinter:
 
     FORBIDDEN_PATTERNS = [
         # Classifier / intent / action label names
-        r"\bexec_[a-zA-Z0-9_]+\b",
+        r"exec_[a-zA-Z0-9_]+\b",
         r"\bsystem_utility\b",
         r"\bnetwork_task\b",
         r"\brespond_dialogue\b",
