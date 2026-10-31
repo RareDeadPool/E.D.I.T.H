@@ -59,15 +59,36 @@ class EdithLMInference:
             raise FileNotFoundError(f"Checkpoint not found at {full_ckpt_path}")
 
         ckpt = torch.load(full_ckpt_path, map_location="cpu")
-        config = ckpt.get("config", EdithLMConfig.base(vocab_size=tok.vocab_size))
-        model = EdithLM(config)
+        state_dict = ckpt.get("model_state", ckpt)
 
-        if "model_state" in ckpt:
-            model.load_state_dict(ckpt["model_state"])
+        # Inspect dimensions from state_dict to avoid any architecture mismatch
+        if isinstance(ckpt, dict) and "config" in ckpt and hasattr(ckpt["config"], "dim"):
+            config = ckpt["config"]
+        elif "tok_embeddings.weight" in state_dict:
+            vocab_size, dim = state_dict["tok_embeddings.weight"].shape
+            intermediate_dim = state_dict["layers.0.mlp.gate_proj.weight"].shape[0]
+            n_layers = len([k for k in state_dict.keys() if k.endswith(".attn_norm.weight")])
+            q_dim = state_dict["layers.0.attn.q_proj.weight"].shape[0]
+            kv_dim = state_dict["layers.0.attn.k_proj.weight"].shape[0]
+            head_dim = 64
+            n_heads = q_dim // head_dim if q_dim % head_dim == 0 else 4
+            n_kv_heads = kv_dim // head_dim if kv_dim % head_dim == 0 else 2
+            config = EdithLMConfig(
+                vocab_size=vocab_size,
+                max_seq_len=512,
+                dim=dim,
+                n_layers=n_layers,
+                n_heads=n_heads,
+                n_kv_heads=n_kv_heads,
+                intermediate_dim=intermediate_dim,
+            )
         else:
-            model.load_state_dict(ckpt)
+            config = EdithLMConfig.base(vocab_size=tok.vocab_size)
 
+        model = EdithLM(config)
+        model.load_state_dict(state_dict)
         return cls(model=model, tokenizer=tok, device=device, quantize_int8=quantize_int8)
+
 
     @torch.no_grad()
     def generate_stream(

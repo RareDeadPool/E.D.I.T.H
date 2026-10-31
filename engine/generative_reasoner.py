@@ -13,6 +13,7 @@ import random
 from typing import Dict, Any, List, Optional
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DEFAULT_MIND_BACKEND = os.environ.get("EDITH_MIND_BACKEND", "edith_lm")
 DEFAULT_MODEL_DIR = os.path.join(PROJECT_ROOT, "models", "llm")
 DEFAULT_GGUF_NAME = "qwen2.5-1.5b-instruct-q4_k_m.gguf"
 DEFAULT_MODEL_PATH = os.path.join(DEFAULT_MODEL_DIR, DEFAULT_GGUF_NAME)
@@ -32,16 +33,18 @@ SYSTEM_PERSONA_PROMPT = (
 
 
 class EdithGenerativeReasoner:
-    """Local generative intelligence engine powered by open-weights GGUF via llama.cpp."""
+    """Conversational intelligence engine: EdithLM (default) with legacy Qwen adapter for A/B testing."""
 
     def __init__(
         self,
+        backend: Optional[str] = None,
         model_path: Optional[str] = None,
         n_ctx: int = 2048,
         n_threads: Optional[int] = None,
         n_gpu_layers: int = 0,
         enable_gpu: bool = True
     ):
+        self.backend = backend or DEFAULT_MIND_BACKEND
         self.model_path = model_path or DEFAULT_MODEL_PATH
         self.n_ctx = n_ctx
         self.n_threads = n_threads or max(1, os.cpu_count() // 2 if os.cpu_count() else 4)
@@ -49,7 +52,7 @@ class EdithGenerativeReasoner:
         self.llm = None
         self.is_loaded: bool = False
         self.load_error: Optional[str] = None
-        self.active_backend: str = "fallback_heuristic"
+        self.active_backend: str = self.backend
         self._load_attempts = 0
 
         # Performance & telemetry metrics
@@ -115,7 +118,9 @@ class EdithGenerativeReasoner:
             return False
 
     def is_available(self) -> bool:
-        """Check if local neural LLM is loaded or ready to load."""
+        """Check if local generative mind is ready."""
+        if self.backend == "edith_lm":
+            return True
         if self.is_loaded and self.llm is not None:
             return True
         if os.path.exists(self.model_path):
@@ -137,8 +142,27 @@ class EdithGenerativeReasoner:
         Returns dictionary with text, latency, token count, and provenance.
         """
         t_start = time.time()
+
+        # V13 Primary Mind Path: EdithLM
+        if self.backend == "edith_lm":
+            try:
+                from engine.mind_router import get_mind_router
+                router = get_mind_router("edith_lm")
+                res = router.route_query(user_message)
+                elapsed = time.time() - t_start
+                return {
+                    "text": res.get("text", ""),
+                    "latency_ms": elapsed * 1000.0,
+                    "tokens": len(res.get("text", "").split()),
+                    "backend": "edith_lm",
+                    "mode": mode
+                }
+            except Exception as e:
+                pass
+
         msg_clean = user_message.strip()
         msg_lower = msg_clean.lower()
+
 
         # Acoustic / speech transcription slip handling
         if re.search(r"\bhelp\s+me\s+a\s+joke\b", msg_lower):

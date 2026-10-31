@@ -72,3 +72,7 @@ models/pocket_tts/*.safetensors
 # Heavy local LLM weights (>100MB)
 models/llm/*.gguf
 
+# Local SQLite databases
+*.db
+
+
