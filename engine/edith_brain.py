@@ -1697,7 +1697,17 @@ class EdithBrain:
             result["intent"] = "communication_drafting"
             result["action"] = "exec_draft_content"
 
-        # Execute on operating system if requested and possible
+        # Execution Safety Gate: Confidence barrier - Never execute actions < 0.75 confidence
+        conf_val = float(result.get("calibrated_confidence", result.get("operational_confidence", 1.0)))
+        if directive.get("can_execute", False) and conf_val < 0.75 and directive.get("handler") not in ["dialogue", "clarification"]:
+            directive["can_execute"] = False
+            from engine.mind_router import get_mind_router
+            mind = get_mind_router()
+            mind_res = mind.route_query(user_command, reflex_prediction=result, operational_confidence=conf_val)
+            directive["message"] = mind_res.get("text", "I caught that, but I need a bit more certainty before executing. Could you clarify?")
+            result["directive"] = directive
+
+        # Execute on operating system if requested and authorized
         if execute and self.executor and directive.get("can_execute", False):
             exec_res = self.executor.execute(directive)
             result["execution"] = exec_res
@@ -2402,20 +2412,15 @@ class EdithBrain:
             is_continuing_dialogue or
             (self.dialogue_engine and self.dialogue_engine.is_conversational_or_problem(cmd_lower))
         ):
-            if self.dialogue_engine:
-                dialogue_res = self.dialogue_engine.respond(cmd_text, context=self.context, executor=self.executor)
-                prediction["intent"] = "chitchat"
-                prediction["action"] = "respond_dialogue"
-                prediction["operational_confidence"] = 1.0
-                return {
-                    "can_execute": True,
-                    "message": dialogue_res.get("message", "I am here to assist you."),
-                    "handler": "dialogue",
-                    "parameters": dialogue_res.get("parameters", {})
-                }
+            from engine.mind_router import get_mind_router
+            mind = get_mind_router()
+            mind_res = mind.route_query(cmd_text, reflex_prediction=prediction, operational_confidence=float(prediction.get("operational_confidence", 1.0)))
+            prediction["intent"] = "chitchat"
+            prediction["action"] = "respond_dialogue"
+            prediction["operational_confidence"] = 1.0
             return {
-                "can_execute": True,
-                "message": "Hello! I am E.D.I.T.H., your custom-trained neural task handler. All systems operational.",
+                "can_execute": False,
+                "message": mind_res.get("text", "I'm right here with you. What can I help you accomplish?"),
                 "handler": "dialogue",
                 "parameters": {}
             }
@@ -3697,17 +3702,18 @@ class EdithBrain:
             # Guard: verify command actually asks for system metrics / hardware info
             sys_keys = ["cpu", "ram", "memory", "battery", "storage", "disk", "specs", "hardware", "device metrics", "system metrics", "system status", "power status"]
             if not any(k in cmd_lower for k in sys_keys):
-                if self.dialogue_engine:
-                    d_res = self.dialogue_engine.respond(cmd_text, context=self.context, executor=self.executor)
-                    prediction["intent"] = "chitchat"
-                    prediction["action"] = "respond_dialogue"
-                    prediction["operational_confidence"] = 1.0
-                    return {
-                        "can_execute": True,
-                        "message": d_res.get("message", "I am right here with you."),
-                        "handler": "dialogue",
-                        "parameters": d_res.get("parameters", {})
-                    }
+                from engine.mind_router import get_mind_router
+                mind = get_mind_router()
+                mind_res = mind.route_query(cmd_text, reflex_prediction=prediction, operational_confidence=1.0)
+                prediction["intent"] = "chitchat"
+                prediction["action"] = "respond_dialogue"
+                prediction["operational_confidence"] = 1.0
+                return {
+                    "can_execute": False,
+                    "message": mind_res.get("text", "I am right here with you."),
+                    "handler": "dialogue",
+                    "parameters": {}
+                }
             return {
                 "can_execute": True,
                 "message": "Inspecting system status and resource metrics.",
@@ -3917,9 +3923,24 @@ class EdithBrain:
             ref = entities.get("REF", "")
             temporal = entities.get("TEMPORAL", "")
             dest = entities.get("DEST", "")
+            resolved_target = ref or temporal or dest
+            conf = float(prediction.get("operational_confidence", prediction.get("calibrated_confidence", 0.0)))
+
+            if not resolved_target or conf < 0.75:
+                # Ambiguous or ungrounded contextual command -> Route to MindRouter
+                from engine.mind_router import get_mind_router
+                mind = get_mind_router()
+                mind_res = mind.route_query(cmd_text, reflex_prediction=prediction, operational_confidence=conf)
+                return {
+                    "can_execute": False,
+                    "message": mind_res.get("text", "I caught that, but could you clarify what you'd like me to target?"),
+                    "handler": "dialogue",
+                    "parameters": {}
+                }
+
             return {
                 "can_execute": True,
-                "message": f"Contextual control resolved: {ref or temporal or dest}.",
+                "message": f"Contextual control resolved: {resolved_target}.",
                 "handler": "context_control",
                 "parameters": {
                     "ref": ref,
@@ -3929,17 +3950,12 @@ class EdithBrain:
                 }
             }
         elif action == "respond_dialogue":
-            if self.dialogue_engine:
-                dialogue_res = self.dialogue_engine.respond(cmd_text, context=self.context, executor=self.executor)
-                return {
-                    "can_execute": True,
-                    "message": dialogue_res.get("message", "Hello! I am E.D.I.T.H., your custom-trained neural task handler. All systems operational."),
-                    "handler": "dialogue",
-                    "parameters": dialogue_res.get("parameters", {})
-                }
+            from engine.mind_router import get_mind_router
+            mind = get_mind_router()
+            mind_res = mind.route_query(cmd_text, reflex_prediction=prediction, operational_confidence=float(prediction.get("operational_confidence", 1.0)))
             return {
-                "can_execute": True,
-                "message": "Hello! I am E.D.I.T.H., your custom-trained neural task handler. All systems operational.",
+                "can_execute": False,
+                "message": mind_res.get("text", "I'm right here with you. What can I help you accomplish?"),
                 "handler": "dialogue",
                 "parameters": {}
             }
@@ -4054,22 +4070,33 @@ def interactive_cli():
                     print("  Speak your commands naturally into your microphone.")
                     print("  Say 'text mode', 'stop', 'standby', or 'exit' to switch back to typing.\n")
 
+                    debug_mode = "--debug" in sys.argv or "-d" in sys.argv
+
                     def on_cmd(spoken_text, v_res):
                         print(f"\n[Heard] > \"{spoken_text}\"")
                         res = v_res.get("brain_result", {})
                         dir_info = res.get("directive", {})
-                        if dir_info.get("message"):
-                            print(f"[E.D.I.T.H.] {dir_info['message']}")
-                        if res.get("intent") not in ["dialogue", "chitchat"] or res.get("intent_confidence", 0) < 0.95:
-                            print(f"  |-- Predicted Intent : {res.get('intent')} ({res.get('intent_confidence', 0):.1%})")
-                            print(f"  |-- Action Policy    : {res.get('action')} ({res.get('action_confidence', 0):.1%})")
-                            if res.get("entities"):
-                                print(f"  |-- Extracted Slots  : {res['entities']}")
-                            print(f"  \\-- Neural Status    : {res.get('status')} (Operational: {res.get('operational_confidence', 0):.1%})")
-                        if "execution" in res:
-                            ex = res["execution"]
-                            icon = "[EXEC-OK]" if ex.get("status") in ["success", "warning"] else "[EXEC-INFO]"
-                            print(f"  {icon} {ex.get('message')}")
+                        raw_msg = dir_info.get("message", "")
+                        if raw_msg:
+                            from engine.output_contract import speak
+                            clean_spoken = speak(raw_msg, voice_mode=True, debug_mode=debug_mode)
+                            print(f"[E.D.I.T.H.] {clean_spoken}")
+
+                        if debug_mode:
+                            if res.get("intent") not in ["dialogue", "chitchat"] or res.get("intent_confidence", 0) < 0.95:
+                                print(f"  |-- Predicted Intent : {res.get('intent')} ({res.get('intent_confidence', 0):.1%})")
+                                print(f"  |-- Action Policy    : {res.get('action')} ({res.get('action_confidence', 0):.1%})")
+                                if res.get("entities"):
+                                    print(f"  |-- Extracted Slots  : {res['entities']}")
+                                print(f"  \\-- Neural Status    : {res.get('status')} (Operational: {res.get('operational_confidence', 0):.1%})")
+                            if "execution" in res:
+                                ex = res["execution"]
+                                icon = "[EXEC-OK]" if ex.get("status") in ["success", "warning"] else "[EXEC-INFO]"
+                                print(f"  {icon} {ex.get('message')}")
+                        elif "execution" in res and res["execution"].get("status") in ["success", "warning"] and res.get("intent") not in ["dialogue", "chitchat"]:
+                            action_note = dir_info.get("parameters", {}).get("app_name") or dir_info.get("handler", "")
+                            if action_note:
+                                print(f"  [Action] {action_note}")
 
                     try:
                         va.continuous_listen_loop(
@@ -4083,28 +4110,34 @@ def interactive_cli():
             else:
                 result = brain.process(cmd, execute=True)
 
+            debug_mode = "--debug" in sys.argv or "-d" in sys.argv
             directive = result["directive"]
-            print(f"\n[E.D.I.T.H.] {directive['message']}")
+            raw_msg = directive.get("message", "")
+            from engine.output_contract import speak
+            clean_spoken = speak(raw_msg, tts_engine=tts if voice_feedback_enabled else None, voice_mode=voice_feedback_enabled, debug_mode=debug_mode)
+            print(f"\n[E.D.I.T.H.] {clean_spoken}")
 
-            if voice_feedback_enabled and tts and directive.get("message"):
-                tts.speak(directive["message"], async_mode=True)
+            if debug_mode:
+                if result.get("intent") not in ["dialogue", "chitchat"] or result.get("intent_confidence", 0) < 0.95:
+                    print(f"  |-- Predicted Intent : {result['intent']} ({result['intent_confidence']:.1%})")
+                    print(f"  |-- Action Policy    : {result['action']} ({result['action_confidence']:.1%})")
+                    if result["entities"]:
+                        print(f"  |-- Extracted Slots  : {result['entities']}")
+                    print(f"  \\-- Neural Status    : {result['status']} (Operational: {result['operational_confidence']:.1%})")
 
-            if result.get("intent") not in ["dialogue", "chitchat"] or result.get("intent_confidence", 0) < 0.95:
-                print(f"  |-- Predicted Intent : {result['intent']} ({result['intent_confidence']:.1%})")
-                print(f"  |-- Action Policy    : {result['action']} ({result['action_confidence']:.1%})")
-                if result["entities"]:
-                    print(f"  |-- Extracted Slots  : {result['entities']}")
-                print(f"  \\-- Neural Status    : {result['status']} (Operational: {result['operational_confidence']:.1%})")
-
-            if "execution" in result:
-                ex = result["execution"]
-                if ex.get("status") in ["suggestions_available", "needs_confirmation"]:
-                    icon = "[SUGGESTIONS]"
-                elif ex.get("status") in ["success", "warning"]:
-                    icon = "[EXEC-OK]"
-                else:
-                    icon = "[EXEC-INFO]"
-                print(f"\n  {icon} {ex.get('message')}")
+                if "execution" in result:
+                    ex = result["execution"]
+                    if ex.get("status") in ["suggestions_available", "needs_confirmation"]:
+                        icon = "[SUGGESTIONS]"
+                    elif ex.get("status") in ["success", "warning"]:
+                        icon = "[EXEC-OK]"
+                    else:
+                        icon = "[EXEC-INFO]"
+                    print(f"\n  {icon} {ex.get('message')}")
+            elif "execution" in result and result["execution"].get("status") in ["success", "warning"] and result.get("intent") not in ["dialogue", "chitchat"]:
+                action_note = directive.get("parameters", {}).get("app_name") or directive.get("handler", "")
+                if action_note:
+                    print(f"  [Action] {action_note}")
 
         except KeyboardInterrupt:
             print("\n\n[E.D.I.T.H.] Caught you trying to sneak away! 😄 Take care! 💙")

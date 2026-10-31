@@ -385,7 +385,8 @@ class EdithTaskExecutor:
 
         return {
             "status": "unhandled",
-            "message": f"Action handler '{handler}' is recognized by ANN but not yet bound in runtime."
+            "message": "I don't have a direct tool connected for that task yet. If you want, I can open the relevant app or page for you.",
+            "unbound_handler": handler
         }
 
     def _handle_storage_intelligence(self, params: Dict[str, Any]) -> Dict[str, Any]:

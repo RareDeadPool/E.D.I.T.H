@@ -28,6 +28,12 @@ class ActionSafetyAndCompatibilityGuard:
         r"\b(?:what\s+happens\s+if\s+i|what\s+would\s+happen\s+if|explain\s+what\s+(?:process\s+termination|deleting)\s+means|how\s+does\s+(?:task\s+management|process\s+killing)\s+work)\b",
         # Topic transitions & social chat
         r"\b(?:actually\s*,?\s*)?(?:let\'?s\s+talk\s+about\s+something\s+else|talk\s+about\s+something\s+else|something\s+else|switch\s+topics?)\b",
+        # Self-reference and personal memory queries
+        r"\b(?:tell\s+me\s+something\s+about\s+myself|tell\s+me\s+about\s+myself|what\s+do\s+you\s+know\s+about\s+me|who\s+am\s+i|do\s+you\s+remember\s+me|what\s+have\s+i\s+told\s+you|my\s+known\s+facts)\b",
+        # Casual checks, pleasantries & conversational ambiguity
+        r"\b(?:how\s+are\s+you|how\'?s\s+it\s+going|how\s+are\s+things|what\'?s\s+up|i\'?ll\s+allow\s+you|allow\s+you)\b",
+        # Ambiguous half-commands without concrete targets
+        r"^(?:subscribe\s+me|follow\s+me|add\s+me|help\s+me\s+out)$",
         # Explicit negations (should NEVER execute)
         r"\b(?:do\s+not\s+(?:close|kill|terminate|delete|run)|don\'?t\s+(?:close|kill|terminate|delete|run)|i\s+don\'?t\s+want\s+to\s+(?:close|kill|terminate|delete))\b"
     ]
@@ -64,6 +70,19 @@ class ActionSafetyAndCompatibilityGuard:
                 return True, target
 
         return False, None
+
+    @classmethod
+    def is_action_safe_for_utterance(cls, raw_query: str, action: str, entities: Dict[str, Any]) -> Tuple[bool, str]:
+        """Convenience method checking if an action is safe for an utterance."""
+        eval_res = cls.validate_action(
+            raw_query=raw_query,
+            predicted_intent="",
+            predicted_action=action,
+            entities=entities,
+            confidence=1.0
+        )
+        is_safe = eval_res.get("is_safe", True) and not eval_res.get("is_conversational", False)
+        return is_safe, eval_res.get("reason", "")
 
     @classmethod
     def validate_action(

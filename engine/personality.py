@@ -271,117 +271,27 @@ class EdithPersonality:
         # Grow friendship
         self.state["friendship_level"] = fl + 1
 
-        # Build the greeting
-        greeting_parts = []
+        # Build a natural, varied greeting
+        from engine.output_contract import speak
+        streak = self.state.get("streak_days", 1)
+        period = ctx.get("period", "day")
+        time_word = "morning" if "morning" in period else "afternoon" if "afternoon" in period else "evening" if "evening" in period else "night"
 
-        # -- Time-appropriate opener --
-        if ctx["period"] == "early_morning":
-            openers = [
-                f"Good morning, {name}! You're up early — respect. 💪",
-                f"Rise and shine, {name}! Early bird catches the bug... wait, that's not right. 😄",
-                f"Morning, {name}! Coffee first, then world domination?",
-            ]
-        elif ctx["period"] == "morning":
-            openers = [
-                f"Good morning, {name}! Ready to get things done today?",
-                f"Hey {name}! Morning! Let's make today productive.",
-                f"Morning, {name}! What's on the agenda?",
-            ]
-        elif ctx["period"] == "afternoon" and ctx["vibe"] == "lunch energy":
-            openers = [
-                f"Hey {name}! Afternoon already — hope you grabbed some lunch!",
-                f"Good afternoon, {name}! How's the day treating you so far?",
-                f"Hey {name}! It's lunchtime vibes. Fueled up and ready?",
-            ]
-        elif ctx["period"] == "afternoon":
-            openers = [
-                f"Hey {name}! Afternoon grind mode — let's crush it.",
-                f"What's up, {name}! Deep into the day — how can I help?",
-                f"Hey {name}! Halfway through the day. Let's keep the momentum going!",
-            ]
-        elif ctx["period"] == "evening":
-            openers = [
-                f"Evening, {name}! Winding down or just getting started? 😏",
-                f"Hey {name}! It's evening — the productive quiet hours.",
-                f"Good evening, {name}! How'd the day go?",
-            ]
-        elif ctx["period"] == "night":
-            openers = [
-                f"Hey {name}! Late night session, huh? Let's make it count.",
-                f"Still at it, {name}? Night owl energy! 🦉",
-                f"Hey {name}! Nighttime coding hits different. What are we working on?",
-            ]
-        else:  # late_night
-            self.state["consecutive_late_nights"] = self.state.get("consecutive_late_nights", 0) + 1
-            if self.state["consecutive_late_nights"] >= 3:
-                openers = [
-                    f"Okay {name}, this is like the third night in a row you're up past midnight. I'm worried about you, dude. 😟 But I'm here for you.",
-                    f"{name}... again? At this hour? You know I care about your sleep, right? But fine, let's do this. 💙",
-                ]
-            else:
-                openers = [
-                    f"Hey {name}! Burning the midnight oil? Don't forget to hydrate! 🌙",
-                    f"Late night coding session, {name}? I respect the hustle. What are we building?",
-                    f"Hey night owl! It's past midnight, {name}. Let's make this session worth it!",
-                ]
-
-        greeting_parts.append(random.choice(openers))
-
-        # -- Reference how long they've been away --
-        if hours_away is not None:
-            if hours_away > 48:
-                days = int(hours_away / 24)
-                away_msgs = [
-                    f"It's been {days} days — I missed you! Thought you forgot about me. 😢",
-                    f"Whoa, {days} days since we last talked! Everything okay?",
-                    f"Welcome back after {days} days! I was getting lonely in here. 😄",
-                ]
-                greeting_parts.append(random.choice(away_msgs))
-            elif hours_away > 24:
-                away_msgs = [
-                    "Haven't seen you since yesterday — hope you had a good one!",
-                    "Back again! Yesterday feel productive?",
-                ]
-                greeting_parts.append(random.choice(away_msgs))
-
-        # -- Weekend / weekday vibes --
-        if ctx["is_weekend"]:
-            weekend_msgs = [
-                f"It's {ctx['weekday']} — are you working on the weekend or just vibing?",
-                f"Weekend mode! {ctx['weekday']} energy. You coding for fun or duty? 😄",
-            ]
-            if random.random() < 0.5:
-                greeting_parts.append(random.choice(weekend_msgs))
-
-        # -- Streak recognition --
-        streak = self.state.get("streak_days", 0)
-        if streak >= 7:
-            greeting_parts.append(f"By the way, that's a {streak}-day streak of us working together! We're a solid team. 🔥")
-        elif streak >= 3:
-            greeting_parts.append(f"{streak} days in a row we've been at it! Consistency is key. 💯")
-
-        # -- Friendship milestone --
-        if sessions + 1 == 10:
-            greeting_parts.append("Fun fact: this is our 10th session together! We're officially regulars. 🎉")
-        elif sessions + 1 == 50:
-            greeting_parts.append("50 sessions together, can you believe it?! We've come a long way. 🚀")
-        elif sessions + 1 == 100:
-            greeting_parts.append("100 SESSIONS! At this point, we're basically best friends. 💙")
-
-        # -- End with something warm --
-        closers = [
-            "What can I do for you?",
-            "What are we working on?",
-            "How can I help?",
-            "What's the plan?",
-            "Just say the word!",
-            "I'm all ears!",
-            "Fire away!",
+        greeting_templates = [
+            f"Hey {name}! Hope your {time_word} is going well. What are we diving into today?",
+            f"Good to see you again, {name}. Ready when you are — what are we building?",
+            f"Hey {name}, afternoon grind mode. How can I help you move forward today?",
+            f"Back at it! That makes {streak} days running. What's on the agenda?",
+            f"Hey {name}! Systems are calibrated and ready to go. What do you need?",
+            f"Welcome back, {name}! Good to have another session lined up. What are we tackling?",
+            f"Hey {name}! Hope the day has been treating you well so far. What's the plan?"
         ]
-        greeting_parts.append(random.choice(closers))
+
+        raw_greeting = random.choice(greeting_templates)
+        clean_greeting = speak(raw_greeting, voice_mode=False)
 
         self.save()
-        return " ".join(greeting_parts)
+        return clean_greeting
 
     # -----------------------------------------------------------------------
     # Mood-Adaptive Response Wrappers
