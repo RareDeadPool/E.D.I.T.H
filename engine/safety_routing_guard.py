@@ -153,8 +153,8 @@ class ActionSafetyAndCompatibilityGuard:
                     "reason": "Process termination requires a specific numeric PID or application name."
                 }
 
-            # Enforce operational confidence threshold (at least 70% confidence for process termination)
-            if confidence < 0.70:
+            # Enforce operational confidence threshold (at least 75% confidence for process termination)
+            if confidence < 0.75:
                 return {
                     "is_safe": True,
                     "is_conversational": False,
@@ -179,7 +179,19 @@ class ActionSafetyAndCompatibilityGuard:
                 "reason": "Negated user command strictly acknowledged without execution."
             }
 
-        # 4. Standard Operational Action
+        # 4. Universal Confidence Barrier (>= 0.75 required for tool execution)
+        if confidence < 0.75:
+            return {
+                "is_safe": True,
+                "is_conversational": True,
+                "can_execute": False,
+                "override_intent": "chitchat",
+                "override_action": "respond_dialogue",
+                "override_handler": "dialogue",
+                "reason": f"Operational confidence ({confidence:.2f}) is below 0.75 execution barrier. Fallback to conversation."
+            }
+
+        # 5. Standard Operational Action (Unambiguous command with >= 0.75 confidence)
         return {
             "is_safe": True,
             "is_conversational": False,

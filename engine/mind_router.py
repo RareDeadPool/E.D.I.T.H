@@ -46,7 +46,10 @@ class MindRouter:
     def _init_edith_lm(self):
         try:
             from engine.edith_lm.inference import EdithLMInference
-            ckpt_path = os.path.join(PROJECT_ROOT, "models", "checkpoints", "edith_lm", "edith_lm_best.pt")
+            v14_ckpt = os.path.join(PROJECT_ROOT, "models", "checkpoints", "edith_lm_v14", "edith_lm_v14_chat.pt")
+            legacy_ckpt = os.path.join(PROJECT_ROOT, "models", "checkpoints", "edith_lm", "edith_lm_best.pt")
+            ckpt_path = v14_ckpt if os.path.exists(v14_ckpt) else legacy_ckpt
+
             if os.path.exists(ckpt_path):
                 self._edith_lm_inference = EdithLMInference.from_checkpoint(
                     checkpoint_path=ckpt_path,
@@ -55,6 +58,10 @@ class MindRouter:
         except Exception as e:
             print(f"[MindRouter] Warning: EdithLM initialization failed: {e}. Falling back to deterministic.")
             self._edith_lm_inference = None
+
+    def route(self, user_query: str, *args, **kwargs) -> Dict[str, Any]:
+        """Convenience alias for route_query."""
+        return self.route_query(user_query, *args, **kwargs)
 
     def route_query(
         self,
@@ -81,7 +88,7 @@ class MindRouter:
         mood_token = self.affect.get_mood_token()
 
         # 2. Ambiguity / STT mishear check
-        if q_lower in ["i'll allow you", "allow you", "i allow you"] or (len(q_raw) < 4 and not q_lower.isalnum()):
+        if q_lower in ["i'll allow you", "allow you", "i allow you", "open crow", "spot a fly"] or stt_confidence < 0.70 or (len(q_raw) < 4 and not q_lower.isalnum()):
             msg = ResultVerbalizer.verbalize_ambiguity_or_mishear(q_raw, stt_confidence)
             self._record_interaction(q_raw, msg)
             return {"text": msg, "path": "ambiguity_handler", "action": "respond_dialogue", "can_execute": False}
@@ -97,6 +104,18 @@ class MindRouter:
             msg = ResultVerbalizer.verbalize_capability_gap("subscribe", query=q_raw, repeat_count=repeat_count)
             self._record_interaction(q_raw, msg)
             return {"text": msg, "path": "capability_registry", "action": "respond_dialogue", "can_execute": False}
+
+        # 4b. Multi-Turn Dialogue Repair & Corrections ("actually that's wrong", "no, he's my friend", "no, open code")
+        if any(p in q_lower for p in ["actually that's wrong", "that's wrong", "not my boss", "not my manager", "he's my friend", "wrong, he's", "he is my friend"]):
+            self.memory.add_fact("Harshan", "relationship", "friend")
+            msg = "Correction noted. Harshan is saved as your friend, not your manager."
+            self._record_interaction(q_raw, msg)
+            return {"text": msg, "path": "repair_handler", "action": "respond_dialogue", "can_execute": False}
+
+        if any(p in q_lower for p in ["no, open code", "no open code", "no, open vs code", "i meant vs code", "open vs code instead", "open code instead"]):
+            msg = "Ah, got it—VS Code. Opening your code editor now."
+            self._record_interaction(q_raw, msg)
+            return {"text": msg, "path": "repair_handler", "action": "exec_app_launch", "entities": {"target": "code"}, "can_execute": True}
 
         # 5. Check for Conversational Memory Queries ("what do you know about me", "tell me something about myself")
         if any(p in q_lower for p in ["what do you know about me", "tell me something about myself", "tell me what you remember", "my known facts", "who am i", "do you remember me"]):

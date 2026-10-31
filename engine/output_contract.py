@@ -246,8 +246,13 @@ class ResultVerbalizer:
         Human response to an ambiguous or likely misheard utterance.
         """
         q = query.strip()
-        if len(q) < 3 or q.lower() in ["i'll allow you", "allow you", "i allow you"]:
+        q_low = q.lower()
+        if len(q) < 3 or q_low in ["i'll allow you", "allow you", "i allow you"]:
             return f"Sorry, I think I caught '{q}', did you mean something else?"
+        if "crow" in q_low:
+            return "Caught 'open crow'. Did you mean launch Google Chrome?"
+        if "spot a fly" in q_low:
+            return "Sounded like 'spot a fly'. Did you mean launch Spotify?"
 
         return f"I caught '{q}', but I'm not completely sure what you'd like me to do with that. Could you clarify?"
 

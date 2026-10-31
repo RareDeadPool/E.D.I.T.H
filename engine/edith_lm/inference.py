@@ -58,7 +58,7 @@ class EdithLMInference:
         if not os.path.exists(full_ckpt_path):
             raise FileNotFoundError(f"Checkpoint not found at {full_ckpt_path}")
 
-        ckpt = torch.load(full_ckpt_path, map_location="cpu")
+        ckpt = torch.load(full_ckpt_path, map_location="cpu", weights_only=False)
         state_dict = ckpt.get("model_state", ckpt)
 
         # Inspect dimensions from state_dict to avoid any architecture mismatch
