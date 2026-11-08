@@ -31,14 +31,43 @@ from engine.bridge_mode import BridgeModeEngine
 
 
 class MindRouter:
-    def __init__(self, backend: str = "edith_lm"):
+    CHECKPOINT_CATALOG = {
+        "v14": {
+            "checkpoint": "models/checkpoints/edith_lm_v14/edith_lm_v14_chat.pt",
+            "tokenizer": "models/checkpoints/edith_bpe_tokenizer_v14_3k.json",
+            "description": "Production Default: V14 Chat Checkpoint (3,051 vocab, stable)",
+            "tier": "production"
+        },
+        "v15_3": {
+            "checkpoint": "models/checkpoints/edith_lm_v15_sft/edith_lm_v15_3_sft_best.pt",
+            "tokenizer": "models/checkpoints/edith_bpe_tokenizer_16k.json",
+            "description": "Research Candidate: V15.3 SFT Best (16,384 vocab, Step 200)",
+            "tier": "research"
+        },
+        "v15_2": {
+            "checkpoint": "models/checkpoints/edith_lm_v15/edith_lm_v15_2_100m_best.pt",
+            "tokenizer": "models/checkpoints/edith_bpe_tokenizer_16k.json",
+            "description": "Research Baseline: V15.2 Pretrained 100M (16,384 vocab)",
+            "tier": "research"
+        },
+        "legacy_base": {
+            "checkpoint": "models/checkpoints/edith_lm/edith_lm_best.pt",
+            "tokenizer": "models/checkpoints/edith_bpe_tokenizer_v14_3k.json",
+            "description": "Fallback Baseline: Raw weights checkpoint",
+            "tier": "fallback"
+        }
+    }
+
+    def __init__(self, backend: str = "edith_lm", model_version: Optional[str] = None):
         self.backend = backend  # "edith_lm" | "legacy_qwen" | "deterministic"
+        self.requested_version = model_version
         self.affect = AffectEngine()
         self.memory = MemoryStore()
         self.bridge_mode = BridgeModeEngine(self.memory)
 
         self._edith_lm_inference = None
         self._legacy_qwen_reasoner = None
+        self.diagnostics: Dict[str, Any] = {}
 
         # Multi-turn working memory for repetition, dialogue state, and repair
         self.recent_turns: List[Dict[str, str]] = []
@@ -60,26 +89,110 @@ class MindRouter:
             "lm_authored_share": (self.lm_authored_count / total) if total > 0 else 0.0,
             "bridge_share": (self.bridge_count / total) if total > 0 else 0.0,
             "category_counts": dict(self.category_counts),
+            "diagnostics": self.diagnostics
         }
+
+    def get_diagnostics(self) -> Dict[str, Any]:
+        """Returns deep runtime diagnostics on the active language model backend."""
+        return dict(self.diagnostics)
 
     def _record_category(self, category: str):
         self.category_counts[category] = self.category_counts.get(category, 0) + 1
 
-    def _init_edith_lm(self):
-        try:
-            from engine.edith_lm.inference import EdithLMInference
-            v14_ckpt = os.path.join(PROJECT_ROOT, "models", "checkpoints", "edith_lm_v14", "edith_lm_v14_chat.pt")
-            legacy_ckpt = os.path.join(PROJECT_ROOT, "models", "checkpoints", "edith_lm", "edith_lm_best.pt")
-            ckpt_path = v14_ckpt if os.path.exists(v14_ckpt) else legacy_ckpt
+    def _resolve_target_version(self) -> str:
+        # 1. Explicit argument in code
+        if self.requested_version:
+            return self.requested_version
+        
+        # 2. Environment variable
+        env_ver = os.environ.get("EDITH_LM_MODEL_VERSION") or os.environ.get("EDITH_LM_VERSION")
+        if env_ver and env_ver in self.CHECKPOINT_CATALOG:
+            return env_ver
 
-            if os.path.exists(ckpt_path):
+        # 3. Model config file check
+        config_path = os.path.join(PROJECT_ROOT, "config", "model_config.json")
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                    cfg_ver = cfg.get("edith_lm_active_version")
+                    if cfg_ver and cfg_ver in self.CHECKPOINT_CATALOG:
+                        return cfg_ver
+            except Exception:
+                pass
+
+        # 4. Strict Production Default: "v14"
+        return "v14"
+
+    def _init_edith_lm(self):
+        from engine.edith_lm.inference import EdithLMInference
+
+        target_ver = self._resolve_target_version()
+        attempt_order = []
+        last_err = None
+
+        if target_ver in self.CHECKPOINT_CATALOG:
+            attempt_order.append(target_ver)
+        else:
+            last_err = f"Unknown model version key '{target_ver}'"
+
+        if "v14" not in attempt_order:
+            attempt_order.append("v14")
+        if "legacy_base" not in attempt_order:
+            attempt_order.append("legacy_base")
+
+        loaded = False
+
+        for ver_key in attempt_order:
+            entry = self.CHECKPOINT_CATALOG[ver_key]
+            ckpt_path = os.path.join(PROJECT_ROOT, entry["checkpoint"])
+            tok_path = os.path.join(PROJECT_ROOT, entry["tokenizer"])
+
+            if not os.path.exists(ckpt_path):
+                last_err = f"File not found: {ckpt_path}"
+                continue
+
+            try:
                 self._edith_lm_inference = EdithLMInference.from_checkpoint(
                     checkpoint_path=ckpt_path,
+                    tokenizer_path=tok_path,
                     quantize_int8=False
                 )
-        except Exception as e:
-            print(f"[MindRouter] Warning: EdithLM initialization failed: {e}. Falling back to deterministic.")
+                loaded = True
+                is_rollback = (ver_key != target_ver)
+                self.diagnostics = {
+                    "requested_version": target_ver,
+                    "active_version": ver_key,
+                    "status": "rolled_back" if is_rollback else "operational",
+                    "rollback_occurred": is_rollback,
+                    "rollback_reason": f"Target '{target_ver}' failed: {last_err}" if is_rollback else None,
+                    "checkpoint_path": ckpt_path,
+                    "tokenizer_path": tok_path,
+                    "vocab_size": self._edith_lm_inference.tokenizer.vocab_size,
+                    "device": self._edith_lm_inference.device,
+                    "tier": entry["tier"],
+                    "description": entry["description"],
+                    "initialized_at": datetime.now().isoformat()
+                }
+                if is_rollback:
+                    print(f"[MindRouter] Warning: Target '{target_ver}' unavailable ({last_err}). Safely rolled back to '{ver_key}'.")
+                break
+            except Exception as e:
+                last_err = str(e)
+                print(f"[MindRouter] Warning: Initialization of '{ver_key}' failed: {e}")
+
+        if not loaded:
+            print(f"[MindRouter] Error: All EdithLM candidates failed ({last_err}). Falling back to deterministic mode.")
             self._edith_lm_inference = None
+            self.diagnostics = {
+                "requested_version": target_ver,
+                "active_version": None,
+                "status": "failed_all_fallbacks",
+                "rollback_occurred": True,
+                "rollback_reason": f"All candidates failed. Last error: {last_err}",
+                "device": None,
+                "initialized_at": datetime.now().isoformat()
+            }
 
     def route(self, user_query: str, *args, **kwargs) -> Dict[str, Any]:
         """Convenience alias for route_query."""
@@ -316,18 +429,52 @@ class MindRouter:
             self.recent_turns.pop(0)
 
     def _handle_mind_generation(self, q_raw: str, mood_token: str, is_distress: bool = False) -> Dict[str, Any]:
-        """Generates response using the active mind backend and enforces Output Contract & Fluency Guard."""
+        """Generates response using the active mind backend with deterministic SQLite memory grounding."""
+        q_lower = q_raw.lower()
 
-        # Check for friend introduction pattern (extract into memory with strict provenance)
-        m_friend = re.search(r"\b(?:friend\s+named|named|call\s+him)\s+([A-Za-z]+)\b", q_raw, re.IGNORECASE)
-        friend_name = None
-        if m_friend and "friend" in q_raw.lower():
-            friend_name = m_friend.group(1).capitalize()
-            self.memory.add_fact(friend_name, "relationship", "friend", provenance="user_stated", evidence=f"User stated: {q_raw}")
+        # 1. Deterministic User Fact Extraction (User-Stated Provenance)
+        self.memory.extract_and_store_user_facts(q_raw)
 
-        # 1. Option: EdithLM (Primary Default)
+        # 2. Deterministic Long-Term Memory Retrieval
+        grounded_facts = self.memory.retrieve_relevant_facts(q_raw)
+
+        # 3. Direct Fact Recall Query Handling (Deterministic SQLite Retrieval)
+        is_recall_query = any(w in q_lower for w in [
+            "what was", "what is", "who is", "who was", "do you remember", "tell me my", "name of my friend", "my friend's name", "my friends name"
+        ]) and any(w in q_lower for w in ["friend", "name", "favorite", "job", "work"])
+
+        if is_recall_query and grounded_facts:
+            f0 = grounded_facts[0]
+            if f0["subject"] == "friend" and f0["predicate"] == "name":
+                reply_text = f"Your friend's name is {f0['object']}."
+            elif f0["subject"] == "user" and f0["predicate"] == "name":
+                reply_text = f"Your name is {f0['object']}."
+            elif f0["predicate"].startswith("favorite_"):
+                fav_topic = f0["predicate"].replace("favorite_", "")
+                reply_text = f"Your favorite {fav_topic} is {f0['object']}."
+            else:
+                reply_text = f"According to what you told me, your {f0['subject']} {f0['predicate']} is {f0['object']}."
+
+            self.last_turn_failed = False
+            self.memory.record_turn(q_raw, reply_text)
+            self._record_interaction(q_raw, reply_text)
+            return {
+                "text": reply_text,
+                "path": "memory_retrieval",
+                "source": "sqlite_memory",
+                "action": "respond_dialogue",
+                "can_execute": False,
+                "retrieved_facts": grounded_facts
+            }
+
+        # 4. Neural Generation with EdithLM (Grounded Context Injection)
         if self.backend == "edith_lm" and self._edith_lm_inference:
-            prompt = f"{mood_token}<user>{q_raw}</user><edith>"
+            if grounded_facts:
+                mem_str = " ".join([f"Remember that user's {f['subject']} {f['predicate']} is {f['object']}." for f in grounded_facts])
+                prompt = f"{mood_token}<memory>{mem_str}</memory><user>{q_raw}</user><edith>"
+            else:
+                prompt = f"{mood_token}<user>{q_raw}</user><edith>"
+
             try:
                 # Sample N=4 candidates across temperatures
                 candidates = []

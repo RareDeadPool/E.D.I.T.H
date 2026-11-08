@@ -1,0 +1,49 @@
+{
+  "dataset_version": "V15.3.2-clean-partition",
+  "total_dialogues": 23840,
+  "total_unique_prompt_clusters": 21745,
+  "total_merged_clusters": 21137,
+  "splits": {
+    "train": {
+      "dialogues": 21452,
+      "clusters": 18971,
+      "total_tokens": 2607485,
+      "supervised_targets": 1118916,
+      "mean_supervised_tokens": 52.16,
+      "commercial_dialogues": 14329,
+      "non_commercial_dialogues": 7123
+    },
+    "val": {
+      "dialogues": 1196,
+      "clusters": 1073,
+      "total_tokens": 147257,
+      "supervised_targets": 61018,
+      "mean_supervised_tokens": 51.02,
+      "commercial_dialogues": 764,
+      "non_commercial_dialogues": 432
+    },
+    "test": {
+      "dialogues": 1192,
+      "clusters": 1093,
+      "total_tokens": 148605,
+      "supervised_targets": 61786,
+      "mean_supervised_tokens": 51.83,
+      "commercial_dialogues": 771,
+      "non_commercial_dialogues": 421
+    }
+  },
+  "leakage_audit": {
+    "train_val_prompt_overlap": 0,
+    "train_test_prompt_overlap": 0,
+    "val_test_prompt_overlap": 0,
+    "jaccard_near_duplicate_cross_partition": 0,
+    "status": "PASSED_ZERO_LEAKAGE"
+  },
+  "licenses": {
+    "databricks-dolly-15k": "CC BY-SA 3.0 (Commercial Derivative Allowed with Attribution & ShareAlike)",
+    "empathetic_dialogues": "CC BY-NC 4.0 (Non-Commercial / Academic / Research Only)",
+    "edith_curriculum": "Proprietary Custom",
+    "edith_authored_seeds": "Proprietary Custom"
+  },
+  "commercial_usage_claim": "NON_COMMERCIAL_RESEARCH_ONLY (Inherited from Empathetic Dialogues CC BY-NC 4.0)"
+}

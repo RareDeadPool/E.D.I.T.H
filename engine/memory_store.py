@@ -155,19 +155,102 @@ class MemoryStore:
             )
             conn.commit()
 
-    def search_facts(self, query: str) -> List[Dict[str, Any]]:
-        """Retrieves semantic facts relevant to a query, strictly filtered by valid provenance."""
+    def extract_and_store_user_facts(self, user_msg: str, session_id: str = "default") -> List[Dict[str, Any]]:
+        """Extracts explicit user-stated facts and stores them with verified provenance."""
+        import re
+        stored = []
+        msg_clean = user_msg.strip()
+        msg_lower = msg_clean.lower()
+
+        # 1. Friend / Person Name Pattern: "My friend is named Harshan", "friend's name is X", "friend named X"
+        m_friend = re.search(r"\b(?:friend\s+(?:is\s+)?named|friend['’]s\s+name\s+is|friend\s+is\s+called|have\s+a\s+friend\s+named)\s+([A-Za-z]+)\b", msg_clean, re.IGNORECASE)
+        if m_friend:
+            friend_name = m_friend.group(1).capitalize()
+            self.add_fact(
+                subject="friend",
+                predicate="name",
+                object_value=friend_name,
+                confidence=1.0,
+                provenance="user_stated",
+                evidence=msg_clean,
+                session_id=session_id
+            )
+            stored.append({"subject": "friend", "predicate": "name", "object": friend_name})
+
+        # 2. User Name Pattern: "My name is X", "I am X" (when explicit)
+        m_name = re.search(r"\b(?:my\s+name\s+is|call\s+me)\s+([A-Za-z]+)\b", msg_clean, re.IGNORECASE)
+        if m_name and not m_friend:
+            user_name = m_name.group(1).capitalize()
+            self.add_fact(
+                subject="user",
+                predicate="name",
+                object_value=user_name,
+                confidence=1.0,
+                provenance="user_stated",
+                evidence=msg_clean,
+                session_id=session_id
+            )
+            stored.append({"subject": "user", "predicate": "name", "object": user_name})
+
+        # 3. Preference Pattern: "My favorite X is Y"
+        m_fav = re.search(r"\bmy\s+favorite\s+([a-zA-Z]+)\s+is\s+([a-zA-Z0-9_\s]+?)(?:\.|$)", msg_clean, re.IGNORECASE)
+        if m_fav:
+            fav_topic = m_fav.group(1).lower().strip()
+            fav_val = m_fav.group(2).strip()
+            self.add_fact(
+                subject="preference",
+                predicate=f"favorite_{fav_topic}",
+                object_value=fav_val,
+                confidence=1.0,
+                provenance="user_stated",
+                evidence=msg_clean,
+                session_id=session_id
+            )
+            stored.append({"subject": "preference", "predicate": f"favorite_{fav_topic}", "object": fav_val})
+
+        # 4. Profession / Role: "I work as a X", "I am a software engineer"
+        m_job = re.search(r"\b(?:i\s+work\s+as\s+an?|i\s+am\s+an?)\s+([a-zA-Z\s]+?)(?:\.|$)", msg_clean, re.IGNORECASE)
+        if m_job and "stressed" not in msg_lower and "feeling" not in msg_lower and "fine" not in msg_lower:
+            job_title = m_job.group(1).strip()
+            if len(job_title.split()) <= 4:
+                self.add_fact(
+                    subject="user",
+                    predicate="occupation",
+                    object_value=job_title,
+                    confidence=1.0,
+                    provenance="user_stated",
+                    evidence=msg_clean,
+                    session_id=session_id
+                )
+                stored.append({"subject": "user", "predicate": "occupation", "object": job_title})
+
+        return stored
+
+    def retrieve_relevant_facts(self, query: str, session_id: str = "default") -> List[Dict[str, Any]]:
+        """Retrieves semantic facts relevant to a query, strictly filtered by valid provenance and session."""
         q_lower = query.lower()
         results = []
+        
+        # Check relevance intent keywords
+        is_query_seeking_memory = any(w in q_lower for w in [
+            "who", "what", "where", "remember", "know about", "friend", "name", "favorite", "job", "work"
+        ])
+        if not is_query_seeking_memory:
+            return []
+
         with sqlite3.connect(self.db_path) as conn:
             c = conn.cursor()
             c.execute("""
-                SELECT subject, predicate, object_value, provenance, evidence, confidence, timestamp 
+                SELECT subject, predicate, object_value, provenance, evidence, confidence, timestamp, session_id 
                 FROM semantic_facts 
-                WHERE provenance IN ('user_stated', 'observed', 'inferred_labeled')
-            """)
-            for subj, pred, obj, prov, evid, conf, ts in c.fetchall():
-                if subj.lower() in q_lower or obj.lower() in q_lower or pred.lower() in q_lower:
+                WHERE provenance = 'user_stated' AND (session_id = ? OR session_id = '' OR session_id IS NULL)
+                ORDER BY timestamp DESC
+            """, (session_id,))
+            for subj, pred, obj, prov, evid, conf, ts, sid in c.fetchall():
+                # Precision match: check if query mentions subject, predicate, or context
+                subj_match = subj.lower() in q_lower
+                pred_match = pred.lower() in q_lower or any(p in q_lower for p in pred.lower().split("_"))
+                if subj_match or pred_match:
                     results.append({
                         "subject": subj,
                         "predicate": pred,
@@ -175,7 +258,8 @@ class MemoryStore:
                         "provenance": prov,
                         "evidence": evid,
                         "confidence": conf,
-                        "timestamp": ts
+                        "timestamp": ts,
+                        "session_id": sid
                     })
         return results
 

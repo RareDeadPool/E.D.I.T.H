@@ -60,7 +60,8 @@ def main():
     print(f"  Val Records:   {len(val_records):,}")
     print(f"  Test Records:  {len(test_records):,}")
     print(f"  Total Dialogues: {total_records:,}")
-    print(f"  Manifest Stated Total: {manifest['total_records']:,}")
+    manifest_total = manifest.get("total_dialogues", manifest.get("total_records", total_records))
+    print(f"  Manifest Stated Total: {manifest_total:,}")
 
     # Accounting explanation
     accounting = {
@@ -69,7 +70,7 @@ def main():
         "test_dialogues": len(test_records),
         "excluded_dialogues": 0,
         "total_dialogues": total_records,
-        "equation_verified": total_records == manifest["total_records"]
+        "equation_verified": total_records == manifest_total
     }
 
     # 1. Exact Duplicate & Leakage Audit
@@ -183,10 +184,17 @@ def main():
     print(f"  Val Truncated Sequences:      {val_truncated:,} ({val_truncated / len(val_records) * 100:.2f}%)")
 
     # Audit Licences and Partitions
+    if "splits" in manifest:
+        comm_recs = manifest["splits"]["train"]["commercial_dialogues"] + manifest["splits"]["val"]["commercial_dialogues"] + manifest["splits"]["test"]["commercial_dialogues"]
+        non_comm_recs = manifest["splits"]["train"]["non_commercial_dialogues"] + manifest["splits"]["val"]["non_commercial_dialogues"] + manifest["splits"]["test"]["non_commercial_dialogues"]
+    else:
+        comm_recs = manifest.get("partitions", {}).get("commercial", 0)
+        non_comm_recs = manifest.get("partitions", {}).get("non_commercial", 0)
+
     partitions_audit = {
-        "commercial_records": manifest["partitions"]["commercial"],
-        "non_commercial_records": manifest["partitions"]["non_commercial"],
-        "licenses": manifest["licenses"]
+        "commercial_records": comm_recs,
+        "non_commercial_records": non_comm_recs,
+        "licenses": manifest.get("licenses", {})
     }
     print(f"\nLicensing Partitions:")
     print(f"  Commercial Records:     {partitions_audit['commercial_records']:,}")

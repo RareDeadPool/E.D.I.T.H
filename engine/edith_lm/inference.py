@@ -50,19 +50,42 @@ class EdithLMInference:
         device: Optional[str] = None,
         quantize_int8: bool = False,
     ) -> "EdithLMInference":
-        """Factory method to load EdithLM from checkpoint and tokenizer."""
-        full_tok_path = os.path.join(PROJECT_ROOT, tokenizer_path) if not os.path.isabs(tokenizer_path) else tokenizer_path
-        tok = EdithByteBPETokenizer(vocab_file=full_tok_path)
-
+        """Factory method to load EdithLM from checkpoint and tokenizer with strict validation."""
         full_ckpt_path = os.path.join(PROJECT_ROOT, checkpoint_path) if not os.path.isabs(checkpoint_path) else checkpoint_path
         if not os.path.exists(full_ckpt_path):
             raise FileNotFoundError(f"Checkpoint not found at {full_ckpt_path}")
 
-        ckpt = torch.load(full_ckpt_path, map_location="cpu", weights_only=False)
-        state_dict = ckpt.get("model_state", ckpt)
+        full_tok_path = os.path.join(PROJECT_ROOT, tokenizer_path) if not os.path.isabs(tokenizer_path) else tokenizer_path
+        if not os.path.exists(full_tok_path):
+            raise FileNotFoundError(f"Tokenizer not found at {full_tok_path}")
 
-        # Inspect dimensions from state_dict to avoid any architecture mismatch
-        if isinstance(ckpt, dict) and "config" in ckpt and hasattr(ckpt["config"], "dim"):
+        tok = EdithByteBPETokenizer(vocab_file=full_tok_path)
+
+        ckpt = torch.load(full_ckpt_path, map_location="cpu", weights_only=False)
+        
+        # 1. Format Detection and State Dict Extraction
+        if not isinstance(ckpt, dict):
+            raise TypeError(f"Loaded checkpoint is not a dictionary: {type(ckpt)}")
+
+        ckpt_format = "unknown"
+        if "model_state_dict" in ckpt:
+            state_dict = ckpt["model_state_dict"]
+            ckpt_format = "v15_trainer_dict"
+        elif "model_state" in ckpt:
+            state_dict = ckpt["model_state"]
+            ckpt_format = "legacy_trainer_dict"
+        elif "tok_embeddings.weight" in ckpt:
+            state_dict = ckpt
+            ckpt_format = "raw_state_dict"
+        else:
+            available_keys = list(ckpt.keys())[:10]
+            raise ValueError(
+                f"Unrecognized checkpoint dictionary structure in {full_ckpt_path}. "
+                f"Expected 'model_state_dict', 'model_state', or direct tensor keys. Found: {available_keys}"
+            )
+
+        # 2. Architecture Configuration Validation
+        if "config" in ckpt and hasattr(ckpt["config"], "dim"):
             config = ckpt["config"]
         elif "tok_embeddings.weight" in state_dict:
             vocab_size, dim = state_dict["tok_embeddings.weight"].shape
@@ -81,13 +104,53 @@ class EdithLMInference:
                 n_heads=n_heads,
                 n_kv_heads=n_kv_heads,
                 intermediate_dim=intermediate_dim,
+                tie_word_embeddings=True,
             )
         else:
-            config = EdithLMConfig.base(vocab_size=tok.vocab_size)
+            raise ValueError(f"Unable to resolve EdithLMConfig: 'config' key missing and 'tok_embeddings.weight' not in state_dict.")
 
+        # 3. Tokenizer and Vocabulary Compatibility & Auto-Alignment
+        if tok.vocab_size != config.vocab_size:
+            # Check for 16k vocabulary auto-alignment
+            if config.vocab_size == 16384:
+                alt_16k = os.path.join(os.path.dirname(full_tok_path), "edith_bpe_tokenizer_16k.json")
+                if os.path.exists(alt_16k):
+                    tok = EdithByteBPETokenizer(vocab_file=alt_16k)
+            elif config.vocab_size == 3051 or config.vocab_size == 4096:
+                alt_v14 = os.path.join(os.path.dirname(full_tok_path), "edith_bpe_tokenizer_v14_3k.json")
+                alt_base = os.path.join(os.path.dirname(full_tok_path), "edith_bpe_tokenizer.json")
+                if os.path.exists(alt_v14) and config.vocab_size == 3051:
+                    tok = EdithByteBPETokenizer(vocab_file=alt_v14)
+                elif os.path.exists(alt_base):
+                    alt_tok = EdithByteBPETokenizer(vocab_file=alt_base)
+                    if alt_tok.vocab_size == config.vocab_size:
+                        tok = alt_tok
+
+            # Re-verify after auto-alignment attempt
+            if tok.vocab_size != config.vocab_size:
+                raise ValueError(
+                    f"Tokenizer vocabulary size ({tok.vocab_size}) does not match checkpoint model vocabulary size ({config.vocab_size}). "
+                    f"Ensure the correct tokenizer is paired with the checkpoint."
+                )
+
+        # 4. Model Instantiation & Strict State Dict Verification
         model = EdithLM(config)
-        model.load_state_dict(state_dict)
-        return cls(model=model, tokenizer=tok, device=device, quantize_int8=quantize_int8)
+        missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+
+        # Allow missing 'output.weight' only when weights are tied
+        if config.tie_word_embeddings and "output.weight" in missing_keys:
+            missing_keys = [k for k in missing_keys if k != "output.weight"]
+
+        if unexpected_keys:
+            raise ValueError(f"Checkpoint contains unexpected parameter keys: {unexpected_keys[:10]}")
+        if missing_keys:
+            raise ValueError(f"Checkpoint is missing required parameter weights: {missing_keys[:10]}")
+
+        instance = cls(model=model, tokenizer=tok, device=device, quantize_int8=quantize_int8)
+        instance.checkpoint_path = full_ckpt_path
+        instance.checkpoint_format = ckpt_format
+        instance.config = config
+        return instance
 
 
     @torch.no_grad()

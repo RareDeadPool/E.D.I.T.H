@@ -1,54 +1,49 @@
 {
-  "total_records": 23840,
-  "total_tokens": 2903347,
-  "train_records": 21456,
-  "val_records": 1192,
-  "test_records": 1192,
-  "partitions": {
-    "commercial": 15864,
-    "non_commercial": 7976
+  "dataset_version": "V15.3.2-clean-partition",
+  "total_dialogues": 23840,
+  "total_unique_prompt_clusters": 21745,
+  "total_merged_clusters": 21137,
+  "splits": {
+    "train": {
+      "dialogues": 21452,
+      "clusters": 18971,
+      "total_tokens": 2607485,
+      "supervised_targets": 1118916,
+      "mean_supervised_tokens": 52.16,
+      "commercial_dialogues": 14329,
+      "non_commercial_dialogues": 7123
+    },
+    "val": {
+      "dialogues": 1196,
+      "clusters": 1073,
+      "total_tokens": 147257,
+      "supervised_targets": 61018,
+      "mean_supervised_tokens": 51.02,
+      "commercial_dialogues": 764,
+      "non_commercial_dialogues": 432
+    },
+    "test": {
+      "dialogues": 1192,
+      "clusters": 1093,
+      "total_tokens": 148605,
+      "supervised_targets": 61786,
+      "mean_supervised_tokens": 51.83,
+      "commercial_dialogues": 771,
+      "non_commercial_dialogues": 421
+    }
   },
-  "categories": {
-    "hinglish_chat_extended": 192,
-    "dolly_general_qa": 2117,
-    "empathy_conversation": 7976,
-    "dolly_classification": 2124,
-    "dolly_closed_qa": 1500,
-    "dolly_summarization": 836,
-    "dolly_open_qa": 3697,
-    "dolly_information_extraction": 1115,
-    "first_person_venting_extended": 90,
-    "self_reference_memory": 24,
-    "dolly_creative_writing": 626,
-    "dolly_brainstorming": 1746,
-    "how_are_you_extended": 320,
-    "self_reference_memory_extended": 192,
-    "capability_limits_extended": 240,
-    "witty_banter_extended": 192,
-    "curiosity_smalltalk_extended": 192,
-    "curiosity_smalltalk": 24,
-    "stt_mishear_extended": 240,
-    "E_knowledge": 7,
-    "third_person_distress_extended": 144,
-    "witty_banter": 24,
-    "stt_mishear": 30,
-    "B_humour": 12,
-    "F_multiturn": 3,
-    "hinglish_chat": 24,
-    "D_problem_solving": 7,
-    "A_everyday": 12,
-    "C_empathy": 10,
-    "how_are_you": 40,
-    "capability_limits": 30,
-    "dialogue_repair": 9,
-    "third_person_distress": 24,
-    "G_instruction": 6,
-    "first_person_venting": 15
+  "leakage_audit": {
+    "train_val_prompt_overlap": 0,
+    "train_test_prompt_overlap": 0,
+    "val_test_prompt_overlap": 0,
+    "jaccard_near_duplicate_cross_partition": 0,
+    "status": "PASSED_ZERO_LEAKAGE"
   },
   "licenses": {
-    "databricks-dolly-15k": "CC BY-SA 3.0",
-    "empathetic_dialogues": "CC BY-NC 4.0",
+    "databricks-dolly-15k": "CC BY-SA 3.0 (Commercial Derivative Allowed with Attribution & ShareAlike)",
+    "empathetic_dialogues": "CC BY-NC 4.0 (Non-Commercial / Academic / Research Only)",
     "edith_curriculum": "Proprietary Custom",
     "edith_authored_seeds": "Proprietary Custom"
-  }
+  },
+  "commercial_usage_claim": "NON_COMMERCIAL_RESEARCH_ONLY (Inherited from Empathetic Dialogues CC BY-NC 4.0)"
 }

@@ -93,8 +93,11 @@ class LeakLinter:
         if fallback:
             return fallback
 
-        # Clean stripped fallback
-        clean_text = text
+        # Clean stripped fallback - remove full thought, action, mood blocks first
+        clean_text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
+        clean_text = re.sub(r"<act>.*?</act>", "", clean_text, flags=re.DOTALL | re.IGNORECASE)
+        clean_text = re.sub(r"<mood>.*?</mood>", "", clean_text, flags=re.DOTALL | re.IGNORECASE)
+        clean_text = re.sub(r"<memory>.*?</memory>", "", clean_text, flags=re.DOTALL | re.IGNORECASE)
         for pattern in cls.FORBIDDEN_PATTERNS:
             clean_text = re.sub(pattern, "", clean_text, flags=re.IGNORECASE)
         clean_text = re.sub(r"\s+", " ", clean_text).strip()
@@ -124,8 +127,15 @@ class TTSSanitizer:
         if not text:
             return ""
 
+        # 0. Strip internal reasoning tags, thoughts, actions, and mood tokens
+        s = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
+        s = re.sub(r"<act>.*?</act>", "", s, flags=re.DOTALL | re.IGNORECASE)
+        s = re.sub(r"<mood>.*?</mood>", "", s, flags=re.DOTALL | re.IGNORECASE)
+        s = re.sub(r"<memory>.*?</memory>", "", s, flags=re.DOTALL | re.IGNORECASE)
+        s = re.sub(r"<[^>]+>", "", s)
+
         # 1. Remove emojis
-        s = cls.EMOJI_PATTERN.sub("", text)
+        s = cls.EMOJI_PATTERN.sub("", s)
 
         # 2. Remove markdown formatting
         s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)  # Bold
