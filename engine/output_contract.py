@@ -56,6 +56,10 @@ class LeakLinter:
         r"\[SUGGESTIONS\]",
         # Incomplete contextual strings
         r"Contextual control resolved:\s*\.?",
+        # Residual markup tags and model token artifacts
+        r"</?[a-zA-Z0-9_]+>?",
+        r"<bos>",
+        r"<eos>",
     ]
 
     @classmethod
@@ -161,15 +165,23 @@ class ResultVerbalizer:
     """
 
     @classmethod
-    def verbalize_memory(cls, facts: List[Dict[str, str]], user_name: str = "Aditya", streak: int = 3, query_type: str = "general") -> str:
+    def verbalize_memory(cls, facts: List[Dict[str, Any]], user_name: str = "Aditya", streak: int = 3, query_type: str = "general") -> str:
         """
         Translates raw memory facts into a conversational reflection of what E.D.I.T.H. knows.
+        Strictly requires each fact to have valid provenance (user_stated, observed, inferred_labeled).
         """
         friends = []
         preferences = []
         projects = []
 
+        valid_provenances = {"user_stated", "observed", "inferred_labeled"}
+
         for f in facts:
+            # Enforce provenance requirement
+            prov = f.get("provenance")
+            if prov not in valid_provenances:
+                continue
+
             subj = f.get("subject", "")
             pred = f.get("predicate", "")
             obj = f.get("object", "")
@@ -179,7 +191,8 @@ class ResultVerbalizer:
                 if name.lower() not in ["user", "aditya", "friend"]:
                     friends.append(name.capitalize())
             elif "like" in pred or "prefer" in pred or "preference" in pred:
-                preferences.append(f"{pred} {obj}")
+                pref_val = obj if obj else pred
+                preferences.append(pref_val)
             elif "project" in pred:
                 projects.append(obj)
 
@@ -302,6 +315,21 @@ def speak(
         if debug_mode:
             print(f"[DEBUG LINT] {err_msg}")
         text = LeakLinter.sanitize_or_reject(text, fallback="I'm right here. What can I help you with?")
+
+    # 2. Strict Fluency Guard Check (zero gibberish ever reaches speak or TTS)
+    try:
+        from engine.fluency_guard import FluencyGuard
+        is_fluent, diag = FluencyGuard.inspect(text)
+        if not is_fluent:
+            err_msg = f"[FluencyGuard Error] User-visible text failed fluency check: {diag.get('reason')}. Text: '{text}'"
+            if strict_raise:
+                raise ValueError(err_msg)
+            if debug_mode:
+                print(f"[DEBUG FLUENCY] {err_msg}")
+            text = "That came out scrambled, let me try again."
+    except Exception as e:
+        if debug_mode:
+            print(f"[DEBUG FLUENCY] FluencyGuard error: {e}")
 
     if voice_mode:
         text = TTSSanitizer.sanitize(text)

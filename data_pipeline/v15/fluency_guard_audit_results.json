@@ -1,0 +1,261 @@
+[
+  {
+    "text": "I'll grab some coffee and meet you downstairs in ten minutes.",
+    "category": "Everyday English",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.631467612488921
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Could you please remind me what time our team meeting is scheduled for?",
+    "category": "Everyday English",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.462470955939309
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Please do the needful and revert back once the build succeeds.",
+    "category": "Indian English",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.649651848395876
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "He is out of station this week, so who will take care of deployment?",
+    "category": "Indian English",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.3209718875114165
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "bhai tension mat le, hum milkar bug fix kar denge.",
+    "category": "Hinglish",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -8.32375850967516
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "aaj dimag bohot kharab hai, thoda gaana chalao na.",
+    "category": "Hinglish",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -9.25384322065741
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "PyTorch DataLoader utilizes shared memory IPC when num workers is non zero.",
+    "category": "Technical Terms",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -8.236537599628685
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Quantization maps 32-bit floating point weights into 8-bit integers.",
+    "category": "Technical Terms",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.641380955046971
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Aditya and Harshan met in Bangalore for the developer sprint.",
+    "category": "Names & Entities",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.407751968825857
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Albert Einstein developed the theory of general relativity.",
+    "category": "Names & Entities",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.6385227017736765
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Launch VSCode, Spotify, and Chrome simultaneously.",
+    "category": "Application Names",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -8.580871788126204
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Open Notepad and copy the output from PowerShell terminal.",
+    "category": "Application Names",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.739541829693929
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "The perspicacious engineer scrutinized the labyrinthine architecture.",
+    "category": "Rare Vocabulary",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -8.056071354972712
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Ephemeral cache buffers were obliterated during system initialization.",
+    "category": "Rare Vocabulary",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.824216874768426
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Why do programmers prefer dark mode? Because light attracts bugs.",
+    "category": "Creative Humour",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.876287617517638
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "There are only 10 types of people in the world: those who understand binary, and those who don't.",
+    "category": "Creative Humour",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -6.903375707927354
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Just about ten minutes.",
+    "category": "Conversational Short Turn",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.425691125632023
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "Sure thing!",
+    "category": "Conversational Short Turn",
+    "expected_pass": true,
+    "actual_pass": true,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -6.554743217481697
+    },
+    "verdict": "TRUE POSITIVE (Correctly Passed)"
+  },
+  {
+    "text": "You hunol aioleplay naentation's w syks sa ke was...",
+    "category": "Word Salad Gibberish",
+    "expected_pass": false,
+    "actual_pass": false,
+    "diagnostics": {
+      "word_validity_ratio": 0.6,
+      "failed_check": "word_validity_ratio",
+      "reason": "Word validity 60.0% < 90.0%"
+    },
+    "verdict": "TRUE NEGATIVE (Correctly Rejected)"
+  },
+  {
+    "text": "I forbeteersedation li in O whatyyur reallyf...",
+    "category": "Word Salad Gibberish",
+    "expected_pass": false,
+    "actual_pass": false,
+    "diagnostics": {
+      "word_validity_ratio": 0.5714285714285714,
+      "failed_check": "word_validity_ratio",
+      "reason": "Word validity 57.1% < 90.0%"
+    },
+    "verdict": "TRUE NEGATIVE (Correctly Rejected)"
+  },
+  {
+    "text": "The answer is that the answer is the answer is the answer is the answer.",
+    "category": "Degenerate Repetition",
+    "expected_pass": false,
+    "actual_pass": false,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -6.622922863434748,
+      "failed_check": "repeated_ngrams",
+      "reason": "Repeated 3-gram detected"
+    },
+    "verdict": "TRUE NEGATIVE (Correctly Rejected)"
+  },
+  {
+    "text": "Looking at the system and I'm ready for and",
+    "category": "Dangling Conjunction",
+    "expected_pass": false,
+    "actual_pass": false,
+    "diagnostics": {
+      "word_validity_ratio": 1.0,
+      "char_trigram_logprob": -7.210726957512574,
+      "failed_check": "sentence_completeness",
+      "reason": "Unfinished sentence or dangling conjunction"
+    },
+    "verdict": "TRUE NEGATIVE (Correctly Rejected)"
+  },
+  {
+    "text": "Holding steady this afternoon.</edith>",
+    "category": "Residual Markup",
+    "expected_pass": false,
+    "actual_pass": false,
+    "diagnostics": {
+      "failed_check": "tag_leak",
+      "reason": "Residual markup or tag leak detected"
+    },
+    "verdict": "TRUE NEGATIVE (Correctly Rejected)"
+  }
+]

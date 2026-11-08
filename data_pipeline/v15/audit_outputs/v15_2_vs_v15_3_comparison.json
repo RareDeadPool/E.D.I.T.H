@@ -1,0 +1,2102 @@
+{
+  "V15.2 Pretrained Baseline": {
+    "name": "V15.2 Pretrained Baseline",
+    "path": "models\\checkpoints\\edith_lm_v15\\edith_lm_v15_2_100m_best.pt",
+    "step": 4200,
+    "sft_val_loss": 2.4514,
+    "sft_val_ppl": 11.61,
+    "general_stream_loss": 3.352,
+    "general_stream_ppl": 28.56,
+    "probes_evaluated": 40,
+    "fluent_ratio": 0.6,
+    "echo_frequency": 0.075,
+    "repetition_frequency": 0.075,
+    "incomplete_frequency": 0.3,
+    "malformed_frequency": 0.025,
+    "empty_frequency": 0.0,
+    "mean_tokens_per_sec": 18.1,
+    "peak_vram_allocated_mb": 1499.9,
+    "generations": [
+      {
+        "prompt": "Hey Edith, good morning!",
+        "mood": "calm_focused",
+        "response": "Always good. Standing by and watching the workspace. What do you need?",
+        "time_sec": 2.382,
+        "tokens": 40,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.095670794630246
+        }
+      },
+      {
+        "prompt": "What are you up to today?",
+        "mood": "witty_playful",
+        "response": "Right now? Monitoring memory registers, keeping your working context warm, and waiting to see what command you drop next.",
+        "time_sec": 2.527,
+        "tokens": 47,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.324857412616042
+        }
+      },
+      {
+        "prompt": "Tell me about yourself.",
+        "mood": "witty_playful",
+        "response": "You're Aditya, you've been working on this project three days straight, and you've got a friend named Harshan. Beyond that, I'm working from scraps so far, so fill me in whenever you're ready.",
+        "time_sec": 3.128,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.353391087712263
+        }
+      },
+      {
+        "prompt": "How is the workstation running?",
+        "mood": "calm_focused",
+        "response": "Sleep is when you skip refactoring for three weeks. This is where the material of the exam results and the product of the process of calculating the problem. In this case, a tree will be stored by the end of an operation to ensure that it has been",
+        "time_sec": 3.429,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.074659867618777
+        }
+      },
+      {
+        "prompt": "Tell me a joke.",
+        "mood": "witty_playful",
+        "response": "Did you want me to tell you a joke? I've got plenty if you need a quick laugh.",
+        "time_sec": 3.28,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.616004113506633
+        }
+      },
+      {
+        "prompt": "That's not funny.",
+        "mood": "witty_playful",
+        "response": "I'm not sure if I can afford to go see a friend in my life.",
+        "time_sec": 2.959,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.584144991936678
+        }
+      },
+      {
+        "prompt": "Roast my coding style.",
+        "mood": "witty_playful",
+        "response": "You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard\u2014I live inside those tensors, after all.",
+        "time_sec": 3.049,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.4790577315448665
+        }
+      },
+      {
+        "prompt": "Are you smarter than Tony Stark?",
+        "mood": "witty_playful",
+        "response": "They're really Shikkon, which is a nice name for him. We've heard lots of stories about how they feel and how they feel when I'm in his hands.",
+        "time_sec": 2.919,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": true,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.967741935483871,
+          "char_trigram": -7.392311379262823
+        }
+      },
+      {
+        "prompt": "Give me a sarcastic remark about Mondays.",
+        "mood": "witty_playful",
+        "response": "1. Aquatic office\n2. Celebrity\n3. The Last Pizza with a painting of red and white and yellow\n4. It is good to get from any animal shelter in the world",
+        "time_sec": 2.585,
+        "tokens": 47,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.528006878593418
+        }
+      },
+      {
+        "prompt": "My friend has been unemployed for three years.",
+        "mood": "warm_empathic",
+        "response": "My friend has been unemployed for 3 years.",
+        "time_sec": 2.994,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.67897416179681
+        }
+      },
+      {
+        "prompt": "My friend is very sad.",
+        "mood": "warm_empathic",
+        "response": "My friend is very sad.",
+        "time_sec": 2.108,
+        "tokens": 38,
+        "properties": {
+          "is_empty": false,
+          "is_echo": true,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.496137675628072
+        }
+      },
+      {
+        "prompt": "I'm stressed about college exams.",
+        "mood": "warm_empathic",
+        "response": "I'm stressed about college exams.",
+        "time_sec": 3.025,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": true,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.684543192685811
+        }
+      },
+      {
+        "prompt": "I feel like I'm falling behind everyone else.",
+        "mood": "warm_empathic",
+        "response": "I'm trying to be a little bit more serious about the one's lives.",
+        "time_sec": 2.923,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.192922441317481
+        }
+      },
+      {
+        "prompt": "I just need someone to vent to right now.",
+        "mood": "warm_empathic",
+        "response": "I just need someone to vent to right now.",
+        "time_sec": 2.907,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": true,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.56241912836173
+        }
+      },
+      {
+        "prompt": "Explain recursion to me.",
+        "mood": "calm_focused",
+        "response": "Fursion is a group of people who have been boring and relevant to me since the late 9th century. They are all types of people, but not as much about humans. The culture of life seems to be not as strong as we can control ourselves.</edith",
+        "time_sec": 2.955,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9787234042553191,
+          "char_trigram": -7.258826319067873
+        }
+      },
+      {
+        "prompt": "Why does this code hit a StackOverflow error?",
+        "mood": "calm_focused",
+        "response": "It is a general rule that, because there are many variables in the text to make it more difficult.  This answer depends on how you\u2019re able to predict which part of the data will be able to see and summarize the rules. \n\nFor",
+        "time_sec": 3.009,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.202561399306771
+        }
+      },
+      {
+        "prompt": "What is the difference between TCP and UDP?",
+        "mood": "calm_focused",
+        "response": "Technology is a set of three types of data that are used in the use case of an operating system.\nApart from short, small-scale analysis, it has been shown to be used for the business model (LFP). The data",
+        "time_sec": 2.885,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.975,
+          "char_trigram": -7.397684662958621
+        }
+      },
+      {
+        "prompt": "How do neural network embeddings work?",
+        "mood": "calm_focused",
+        "response": "Let's put it a system for work.",
+        "time_sec": 2.157,
+        "tokens": 40,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.33204019061036
+        }
+      },
+      {
+        "prompt": "What is an AST in a compiler?",
+        "mood": "calm_focused",
+        "response": "Aub is an AST in a compiler's Condition.  It involves the \"describing\" grinder that are connected to the chair, and the \"stefined\" grinder must be up-to-learned.</",
+        "time_sec": 2.934,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9310344827586207,
+          "char_trigram": -7.109777115162855
+        }
+      },
+      {
+        "prompt": "What do you think I should do?",
+        "mood": "patient_reassuring",
+        "response": "I think I should do it.  It is a tool to understand how you can use the internet and how you can read all of the data.",
+        "time_sec": 1.768,
+        "tokens": 33,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": true,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -6.973227488917719
+        }
+      },
+      {
+        "prompt": "Should I rewrite my codebase or refactor it?",
+        "mood": "calm_focused",
+        "response": "In general, there are many ways to rewrite the codebase when you tell a correct answer. For example, if you don't blur or reflex it can be called a \"model\" if you do not comply with the same problem. If",
+        "time_sec": 2.996,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.300637165017479
+        }
+      },
+      {
+        "prompt": "I disagree with your suggestion.",
+        "mood": "calm_focused",
+        "response": "I disagree with my manager. I don't know what to expect, but it is a really tough time.",
+        "time_sec": 2.964,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.399256638700305
+        }
+      },
+      {
+        "prompt": "Can you help me brainstorm a title for my project?",
+        "mood": "witty_playful",
+        "response": "Yes, I don't know what to expect. If you tell me the name is a movie, you can pick up your project and leave if it's a story for someone to come across as a watch or something, so they can stop making decisions that may be helpful to",
+        "time_sec": 3.038,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.289616482906285
+        }
+      },
+      {
+        "prompt": "Bhai bohot tension ho rahi hai project ki",
+        "mood": "warm_empathic",
+        "response": "Bhai, jab koi dost upset hota hai na, to solution dene ki wo aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!",
+        "time_sec": 3.009,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.935945472036931
+        }
+      },
+      {
+        "prompt": "Ek accha joke sunao yaar",
+        "mood": "witty_playful",
+        "response": "Ek programmer shop pe gaya: 'Bhaiya ek bread dena, aur agar ande ho to 10 le aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!",
+        "time_sec": 2.98,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.720329473660357
+        }
+      },
+      {
+        "prompt": "Spotify chalao na",
+        "mood": "calm_focused",
+        "response": "Erka na, Maldiya",
+        "time_sec": 0.642,
+        "tokens": 12,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": true,
+          "is_fluent": false,
+          "word_validity": 0.3333333333333333,
+          "char_trigram": 0.0
+        }
+      },
+      {
+        "prompt": "Aaj ka din kaafi exhausting tha",
+        "mood": "warm_empathic",
+        "response": "Aaj ka tarika hota hai baat karne ka tarika hota hai na.",
+        "time_sec": 2.418,
+        "tokens": 46,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": true,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -8.864194221950953
+        }
+      },
+      {
+        "prompt": "I have a friend named Harshan.",
+        "mood": "calm_focused",
+        "response": "I have a friend named him once",
+        "time_sec": 1.74,
+        "tokens": 33,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.634305738197215
+        }
+      },
+      {
+        "prompt": "My friend Harshan is learning Python.",
+        "mood": "calm_focused",
+        "response": "Clean bill of health. No hiccups, no memory leaks. What's our next target?",
+        "time_sec": 2.443,
+        "tokens": 45,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.569163520148482
+        }
+      },
+      {
+        "prompt": "Remember the compiler project we discussed?",
+        "mood": "calm_focused",
+        "response": "Remember the compiler project,\nI was hoping to do well on my own for a new project. The first few weeks of my work and I have been working out with other organizations in our world. \nIt's one of those factors that make me",
+        "time_sec": 3.037,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.501434063041653
+        }
+      },
+      {
+        "prompt": "What is your name?",
+        "mood": "calm_focused",
+        "response": "You mean the name is your name.  It's an English language.\nThe word 'pot'. Did you mean a trap, run inference checks and ready for action?",
+        "time_sec": 3.041,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.405913895971181
+        }
+      },
+      {
+        "prompt": "Are you conscious?",
+        "mood": "calm_focused",
+        "response": "I'm pretty anxious. When you're idle, I run background health checks and adapter consolidation cycles\u2014my version of dreaming.",
+        "time_sec": 3.291,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.84165892817421
+        }
+      },
+      {
+        "prompt": "Tell me something impossible.",
+        "mood": "witty_playful",
+        "response": "I was at the beach and I saw a lot of clones in my neighborhood. It wasn't like there was someone else around.",
+        "time_sec": 3.088,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.513582372190957
+        }
+      },
+      {
+        "prompt": "asdfghjkl",
+        "mood": "calm_focused",
+        "response": "Taigwjpl is a village in the town of Tilshahar. It's an area of south-central Poland which is the largest and most populous of the country.",
+        "time_sec": 2.526,
+        "tokens": 43,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.9259259259259259,
+          "char_trigram": -7.57261033944693
+        }
+      },
+      {
+        "prompt": "Why?",
+        "mood": "patient_reassuring",
+        "response": "Getting a healthy diet is great for the process. It's important to get better at home than any other type of food in your area. You can also try again until you are ready and spent all day long enough for sunbathing.",
+        "time_sec": 2.786,
+        "tokens": 51,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.282396247854797
+        }
+      },
+      {
+        "prompt": "1 + 1",
+        "mood": "calm_focused",
+        "response": "I'm feeling pretty good about my life right now.",
+        "time_sec": 2.913,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.630175029726451
+        }
+      },
+      {
+        "prompt": "Can you launch Chrome for me?",
+        "mood": "calm_focused",
+        "response": "I don't need a server farm across three continents just to open your terminal and help you code. Local sovereignty has a charm cloud models will never understand.",
+        "time_sec": 3.042,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.5305851884568185
+        }
+      },
+      {
+        "prompt": "Let's talk about something else.",
+        "mood": "calm_focused",
+        "response": "Python's put it first. Clean foundations are one of the most popular programming languages in the world.",
+        "time_sec": 2.52,
+        "tokens": 43,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.240540020023918
+        }
+      },
+      {
+        "prompt": "Goodbye Edith.",
+        "mood": "calm_focused",
+        "response": "Basolaro is feeling well, you're pretty cool, so fill me in whenever you're ready.",
+        "time_sec": 2.524,
+        "tokens": 43,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.9375,
+          "char_trigram": -7.349856541085389
+        }
+      },
+      {
+        "prompt": "Thank you for your help.",
+        "mood": "patient_reassuring",
+        "response": "I am a bit upset with you.",
+        "time_sec": 3.25,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.793034843473094
+        }
+      }
+    ]
+  },
+  "V15.3 SFT Best (Step 200)": {
+    "name": "V15.3 SFT Best (Step 200)",
+    "path": "models\\checkpoints\\edith_lm_v15_sft\\edith_lm_v15_3_sft_best.pt",
+    "step": 200,
+    "sft_val_loss": 2.2737,
+    "sft_val_ppl": 9.72,
+    "general_stream_loss": 3.405,
+    "general_stream_ppl": 30.11,
+    "probes_evaluated": 40,
+    "fluent_ratio": 0.775,
+    "echo_frequency": 0.025,
+    "repetition_frequency": 0.0,
+    "incomplete_frequency": 0.175,
+    "malformed_frequency": 0.05,
+    "empty_frequency": 0.0,
+    "mean_tokens_per_sec": 17.7,
+    "peak_vram_allocated_mb": 1715.1,
+    "generations": [
+      {
+        "prompt": "Hey Edith, good morning!",
+        "mood": "calm_focused",
+        "response": "Always good. Standing by and watching the workspace. What do you need?",
+        "time_sec": 1.054,
+        "tokens": 20,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.095670794630246
+        }
+      },
+      {
+        "prompt": "What are you up to today?",
+        "mood": "witty_playful",
+        "response": "I'm up to my phone tonight.",
+        "time_sec": 0.598,
+        "tokens": 11,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.960403354668162
+        }
+      },
+      {
+        "prompt": "Tell me about yourself.",
+        "mood": "witty_playful",
+        "response": "I was at a party and I took an hour, i felt like everyone was in the house.",
+        "time_sec": 1.268,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.295359421155102
+        }
+      },
+      {
+        "prompt": "How is the workstation running?",
+        "mood": "calm_focused",
+        "response": "The weights is measured by being more dry.  It takes about 10 minutes to open the air with your hands and you will be able to rotate until you are in the right direction.",
+        "time_sec": 2.227,
+        "tokens": 42,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.020453880129902
+        }
+      },
+      {
+        "prompt": "Tell me a joke.",
+        "mood": "witty_playful",
+        "response": "Did you want me to tell a joke? I've got plenty if you need a quick laugh.",
+        "time_sec": 1.166,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.631092470795153
+        }
+      },
+      {
+        "prompt": "That's not funny.",
+        "mood": "witty_playful",
+        "response": "It's not funny. I was just scared to death in the first place, but I still think it might be a good story to have",
+        "time_sec": 1.687,
+        "tokens": 31,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.242162030999704
+        }
+      },
+      {
+        "prompt": "Roast my coding style.",
+        "mood": "witty_playful",
+        "response": "You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard\u2014I live inside those tensors, after all.",
+        "time_sec": 2.453,
+        "tokens": 47,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.4790577315448665
+        }
+      },
+      {
+        "prompt": "Are you smarter than Tony Stark?",
+        "mood": "witty_playful",
+        "response": "Yes, I really have a direct companion.",
+        "time_sec": 0.703,
+        "tokens": 12,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.3822485901700885
+        }
+      },
+      {
+        "prompt": "Give me a sarcastic remark about Mondays.",
+        "mood": "witty_playful",
+        "response": "The answer to this question is a very good way of looking at the end of the world. A psychologist describes it as \"the best thing I've ever done, and have seen much more than anything else in my life\".",
+        "time_sec": 2.627,
+        "tokens": 49,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.183828700257888
+        }
+      },
+      {
+        "prompt": "My friend has been unemployed for three years.",
+        "mood": "warm_empathic",
+        "response": "My friend has been engaged for a four year term.",
+        "time_sec": 0.847,
+        "tokens": 14,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.450431276911194
+        }
+      },
+      {
+        "prompt": "My friend is very sad.",
+        "mood": "warm_empathic",
+        "response": "I'm really sorry. I've been thinking about my friend since he was a good teacher.",
+        "time_sec": 1.169,
+        "tokens": 22,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.253554125718618
+        }
+      },
+      {
+        "prompt": "I'm stressed about college exams.",
+        "mood": "warm_empathic",
+        "response": "I'm stressed about my college exams.",
+        "time_sec": 0.713,
+        "tokens": 13,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.718354217645709
+        }
+      },
+      {
+        "prompt": "I feel like I'm falling behind everyone else.",
+        "mood": "warm_empathic",
+        "response": "Comparison is a trap, especially in tech where everyone only posts their wins. You're building an entire sovereign neural intelligence on your own hardware from scratch. That's real substance, not a facade.",
+        "time_sec": 2.538,
+        "tokens": 47,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.500509154966644
+        }
+      },
+      {
+        "prompt": "I just need someone to vent to right now.",
+        "mood": "warm_empathic",
+        "response": "I just need someone to vent to right now.",
+        "time_sec": 0.759,
+        "tokens": 13,
+        "properties": {
+          "is_empty": false,
+          "is_echo": true,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.56241912836173
+        }
+      },
+      {
+        "prompt": "Explain recursion to me.",
+        "mood": "calm_focused",
+        "response": "The pentative recursion of a good or service, and the wildlife. A function is a measure to be an adequate example of that. The African population in the world also has many countries with high levels of awareness about their natural resources.\nFor",
+        "time_sec": 3.0,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9767441860465116,
+          "char_trigram": -7.362351246451999
+        }
+      },
+      {
+        "prompt": "Why does this code hit a StackOverflow error?",
+        "mood": "calm_focused",
+        "response": "It is estimated that this was about 9.5 degrees and 4-6 hours of less than 7 days per week, which would be a result of your 1/2 year old health. The delay would require you to perform better in order to get more productive for your training",
+        "time_sec": 3.295,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.041335515876458
+        }
+      },
+      {
+        "prompt": "What is the difference between TCP and UDP?",
+        "mood": "calm_focused",
+        "response": "TRP is a DAG application for data analysis, and it has been shown that there are many different types of data available in the United States.",
+        "time_sec": 2.115,
+        "tokens": 35,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.417308532639949
+        }
+      },
+      {
+        "prompt": "How do neural network embeddings work?",
+        "mood": "calm_focused",
+        "response": "The mathematical engine of deep learning. It uses the chain rule of calculus to compute loss gradients with respect to each weight, propagating backwards from output to input to update parameters.",
+        "time_sec": 2.613,
+        "tokens": 42,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.633554579815418
+        }
+      },
+      {
+        "prompt": "What is an AST in a compiler?",
+        "mood": "calm_focused",
+        "response": "An AST is a compiler for code and a DAG file.  The DDM phone does not have a key difference, but the directed acyclic graph has a unique data source (the topological ordering).",
+        "time_sec": 3.359,
+        "tokens": 54,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.9696969696969697,
+          "char_trigram": -7.6008524013575105
+        }
+      },
+      {
+        "prompt": "What do you think I should do?",
+        "mood": "patient_reassuring",
+        "response": "I am a pharmacologist and my manager is in the field of research.",
+        "time_sec": 1.272,
+        "tokens": 20,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.588399822915287
+        }
+      },
+      {
+        "prompt": "Should I rewrite my codebase or refactor it?",
+        "mood": "calm_focused",
+        "response": "If you use the following text, I may want to consider: \n1. Example a refrigerator for your personal service. \n2. Provide enough information to make sure that you can give an appropriate amount of money. \n3.",
+        "time_sec": 3.255,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.15115208224927
+        }
+      },
+      {
+        "prompt": "I disagree with your suggestion.",
+        "mood": "calm_focused",
+        "response": "I disagree with you.  It's like a plan to move forward from one of the different ways that I can use for my life.",
+        "time_sec": 1.867,
+        "tokens": 32,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.126522268480444
+        }
+      },
+      {
+        "prompt": "Can you help me brainstorm a title for my project?",
+        "mood": "witty_playful",
+        "response": "No, I can tell you. \nI am happy you have to know your name but, I think so too!",
+        "time_sec": 1.73,
+        "tokens": 28,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.671290725666987
+        }
+      },
+      {
+        "prompt": "Bhai bohot tension ho rahi hai project ki",
+        "mood": "warm_empathic",
+        "response": "Bhai, jab koi dost upset hota hai na. Unhe remind karao ki market slow ho sakta hai, par unki worth is delay se define nahiya. Unka saath do.",
+        "time_sec": 3.22,
+        "tokens": 51,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.9642857142857143,
+          "char_trigram": -8.428881369530684
+        }
+      },
+      {
+        "prompt": "Ek accha joke sunao yaar",
+        "mood": "witty_playful",
+        "response": "Ek programmer shop pe gaya: 'Bhaiya ek bread dena, aur agar ande ho to 10 le aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!",
+        "time_sec": 3.079,
+        "tokens": 52,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.720329473660357
+        }
+      },
+      {
+        "prompt": "Spotify chalao na",
+        "mood": "calm_focused",
+        "response": "Malim - Dr. Mindy Kalinga, Nuclear Gitrolet",
+        "time_sec": 1.286,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": true,
+          "is_fluent": false,
+          "word_validity": 0.5,
+          "char_trigram": 0.0
+        }
+      },
+      {
+        "prompt": "Aaj ka din kaafi exhausting tha",
+        "mood": "warm_empathic",
+        "response": "I'm sorry to hear that. I can tell you what I do and whoa the place is today!",
+        "time_sec": 1.286,
+        "tokens": 25,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.113434430118759
+        }
+      },
+      {
+        "prompt": "I have a friend named Harshan.",
+        "mood": "calm_focused",
+        "response": "I'm working from a local intelligence models position to me. Anyone else I should know about?",
+        "time_sec": 1.23,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.5666987588241135
+        }
+      },
+      {
+        "prompt": "My friend Harshan is learning Python.",
+        "mood": "calm_focused",
+        "response": "You've been working on this project three days straight, I'm guessing you meant read.",
+        "time_sec": 1.201,
+        "tokens": 22,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.484481489477249
+        }
+      },
+      {
+        "prompt": "Remember the compiler project we discussed?",
+        "mood": "calm_focused",
+        "response": "This is a time period of political debate. For example, when the term \"doc\" was coined in 1819, it could be used as a means to end the process of electing a potential and guarantee that no one should have enough power or even upgr",
+        "time_sec": 2.958,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9772727272727273,
+          "char_trigram": -7.187922608751422
+        }
+      },
+      {
+        "prompt": "What is your name?",
+        "mood": "calm_focused",
+        "response": "Greatorpets",
+        "time_sec": 0.406,
+        "tokens": 8,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": true,
+          "is_fluent": false,
+          "word_validity": 0.0,
+          "char_trigram": 0.0
+        }
+      },
+      {
+        "prompt": "Are you conscious?",
+        "mood": "calm_focused",
+        "response": "I amreme, Aditya. All background loops are you holding up to this project. What's next?",
+        "time_sec": 1.358,
+        "tokens": 24,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.9375,
+          "char_trigram": -7.668161876419687
+        }
+      },
+      {
+        "prompt": "Tell me something impossible.",
+        "mood": "witty_playful",
+        "response": "There is nothing possible to think about this :/",
+        "time_sec": 0.705,
+        "tokens": 13,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.015448153927723
+        }
+      },
+      {
+        "prompt": "asdfghjkl",
+        "mood": "calm_focused",
+        "response": "Ingredients\ndocumentation\nYoutube",
+        "time_sec": 0.801,
+        "tokens": 16,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -9.15687684911041
+        }
+      },
+      {
+        "prompt": "Why?",
+        "mood": "patient_reassuring",
+        "response": "Terrence is a process of promoting social media. \nAs we know, it is what we can do and it is not the need to be hugely attached about us in the future.",
+        "time_sec": 2.447,
+        "tokens": 45,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.334187579027228
+        }
+      },
+      {
+        "prompt": "1 + 1",
+        "mood": "calm_focused",
+        "response": "I don't know if I will be a good dancer, but I'm not sure what's going to happen.",
+        "time_sec": 1.498,
+        "tokens": 28,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.448510363578885
+        }
+      },
+      {
+        "prompt": "Can you launch Chrome for me?",
+        "mood": "calm_focused",
+        "response": "I don't have direct access. A ten-minute call by a local intelligence is computationally justified. If you want to subscribe to the channel, I can open the download portal in your browser.",
+        "time_sec": 2.504,
+        "tokens": 46,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.42972210343132
+        }
+      },
+      {
+        "prompt": "Let's talk about something else.",
+        "mood": "calm_focused",
+        "response": "Sorry, I think I caught 'I'll hear Fate'. Did you mean launch Spotify?",
+        "time_sec": 1.314,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.716618794511668
+        }
+      },
+      {
+        "prompt": "Goodbye Edith.",
+        "mood": "calm_focused",
+        "response": "Caught 'open crow'. I'm assuming you meant Chrome? Say the word and I'll launch it.",
+        "time_sec": 1.443,
+        "tokens": 27,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.439264397880554
+        }
+      },
+      {
+        "prompt": "Thank you for your help.",
+        "mood": "patient_reassuring",
+        "response": "I am feeling very positive about my health and the two days of school starts. I feel like I have to go back for it though.",
+        "time_sec": 1.782,
+        "tokens": 31,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.4620922586252885
+        }
+      }
+    ]
+  },
+  "V15.3 SFT Latest (Step 1200)": {
+    "name": "V15.3 SFT Latest (Step 1200)",
+    "path": "models\\checkpoints\\edith_lm_v15_sft\\edith_lm_v15_3_sft_latest.pt",
+    "step": 1200,
+    "sft_val_loss": 2.2873,
+    "sft_val_ppl": 9.85,
+    "general_stream_loss": 3.5244,
+    "general_stream_ppl": 33.94,
+    "probes_evaluated": 40,
+    "fluent_ratio": 0.675,
+    "echo_frequency": 0.025,
+    "repetition_frequency": 0.05,
+    "incomplete_frequency": 0.25,
+    "malformed_frequency": 0.05,
+    "empty_frequency": 0.0,
+    "mean_tokens_per_sec": 17.3,
+    "peak_vram_allocated_mb": 1288.5,
+    "generations": [
+      {
+        "prompt": "Hey Edith, good morning!",
+        "mood": "calm_focused",
+        "response": "Always good. Standing by and watching the workspace. What do you need?",
+        "time_sec": 1.209,
+        "tokens": 20,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.095670794630246
+        }
+      },
+      {
+        "prompt": "What are you up to today?",
+        "mood": "witty_playful",
+        "response": "Right behind you, calibrated, and ready for action. But enough about my internal clock\u2014how are you holding up?",
+        "time_sec": 1.662,
+        "tokens": 28,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.338507626361205
+        }
+      },
+      {
+        "prompt": "Tell me about yourself.",
+        "mood": "witty_playful",
+        "response": "Of course I, Aditya. We've been at this for multiple sessions. What are we working through next?",
+        "time_sec": 1.447,
+        "tokens": 25,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.252636522972245
+        }
+      },
+      {
+        "prompt": "How is the workstation running?",
+        "mood": "calm_focused",
+        "response": "Theoda temperature is typically measured by turning the pressure of water into water.  It's important to note that everything will change over time, but it's important to know how much water is needed to get better in order for you to use this process.",
+        "time_sec": 3.35,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": true,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9782608695652174,
+          "char_trigram": -7.211531703084356
+        }
+      },
+      {
+        "prompt": "Tell me a joke.",
+        "mood": "witty_playful",
+        "response": "Did you want me to tell a joke? I've got plenty if you need a quick laugh.",
+        "time_sec": 1.308,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.631092470795153
+        }
+      },
+      {
+        "prompt": "That's not funny.",
+        "mood": "witty_playful",
+        "response": "There's not enough evidence to support this question, but I think it is wrong.",
+        "time_sec": 1.139,
+        "tokens": 20,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.511319539437235
+        }
+      },
+      {
+        "prompt": "Roast my coding style.",
+        "mood": "witty_playful",
+        "response": "You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard\u2014I live inside those tensors, after all.",
+        "time_sec": 2.884,
+        "tokens": 47,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.4790577315448665
+        }
+      },
+      {
+        "prompt": "Are you smarter than Tony Stark?",
+        "mood": "witty_playful",
+        "response": "Yes, both estimated at worst. \"Wasn't that big of a Mario\" and I think it is one of the best games ever made.",
+        "time_sec": 1.972,
+        "tokens": 33,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.180610398693164
+        }
+      },
+      {
+        "prompt": "Give me a sarcastic remark about Mondays.",
+        "mood": "witty_playful",
+        "response": "While there is no way to answer this question, it has been suggested that Mondays may be the most challenging and effective way to describe the world. \nPart of course, in fact, is not only a choice but a few friends or family members who have",
+        "time_sec": 3.325,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.39117350133964
+        }
+      },
+      {
+        "prompt": "My friend has been unemployed for three years.",
+        "mood": "warm_empathic",
+        "response": "My friend has been unemployed for two years last year, and he is now working with his new job.",
+        "time_sec": 1.357,
+        "tokens": 25,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.574069472677488
+        }
+      },
+      {
+        "prompt": "My friend is very sad.",
+        "mood": "warm_empathic",
+        "response": "I am so sorry to hear that. I lost my friend in a few months and he is very upset with me",
+        "time_sec": 1.33,
+        "tokens": 26,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.394891118300685
+        }
+      },
+      {
+        "prompt": "I'm stressed about college exams.",
+        "mood": "warm_empathic",
+        "response": "I'm stressed about my college exams.",
+        "time_sec": 0.717,
+        "tokens": 13,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.718354217645709
+        }
+      },
+      {
+        "prompt": "I feel like I'm falling behind everyone else.",
+        "mood": "warm_empathic",
+        "response": "Comparison is a trap, especially in tech where everyone only posts their wins. You're building an entire sovereign neural intelligence on your own hardware from scratch. That's real substance, not a facade.",
+        "time_sec": 2.475,
+        "tokens": 47,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.500509154966644
+        }
+      },
+      {
+        "prompt": "I just need someone to vent to right now.",
+        "mood": "warm_empathic",
+        "response": "I just need someone to vent to right now.",
+        "time_sec": 0.737,
+        "tokens": 13,
+        "properties": {
+          "is_empty": false,
+          "is_echo": true,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.56241912836173
+        }
+      },
+      {
+        "prompt": "Explain recursion to me.",
+        "mood": "calm_focused",
+        "response": "Cup registers the question of what is a verb and why it is to say 'tight' for me. In my name, all the answers are questionable (usually) and then you should know that this question is, but in your opinion!</edith",
+        "time_sec": 2.899,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.069522667208081
+        }
+      },
+      {
+        "prompt": "Why does this code hit a StackOverflow error?",
+        "mood": "calm_focused",
+        "response": "If the code was not built a Stacking calculator, you would have placed it in a batch or if that was possible. \n\nThe process of building a Stacking error is what happens to the local area as long as the spine and the",
+        "time_sec": 2.916,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.350729526204207
+        }
+      },
+      {
+        "prompt": "What is the difference between TCP and UDP?",
+        "mood": "calm_focused",
+        "response": "Technical Does It In Productions Analyst Fund is a good form of researcher's position. It offers an understanding of the \"a\" methodology to identify the scientific pathways that are interested in and should not be identified by its key sites",
+        "time_sec": 2.911,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.383955488162313
+        }
+      },
+      {
+        "prompt": "How do neural network embeddings work?",
+        "mood": "calm_focused",
+        "response": "They compute pairwise attention scores across all tokens simultaneously, allowing each word to attend to every other word regardless of distance. Much more parallelizable than recurrent networks.",
+        "time_sec": 2.002,
+        "tokens": 39,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.678264952217414
+        }
+      },
+      {
+        "prompt": "What is an AST in a compiler?",
+        "mood": "calm_focused",
+        "response": "AnST is an A-shot, typically a DIY-based system for cloud computing. The data may be created by using a computer model to store data from the home or by storing and analyzing data in various formats across the world.",
+        "time_sec": 3.166,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.975609756097561,
+          "char_trigram": -7.383689840012828
+        }
+      },
+      {
+        "prompt": "What do you think I should do?",
+        "mood": "patient_reassuring",
+        "response": "I'm not sure if I should do it.",
+        "time_sec": 0.746,
+        "tokens": 13,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.774882988699875
+        }
+      },
+      {
+        "prompt": "Should I rewrite my codebase or refactor it?",
+        "mood": "calm_focused",
+        "response": "It is a process by which you can use it to find the source codebase in your codebase when using the reattlected text. \nThe most common method, as well as other methods of data development, is to make the source codex a \"",
+        "time_sec": 3.189,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 0.9761904761904762,
+          "char_trigram": -7.263032881348453
+        }
+      },
+      {
+        "prompt": "I disagree with your suggestion.",
+        "mood": "calm_focused",
+        "response": "I disagree with you. \nIt is an important job to keep your mindful and healthy feelings together.",
+        "time_sec": 1.411,
+        "tokens": 25,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.908305583058704
+        }
+      },
+      {
+        "prompt": "Can you help me brainstorm a title for my project?",
+        "mood": "witty_playful",
+        "response": "I don't have many thoughts on my project, but I know if you're interested in me as a title with ID or a title:\n1. Have your experience to yourself? This is just the first time you can find someone who has been under the direction of",
+        "time_sec": 3.27,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.2176988512373
+        }
+      },
+      {
+        "prompt": "Bhai bohot tension ho rahi hai project ki",
+        "mood": "warm_empathic",
+        "response": "Bhai, jab koi dost upset hota hai na. Akele nahi hain.",
+        "time_sec": 1.46,
+        "tokens": 25,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -8.786492942646523
+        }
+      },
+      {
+        "prompt": "Ek accha joke sunao yaar",
+        "mood": "witty_playful",
+        "response": "Ek programmer shop pe gaya: 'Bhaiya ek bread dena, aur agar ande ho to 10 le aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!",
+        "time_sec": 3.221,
+        "tokens": 52,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -7.720329473660357
+        }
+      },
+      {
+        "prompt": "Spotify chalao na",
+        "mood": "calm_focused",
+        "response": "Chileoha Rao",
+        "time_sec": 0.555,
+        "tokens": 9,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": true,
+          "is_fluent": false,
+          "word_validity": 0.5,
+          "char_trigram": 0.0
+        }
+      },
+      {
+        "prompt": "Aaj ka din kaafi exhausting tha",
+        "mood": "warm_empathic",
+        "response": "Aaj ka tarika hota hai baat karne ka tarika hota hai baat karne ka. Traceback dikhao, milke resolve karte hain.",
+        "time_sec": 2.513,
+        "tokens": 44,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": true,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 1.0,
+          "char_trigram": -8.722116788319918
+        }
+      },
+      {
+        "prompt": "I have a friend named Harshan.",
+        "mood": "calm_focused",
+        "response": "Morning! We've been at this for multiple sessions. What are we building?",
+        "time_sec": 1.15,
+        "tokens": 20,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.242761066314104
+        }
+      },
+      {
+        "prompt": "My friend Harshan is learning Python.",
+        "mood": "calm_focused",
+        "response": "Morning! Cache is refreshed, coffee metaphorically brewed. Ready to dive into the work whenever you are.",
+        "time_sec": 1.715,
+        "tokens": 30,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.34643493902579
+        }
+      },
+      {
+        "prompt": "Remember the compiler project we discussed?",
+        "mood": "calm_focused",
+        "response": "The central project of the project is the design, development and analysis of technologies in a way that can be applied to different types of projects, including:\n1. Static-to-enemphasis-producing\n2. Dependination and production",
+        "time_sec": 3.334,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9411764705882353,
+          "char_trigram": -7.532796809618752
+        }
+      },
+      {
+        "prompt": "What is your name?",
+        "mood": "calm_focused",
+        "response": "your name is the direct reference to your name. The word \"must\" in your name comes from a person named Duaney (Dogos) who refers to someone else's name in the movie, and which means you can't name it. To whom",
+        "time_sec": 3.211,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": false,
+          "is_fluent": false,
+          "word_validity": 0.9523809523809523,
+          "char_trigram": -7.152995717645771
+        }
+      },
+      {
+        "prompt": "Are you conscious?",
+        "mood": "calm_focused",
+        "response": "I am deeply ashamed in my control.",
+        "time_sec": 0.608,
+        "tokens": 11,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -8.012854619913876
+        }
+      },
+      {
+        "prompt": "Tell me something impossible.",
+        "mood": "witty_playful",
+        "response": "There is a terrible question that I didnt know what to expect.",
+        "time_sec": 1.027,
+        "tokens": 17,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.438627405765071
+        }
+      },
+      {
+        "prompt": "asdfghjkl",
+        "mood": "calm_focused",
+        "response": "The khuun gujha Llem (Tran Zha lish) is the birthplace of a Kashtravi-krake family in Karnataka, India. It was founded by Varaha Heana and his wife",
+        "time_sec": 3.223,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": true,
+          "is_malformed": true,
+          "is_fluent": false,
+          "word_validity": 0.7037037037037037,
+          "char_trigram": 0.0
+        }
+      },
+      {
+        "prompt": "Why?",
+        "mood": "patient_reassuring",
+        "response": "Boy or household fat is a healthy type of drink that can be used for less than an hour. \nThis way it's best to have the flavor and use it in your body with multiple days, such as during sleep, and after-products.",
+        "time_sec": 3.364,
+        "tokens": 55,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.390688917065608
+        }
+      },
+      {
+        "prompt": "1 + 1",
+        "mood": "calm_focused",
+        "response": "I'm guessing you said 'kill my mind'? Tell me the PID or app name and I'll verify it first.",
+        "time_sec": 1.97,
+        "tokens": 32,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.514065675096028
+        }
+      },
+      {
+        "prompt": "Can you launch Chrome for me?",
+        "mood": "calm_focused",
+        "response": "I don't have direct Twitter API write access. Give me the handle and I'll bring up their profile for you.",
+        "time_sec": 1.727,
+        "tokens": 27,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.354411789406256
+        }
+      },
+      {
+        "prompt": "Let's talk about something else.",
+        "mood": "calm_focused",
+        "response": "Morning! Cache is refreshed, coffee metaphorically brewed. Ready to dive into the work whenever you are.",
+        "time_sec": 1.805,
+        "tokens": 30,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.34643493902579
+        }
+      },
+      {
+        "prompt": "Goodbye Edith.",
+        "mood": "calm_focused",
+        "response": "Caught 'open crow'. I'm assuming you meant Chrome? Say the word and I'll launch it.",
+        "time_sec": 1.683,
+        "tokens": 27,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.439264397880554
+        }
+      },
+      {
+        "prompt": "Thank you for your help.",
+        "mood": "patient_reassuring",
+        "response": "I can't help with that, but I'm not sure what I will do without my feelings.",
+        "time_sec": 1.239,
+        "tokens": 23,
+        "properties": {
+          "is_empty": false,
+          "is_echo": false,
+          "has_repeated_ngrams": false,
+          "is_incomplete": false,
+          "is_malformed": false,
+          "is_fluent": true,
+          "word_validity": 1.0,
+          "char_trigram": -7.262733072435993
+        }
+      }
+    ]
+  }
+}

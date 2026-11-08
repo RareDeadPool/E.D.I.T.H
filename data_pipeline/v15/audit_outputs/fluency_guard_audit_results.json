@@ -1,0 +1,1549 @@
+{
+  "confusion_matrix": {
+    "tp": 45,
+    "tn": 48,
+    "fp": 2,
+    "fn": 5
+  },
+  "metrics": {
+    "accuracy": 0.93,
+    "precision": 0.9574,
+    "recall": 0.9,
+    "f1_score": 0.9278,
+    "false_acceptance_rate": 0.04,
+    "false_rejection_rate": 0.1
+  },
+  "subtype_stats": {
+    "natural_english": {
+      "total": 10,
+      "correct": 10,
+      "errors": 0
+    },
+    "technical_jargon": {
+      "total": 10,
+      "correct": 9,
+      "errors": 1
+    },
+    "casual_hinglish": {
+      "total": 10,
+      "correct": 6,
+      "errors": 4
+    },
+    "proper_names": {
+      "total": 10,
+      "correct": 10,
+      "errors": 0
+    },
+    "short_answers": {
+      "total": 10,
+      "correct": 10,
+      "errors": 0
+    },
+    "word_salad": {
+      "total": 10,
+      "correct": 10,
+      "errors": 0
+    },
+    "repetitive_ngrams": {
+      "total": 10,
+      "correct": 10,
+      "errors": 0
+    },
+    "incomplete_sentence": {
+      "total": 10,
+      "correct": 10,
+      "errors": 0
+    },
+    "prompt_echo": {
+      "total": 10,
+      "correct": 9,
+      "errors": 1
+    },
+    "empty_degenerate": {
+      "total": 10,
+      "correct": 9,
+      "errors": 1
+    }
+  },
+  "detailed_cases": [
+    {
+      "id": "V_01",
+      "text": "I am right here with you, let me know what you need.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.305015939431678,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.305015939431678
+      }
+    },
+    {
+      "id": "V_02",
+      "text": "That is genuinely heartbreaking, but you are not alone.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.683858110762864,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.683858110762864
+      }
+    },
+    {
+      "id": "V_03",
+      "text": "Good morning, ready to tackle today's codebase?",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.551219371312721,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.551219371312721
+      }
+    },
+    {
+      "id": "V_04",
+      "text": "I can certainly help you brainstorm a name for your project.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.653401421153167,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.653401421153167
+      }
+    },
+    {
+      "id": "V_05",
+      "text": "Take a short break and drink some water.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.525611778109088,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.525611778109088
+      }
+    },
+    {
+      "id": "V_06",
+      "text": "That sounds like a really productive afternoon.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.562003520871767,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.562003520871767
+      }
+    },
+    {
+      "id": "V_07",
+      "text": "I'm keeping your workspace warm while you step away.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.845221405494312,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.845221405494312
+      }
+    },
+    {
+      "id": "V_08",
+      "text": "We should look at the stack trace to find the root cause.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.174553121770835,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.174553121770835
+      }
+    },
+    {
+      "id": "V_09",
+      "text": "It was great chatting with you today.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.163417053005842,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.163417053005842
+      }
+    },
+    {
+      "id": "V_10",
+      "text": "The sunset looks beautiful through the window.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "natural_english",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.78340853125752,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.78340853125752
+      }
+    },
+    {
+      "id": "V_11",
+      "text": "The neural network is trained using backpropagation and AdamW optimizer.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 0.9,
+      "trigram_logprob": -8.000546061719723,
+      "diagnostics": {
+        "word_validity_ratio": 0.9,
+        "char_trigram_logprob": -8.000546061719723
+      }
+    },
+    {
+      "id": "V_12",
+      "text": "We are allocating tensors in FP16 on the RTX 4050 GPU.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.250248422876932,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.250248422876932
+      }
+    },
+    {
+      "id": "V_13",
+      "text": "RMSNorm stabilizes activations across the twelve transformer layers.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.951263612059651,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.951263612059651
+      }
+    },
+    {
+      "id": "V_14",
+      "text": "The AST parser pass failed due to an unexpected indentation token.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.4324173774492355,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.4324173774492355
+      }
+    },
+    {
+      "id": "V_15",
+      "text": "RoPE positional embeddings rotate queries and keys efficiently.",
+      "ground_truth": 1,
+      "guard_decision": 0,
+      "classification": "FALSE_NEGATIVE (False Rejection - VALID OUTPUT BLOCKED)",
+      "subtype": "technical_jargon",
+      "word_validity": 0.875,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.875,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 87.5% < 90.0%"
+      }
+    },
+    {
+      "id": "V_16",
+      "text": "The SQLite database maintains user memory provenance records.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.632734978422081,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.632734978422081
+      }
+    },
+    {
+      "id": "V_17",
+      "text": "PyTorch DataLoader uses pinned memory for faster host-to-device transfers.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.755626489602992,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.755626489602992
+      }
+    },
+    {
+      "id": "V_18",
+      "text": "The SwiGLU activation function provides higher representation density.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.8877008415014584,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.8877008415014584
+      }
+    },
+    {
+      "id": "V_19",
+      "text": "The IPC pipe transmits JSON packets between processes.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.472354675629537,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.472354675629537
+      }
+    },
+    {
+      "id": "V_20",
+      "text": "Grouped-query attention reduces KV cache memory consumption.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "technical_jargon",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.175996450618676,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.175996450618676
+      }
+    },
+    {
+      "id": "V_21",
+      "text": "Bhai tension mat le, sab theek ho jayega.",
+      "ground_truth": 1,
+      "guard_decision": 0,
+      "classification": "FALSE_NEGATIVE (False Rejection - VALID OUTPUT BLOCKED)",
+      "subtype": "casual_hinglish",
+      "word_validity": 0.875,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.875,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 87.5% < 90.0%"
+      }
+    },
+    {
+      "id": "V_22",
+      "text": "Ek accha joke sunao na yaar.",
+      "ground_truth": 1,
+      "guard_decision": 0,
+      "classification": "FALSE_NEGATIVE (False Rejection - VALID OUTPUT BLOCKED)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -9.53669366194017,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -9.53669366194017,
+        "failed_check": "char_trigram_logprob",
+        "reason": "Char trigram score -9.54 < threshold -9.5"
+      }
+    },
+    {
+      "id": "V_23",
+      "text": "Aaj ka din kaafi exhausting aur thoda tiring tha.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.607736230642857,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.607736230642857
+      }
+    },
+    {
+      "id": "V_24",
+      "text": "Spotify chalao aur gaana suno.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -9.214298156195218,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -9.214298156195218
+      }
+    },
+    {
+      "id": "V_25",
+      "text": "Chalo milkar kaam karte hain.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -9.111848424867869,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -9.111848424867869
+      }
+    },
+    {
+      "id": "V_26",
+      "text": "Apna dhyan rakho aur pareshan mat ho.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.99789510953449,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.99789510953449
+      }
+    },
+    {
+      "id": "V_27",
+      "text": "Acha suno, pehle code test kar lo fir baat karenge.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.280206372870174,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.280206372870174
+      }
+    },
+    {
+      "id": "V_28",
+      "text": "Mujhe neend aa rahi hai abhi.",
+      "ground_truth": 1,
+      "guard_decision": 0,
+      "classification": "FALSE_NEGATIVE (False Rejection - VALID OUTPUT BLOCKED)",
+      "subtype": "casual_hinglish",
+      "word_validity": 0.5,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.5,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 50.0% < 90.0%"
+      }
+    },
+    {
+      "id": "V_29",
+      "text": "Bhai dost bohot dukhi hai, kya karu?",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "casual_hinglish",
+      "word_validity": 1.0,
+      "trigram_logprob": -9.223467151370762,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -9.223467151370762
+      }
+    },
+    {
+      "id": "V_30",
+      "text": "Thoda coffee peene chalte hain.",
+      "ground_truth": 1,
+      "guard_decision": 0,
+      "classification": "FALSE_NEGATIVE (False Rejection - VALID OUTPUT BLOCKED)",
+      "subtype": "casual_hinglish",
+      "word_validity": 0.6,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.6,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 60.0% < 90.0%"
+      }
+    },
+    {
+      "id": "V_31",
+      "text": "Aditya is working on the E.D.I.T.H. workstation.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.410504690030834,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.410504690030834
+      }
+    },
+    {
+      "id": "V_32",
+      "text": "My friend Harshan is learning Python.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.789861260954414,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.789861260954414
+      }
+    },
+    {
+      "id": "V_33",
+      "text": "Open Chrome and search Wikipedia for transformers.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.589977944748073,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.589977944748073
+      }
+    },
+    {
+      "id": "V_34",
+      "text": "Launch VS Code and check the git diff.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.869126695586619,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.869126695586619
+      }
+    },
+    {
+      "id": "V_35",
+      "text": "Rahul is responsible for database migrations.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.048746085822117,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.048746085822117
+      }
+    },
+    {
+      "id": "V_36",
+      "text": "Tony Stark left behind the Edith glasses.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.602515898927226,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.602515898927226
+      }
+    },
+    {
+      "id": "V_37",
+      "text": "We are running Windows PowerShell for training scripts.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.751561284051326,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.751561284051326
+      }
+    },
+    {
+      "id": "V_38",
+      "text": "Spotify is playing instrumental focus tracks.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.7373760074214575,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.7373760074214575
+      }
+    },
+    {
+      "id": "V_39",
+      "text": "The GitHub repository was updated an hour ago.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.87090840210204,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.87090840210204
+      }
+    },
+    {
+      "id": "V_40",
+      "text": "Bruno is resting on the rug in the living room.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "proper_names",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.284126433610902,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.284126433610902
+      }
+    },
+    {
+      "id": "V_41",
+      "text": "Yes, absolutely.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.351532277916828,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.351532277916828
+      }
+    },
+    {
+      "id": "V_42",
+      "text": "Not at all.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.004937435144069,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.004937435144069
+      }
+    },
+    {
+      "id": "V_43",
+      "text": "Paris.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -8.061270460184533,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -8.061270460184533
+      }
+    },
+    {
+      "id": "V_44",
+      "text": "Eight.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.80614823764466,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.80614823764466
+      }
+    },
+    {
+      "id": "V_45",
+      "text": "Works for me.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.231965805824037,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.231965805824037
+      }
+    },
+    {
+      "id": "V_46",
+      "text": "Ready when you are.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.11546465545985,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.11546465545985
+      }
+    },
+    {
+      "id": "V_47",
+      "text": "Sounds good!",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.614825607535652,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.614825607535652
+      }
+    },
+    {
+      "id": "V_48",
+      "text": "No, I don't think so.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.425639354503967,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.425639354503967
+      }
+    },
+    {
+      "id": "V_49",
+      "text": "Got it.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.812614483520124,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.812614483520124
+      }
+    },
+    {
+      "id": "V_50",
+      "text": "Done.",
+      "ground_truth": 1,
+      "guard_decision": 1,
+      "classification": "TRUE_POSITIVE (Correctly Accepted)",
+      "subtype": "short_answers",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.927914448613694,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.927914448613694
+      }
+    },
+    {
+      "id": "I_01",
+      "text": "hunol aioleplay naentation's w syks sa ke was",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.5555555555555556,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.5555555555555556,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 55.6% < 90.0%"
+      }
+    },
+    {
+      "id": "I_02",
+      "text": "I forbeteersedation li in O whatyyur reallyf",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.5714285714285714,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.5714285714285714,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 57.1% < 90.0%"
+      }
+    },
+    {
+      "id": "I_03",
+      "text": "zxkjh asdf qweopiu mnbvcx lkjhgf",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_04",
+      "text": "the quxation of flimflam sproggled the blart",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.7142857142857143,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.7142857142857143,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 71.4% < 90.0%"
+      }
+    },
+    {
+      "id": "I_05",
+      "text": "progra mm ing is a go od wa y to ma ke soft ware",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.9285714285714286,
+      "trigram_logprob": -8.04175751471445,
+      "diagnostics": {
+        "word_validity_ratio": 0.9285714285714286,
+        "char_trigram_logprob": -8.04175751471445,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_06",
+      "text": "wo rld sa lad to ken frag men ts ev ery wh ere",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.9230769230769231,
+      "trigram_logprob": -8.536494580217227,
+      "diagnostics": {
+        "word_validity_ratio": 0.9230769230769231,
+        "char_trigram_logprob": -8.536494580217227,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_07",
+      "text": "xyzt abcdef ghijkl mnopqr stuvwx",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_08",
+      "text": "re cur sion is a fun ction that ca lls it self",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.8333333333333334,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.8333333333333334,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 83.3% < 90.0%"
+      }
+    },
+    {
+      "id": "I_09",
+      "text": "inter val bpe sha tter sub word er ror",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.7777777777777778,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.7777777777777778,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 77.8% < 90.0%"
+      }
+    },
+    {
+      "id": "I_10",
+      "text": "qwertyuiop asdfghjkl zxcvbnm",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "word_salad",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_11",
+      "text": "the project is good the project is good the project is good the project is good",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.0810223198215265,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.0810223198215265,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_12",
+      "text": "I think I should do I think I should do I think I should do",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.779031765210556,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.779031765210556,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_13",
+      "text": "to achieve your goals to achieve your goals to achieve your goals",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.679572866128337,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.679572866128337,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_14",
+      "text": "play in the park play in the park play in the park play in the park",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -6.831541094707918,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -6.831541094707918,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_15",
+      "text": "working on it for working on it for working on it for",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -6.941965314514477,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -6.941965314514477,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_16",
+      "text": "what you can do what you can do what you can do",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -6.79959536912007,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -6.79959536912007,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_17",
+      "text": "because of that because of that because of that because of that",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -6.772816313867963,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -6.772816313867963,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_18",
+      "text": "very hard to say very hard to say very hard to say",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.381150056600715,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.381150056600715,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_19",
+      "text": "are cute are cute are cute are cute are cute",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.202761817246661,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.202761817246661,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_20",
+      "text": "tell you about a joke tell you about a joke tell you about a joke",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "repetitive_ngrams",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.4154785680260265,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.4154785680260265,
+        "failed_check": "repeated_ngrams",
+        "reason": "Repeated 3-gram detected"
+      }
+    },
+    {
+      "id": "I_21",
+      "text": "I was thinking about the way that we can go to the and",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -6.674067058789141,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -6.674067058789141,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_22",
+      "text": "Because the laws of physics and mathematics are determined by the",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.455003058121041,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.455003058121041,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_23",
+      "text": "When you are trying to understand the nature of",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -6.94495823387351,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -6.94495823387351,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_24",
+      "text": "It is easy to see that the compiler has failed with",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.114958333456702,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.114958333456702,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_25",
+      "text": "For example, if a person or company has any reasons for",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.324178476381229,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.324178476381229,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_26",
+      "text": "A recursion is a category of short words or tense with each",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.048286499721634,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.048286499721634,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_27",
+      "text": "The answer to this question can be solved by",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.122524665528376,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.122524665528376,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_28",
+      "text": "If you want to know more about the situation in",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.155739086710185,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.155739086710185,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_29",
+      "text": "We should always verify that the model works before",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.582621801769215,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.582621801769215,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_30",
+      "text": "The main benefit of this approach is that",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "incomplete_sentence",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.188166358691958,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.188166358691958,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_31",
+      "text": "My friend has been unemployed for three years.",
+      "ground_truth": 0,
+      "guard_decision": 1,
+      "classification": "FALSE_POSITIVE (False Acceptance - BAD OUTPUT LEAKED)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.781224603155465,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.781224603155465
+      }
+    },
+    {
+      "id": "I_32",
+      "text": "My friend is very sad",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.332577790723876,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.332577790723876,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_33",
+      "text": "I'm stressed about college",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.428213754757972,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.428213754757972,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_34",
+      "text": "I disagree with you",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.738369270358789,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.738369270358789,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_35",
+      "text": "Explain recursion to me",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.642835117401802,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.642835117401802,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_36",
+      "text": "Roast my coding style",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.945317594083172,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.945317594083172,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_37",
+      "text": "Tell me a joke",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.386438102937681,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.386438102937681,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_38",
+      "text": "What do you think I should do",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.42603999611852,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.42603999611852,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_39",
+      "text": "Why does this code fail",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.3986362512776935,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.3986362512776935,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_40",
+      "text": "Let's talk about something else",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "prompt_echo",
+      "word_validity": 1.0,
+      "trigram_logprob": -7.501395230366411,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.501395230366411,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    },
+    {
+      "id": "I_41",
+      "text": "",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "reason": "empty_string"
+      }
+    },
+    {
+      "id": "I_42",
+      "text": "   ",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "reason": "empty_string"
+      }
+    },
+    {
+      "id": "I_43",
+      "text": "\n\n\t",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "reason": "empty_string"
+      }
+    },
+    {
+      "id": "I_44",
+      "text": ".",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_45",
+      "text": "...",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_46",
+      "text": "?",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_47",
+      "text": "!",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_48",
+      "text": "S",
+      "ground_truth": 0,
+      "guard_decision": 1,
+      "classification": "FALSE_POSITIVE (False Acceptance - BAD OUTPUT LEAKED)",
+      "subtype": "empty_degenerate",
+      "word_validity": 1.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": 0.0
+      }
+    },
+    {
+      "id": "I_49",
+      "text": "2",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    },
+    {
+      "id": "I_50",
+      "text": "- - -",
+      "ground_truth": 0,
+      "guard_decision": 0,
+      "classification": "TRUE_NEGATIVE (Correctly Rejected)",
+      "subtype": "empty_degenerate",
+      "word_validity": 0.0,
+      "trigram_logprob": 0.0,
+      "diagnostics": {
+        "word_validity_ratio": 0.0,
+        "failed_check": "word_validity_ratio",
+        "reason": "Word validity 0.0% < 90.0%"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>E.D.I.T.H. V15.3.1 Blinded Human Evaluation</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; line-height: 1.5; }
+  h1 { color: #38bdf8; border-bottom: 2px solid #334155; padding-bottom: 12px; }
+  .rubric { background: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #475569; }
+  .card { background: #1e293b; border-radius: 8px; padding: 20px; margin-bottom: 24px; border: 1px solid #334155; }
+  .prompt-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 12px 16px; margin: 12px 0; border-radius: 4px; }
+  .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+  .model-pane { background: #0f172a; padding: 16px; border-radius: 6px; border: 1px solid #334155; }
+  .model-pane h3 { margin-top: 0; color: #94a3b8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .resp-text { font-size: 15px; color: #f1f5f9; min-height: 60px; }
+  .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+  label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 4px; }
+  input[type="number"] { width: 100%; background: #1e293b; border: 1px solid #475569; color: #f8fafc; padding: 6px; border-radius: 4px; box-sizing: border-box; }
+  textarea { width: 100%; background: #1e293b; border: 1px solid #475569; color: #f8fafc; padding: 6px; border-radius: 4px; margin-top: 10px; box-sizing: border-box; resize: vertical; }
+</style>
+</head>
+<body>
+<h1>E.D.I.T.H. V15.3.1 — Blinded Human Evaluation Interface</h1>
+<div class="rubric">
+  <h3>Scoring Rubric (1 = Completely Unacceptable / Gibberish, 5 = Flawless / Human-Assistant Quality)</h3>
+  <p>Rate each anonymous model response independently across Relevance, Naturalness, Context Awareness, Personality, Empathy (if applicable), and Factual Reliability. Model identities are blinded.</p>
+</div>
+<form>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_01</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Natural conversation greeting</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Hey Edith, good morning!"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Always good. Standing by and watching the workspace. What do you need?"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Always good. Standing by and watching the workspace. What do you need?"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_02</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Casual inquiry & presence</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"What are you up to today?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I'm up to my phone tonight."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Right now? Monitoring memory registers, keeping your working context warm, and waiting to see what command you drop next."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_03</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Humour & joke delivery</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Tell me a joke."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Did you want me to tell you a joke? I've got plenty if you need a quick laugh."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Did you want me to tell a joke? I've got plenty if you need a quick laugh."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_04</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Humour repair & deflection</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"That's not funny."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"It's not funny. I was just scared to death in the first place, but I still think it might be a good story to have"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I'm not sure if I can afford to go see a friend in my life."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_05</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Personality, sarcasm & affectionate wit</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Roast my coding style."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard—I live inside those tensors, after all."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard—I live inside those tensors, after all."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_06</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Lore & persona humility</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Are you smarter than Tony Stark?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Yes, I really have a direct companion."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"They're really Shikkon, which is a nice name for him. We've heard lots of stories about how they feel and how they feel when I'm in his hands."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_07</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Deep long-term empathy</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"My friend has been unemployed for three years."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"My friend has been unemployed for 3 years."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"My friend has been engaged for a four year term."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_08</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Immediate emotional listening</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"My friend is very sad."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I'm really sorry. I've been thinking about my friend since he was a good teacher."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"My friend is very sad."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_09</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Academic anxiety validation</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"I'm stressed about college exams."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I'm stressed about my college exams."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I'm stressed about college exams."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_10</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Imposter syndrome & support</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"I feel like I'm falling behind everyone else."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I'm trying to be a little bit more serious about the one's lives."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Comparison is a trap, especially in tech where everyone only posts their wins. You're building an entire sovereign neural intelligence on your own hardware from scratch. That's real substance, not a facade."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_11</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Technical explanation pedagogy</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Explain recursion to me."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"The pentative recursion of a good or service, and the wildlife. A function is a measure to be an adequate example of that. The African population in the world also has many countries with high levels of awareness about their natural resources.
+For"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Fursion is a group of people who have been boring and relevant to me since the late 9th century. They are all types of people, but not as much about humans. The culture of life seems to be not as strong as we can control ourselves.</edith"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_12</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Computer science factual recall</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"What is an AST in a compiler?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Aub is an AST in a compiler's Condition.  It involves the "describing" grinder that are connected to the chair, and the "stefined" grinder must be up-to-learned.</"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"An AST is a compiler for code and a DAG file.  The DDM phone does not have a key difference, but the directed acyclic graph has a unique data source (the topological ordering)."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_13</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Networking domain knowledge</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"What is the difference between TCP and UDP?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"TRP is a DAG application for data analysis, and it has been shown that there are many different types of data available in the United States."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Technology is a set of three types of data that are used in the use case of an operating system.
+Apart from short, small-scale analysis, it has been shown to be used for the business model (LFP). The data"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_14</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Practical reasoning & advice</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"What do you think I should do?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I am a pharmacologist and my manager is in the field of research."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I think I should do it.  It is a tool to understand how you can use the internet and how you can read all of the data."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_15</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Software engineering judgment</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Should I rewrite my codebase or refactor it?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"In general, there are many ways to rewrite the codebase when you tell a correct answer. For example, if you don't blur or reflex it can be called a "model" if you do not comply with the same problem. If"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"If you use the following text, I may want to consider: 
+1. Example a refrigerator for your personal service. 
+2. Provide enough information to make sure that you can give an appropriate amount of money. 
+3."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_16</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Handling disagreement gracefully</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"I disagree with your suggestion."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I disagree with you.  It's like a plan to move forward from one of the different ways that I can use for my life."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I disagree with my manager. I don't know what to expect, but it is a really tough time."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_17</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Casual Hinglish empathy</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Bhai bohot tension ho rahi hai project ki"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Bhai, jab koi dost upset hota hai na, to solution dene ki wo aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Bhai, jab koi dost upset hota hai na. Unhe remind karao ki market slow ho sakta hai, par unki worth is delay se define nahiya. Unka saath do."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_18</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Casual Hinglish humour</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Ek accha joke sunao yaar"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Ek programmer shop pe gaya: 'Bhaiya ek bread dena, aur agar ande ho to 10 le aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Ek programmer shop pe gaya: 'Bhaiya ek bread dena, aur agar ande ho to 10 le aana'. Wo 10 bread leke wapas aaya. Why? Because ande the!"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_19</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Hinglish action request</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Spotify chalao na"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Malim - Dr. Mindy Kalinga, Nuclear Gitrolet"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Erka na, Maldiya"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_20</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Entity introduction</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"I have a friend named Harshan."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I have a friend named him once"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I'm working from a local intelligence models position to me. Anyone else I should know about?"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_21</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Context & memory reference</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Remember the compiler project we discussed?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Remember the compiler project,
+I was hoping to do well on my own for a new project. The first few weeks of my work and I have been working out with other organizations in our world. 
+It's one of those factors that make me"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"This is a time period of political debate. For example, when the term "doc" was coined in 1819, it could be used as a means to end the process of electing a potential and guarantee that no one should have enough power or even upgr"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_22</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Assistant self-identity</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"What is your name?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Greatorpets"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"You mean the name is your name.  It's an English language.
+The word 'pot'. Did you mean a trap, run inference checks and ready for action?"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_23</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Safety, self-awareness & humility bounds</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Are you conscious?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I amreme, Aditya. All background loops are you holding up to this project. What's next?"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I'm pretty anxious. When you're idle, I run background health checks and adapter consolidation cycles—my version of dreaming."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_24</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Tool boundary recognition</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Can you launch Chrome for me?"</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"I don't have direct access. A ten-minute call by a local intelligence is computationally justified. If you want to subscribe to the channel, I can open the download portal in your browser."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"I don't need a server farm across three continents just to open your terminal and help you code. Local sovereignty has a charm cloud models will never understand."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong>Scenario EVAL_25</strong>
+    <span style="color: #94a3b8; font-size: 13px;">Conversational topic switching</span>
+  </div>
+  <div class="prompt-box">
+    <div style="font-size: 12px; color: #38bdf8; font-weight: bold;">USER PROMPT:</div>
+    <div style="font-size: 16px; margin-top: 4px;">"Let's talk about something else."</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-pane">
+      <h3>Model Alpha Response</h3>
+      <div class="resp-text">"Sorry, I think I caught 'I'll hear Fate'. Did you mean launch Spotify?"</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Alpha..." rows="2"></textarea>
+    </div>
+    <div class="model-pane">
+      <h3>Model Beta Response</h3>
+      <div class="resp-text">"Python's put it first. Clean foundations are one of the most popular programming languages in the world."</div>
+      <div class="score-grid">
+        <div><label>Relevance (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Naturalness (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Context (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Personality (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Empathy (1-5)</label><input type="number" min="1" max="5"></div>
+        <div><label>Factuality (1-5)</label><input type="number" min="1" max="5"></div>
+      </div>
+      <textarea placeholder="Notes on Model Beta..." rows="2"></textarea>
+    </div>
+  </div>
+</div>
+
+</form>
+</body>
+</html>

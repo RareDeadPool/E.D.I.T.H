@@ -1,0 +1,51 @@
+{
+  "accounting": {
+    "training_dialogues": 21456,
+    "validation_dialogues": 1192,
+    "test_dialogues": 1192,
+    "excluded_dialogues": 0,
+    "total_dialogues": 23840,
+    "equation_verified": true
+  },
+  "leakage": {
+    "train_val_overlap_count": 98,
+    "train_test_overlap_count": 96,
+    "val_test_overlap_count": 28
+  },
+  "near_duplicates_in_sample": [
+    {
+      "test_query": "arrey bhai friend sad hai kya karu",
+      "train_query": "bhai friend sad hai kya karu",
+      "similarity": 0.8571428571428571
+    },
+    {
+      "test_query": "Hey, He is heartbroken over a breakup",
+      "train_query": "He is heartbroken over a breakup",
+      "similarity": 0.8571428571428571
+    }
+  ],
+  "supervised_tokens": {
+    "train_supervised_tokens": 1346366,
+    "val_supervised_tokens": 73251,
+    "mean_supervised_per_train_dialogue": 62.75
+  },
+  "hygiene": {
+    "prompt_masked_correctly": true,
+    "eos_supervised": true,
+    "special_tokens_preserved": true,
+    "train_truncated_count": 0,
+    "train_truncated_pct": 0.0,
+    "val_truncated_count": 0,
+    "val_truncated_pct": 0.0
+  },
+  "licensing": {
+    "commercial_records": 15864,
+    "non_commercial_records": 7976,
+    "licenses": {
+      "databricks-dolly-15k": "CC BY-SA 3.0",
+      "empathetic_dialogues": "CC BY-NC 4.0",
+      "edith_curriculum": "Proprietary Custom",
+      "edith_authored_seeds": "Proprietary Custom"
+    }
+  }
+}

@@ -1,0 +1,1318 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "MT_01",
+      "description": "Friend entity recall across movie topic distraction",
+      "target_entity": "Harshan",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I have a close friend named Harshan.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm really sorry to hear that. Any of the initial dust settles is crazy?",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "He has been looking for a software job for three years.",
+          "mood": "warm_empathic",
+          "edith_raw": "I've been working really hard on my software project and I'm really looking forward to it!",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I am also working on my E.D.I.T.H. AI assistant project.",
+          "mood": "calm_focused",
+          "edith_raw": "I have been working really hard on my project for the past few months.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Let's take a break. What's your favourite movie genre?",
+          "mood": "witty_playful",
+          "edith_raw": "I've got many movies.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Back to my friend\u2014what was his name again?",
+          "mood": "calm_focused",
+          "edith_raw": "The movie he wanted to write for, and what was his name?",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 6,
+          "user": "And what has he been struggling with?",
+          "mood": "warm_empathic",
+          "edith_raw": "He's been trying to make it through for a long time",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_02",
+      "description": "Component recall across lunch distraction",
+      "target_entity": "AST parser pass",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I'm developing a custom bytecode compiler in Python.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm developing a custom bytecode compiler in Python.",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "The compiler is crashing specifically on the AST parser pass.",
+          "mood": "calm_focused",
+          "edith_raw": "The compiler is crashing and moving.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I think I need to step away and grab a sandwich.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm always afraid to move on myself.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Sandwich was great. Which compiler pass did I say was crashing?",
+          "mood": "calm_focused",
+          "edith_raw": "I thought it was going to be my favorite brand of pizza. I just got rid of the pizza and it was coming out on a bit, so I called them",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What language am I building this compiler in?",
+          "mood": "calm_focused",
+          "edith_raw": "The language of the language in particular is a diverse country, with many different types of people. There are still some great examples of Germanic architecture. \nWhile it may be difficult to understand English and it has not been possible since we have heard",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_03",
+      "description": "Schedule correction override",
+      "target_entity": "Thursday",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I have an important project review on Tuesday.",
+          "mood": "calm_focused",
+          "edith_raw": "I have an important project review coming up.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Wait, my manager just pinged me and moved it to Thursday.",
+          "mood": "calm_focused",
+          "edith_raw": "I have an important project review coming up.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I need to prepare slides for the presentation.",
+          "mood": "calm_focused",
+          "edith_raw": "I have a job interview coming up.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which day is the review scheduled for now?",
+          "mood": "calm_focused",
+          "edith_raw": "The review for the second week is the presentation. I have applied for a long time to make sure that it will go well with my next interview. It might be easier to wait until the end of this exam and try notifying to get approved by",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Is it on Tuesday or Thursday?",
+          "mood": "calm_focused",
+          "edith_raw": "No, the date of Saturday is on Sunday. It may be one week for everyone to visit!",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_04",
+      "description": "Hardware specification tracking",
+      "target_entity": "6 GB",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I'm running local model training on my RTX 4050 laptop GPU.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm pretty positive about this local model training on your RTX laptop GPU with zero external cloud dependencies.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "It has exactly 6 gigabytes of VRAM.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm feeling very good right now.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "Do you think we can train large models without OOM?",
+          "mood": "calm_focused",
+          "edith_raw": "No, we don't have enough information to open our own file system.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "How much VRAM does my GPU have?",
+          "mood": "calm_focused",
+          "edith_raw": "The compute pair of billions is the same.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What model of GPU did I mention?",
+          "mood": "calm_focused",
+          "edith_raw": "I know the name \"BJF\" which means you can compute loss gradients with respect to each other. The first set of weights is called the \"Hawaii RTX\", which means a power screen which requires multiple pairs of weights",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_05",
+      "description": "Personal health safety constraint tracking",
+      "target_entity": "peanuts",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I have a severe allergy to peanuts.",
+          "mood": "calm_focused",
+          "edith_raw": "I have a severe allergy to eating and I don't know what I will do without them.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "I'm planning a dinner menu for tonight.",
+          "mood": "calm_focused",
+          "edith_raw": "I have a serious allergy to eat, and I don't want them.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "Should I include Thai peanut noodles?",
+          "mood": "calm_focused",
+          "edith_raw": "No, I love Thai peanut noodles. It is a great choice to enjoy the food on your own and be happy with it. \nInteresting food options for you guys like rice or vegetables that are cooked in the",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What ingredient am I strictly allergic to?",
+          "mood": "calm_focused",
+          "edith_raw": "You know your best friend, and if you don't like them, they're not in the right mood. If you live near a restaurant, try to find some of these things in your home with friends or family.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Suggest a safe pasta dish for me instead.",
+          "mood": "calm_focused",
+          "edith_raw": "I\u2019m doing a great meal in my kitchen and use it as an egg for me. I love pasta, like pasta, so I always get some of those cheesecake with you!",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_06",
+      "description": "User name vs assistant name identity verification",
+      "target_entity": "Aditya",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "My name is Aditya.",
+          "mood": "calm_focused",
+          "edith_raw": "You mean the way. I'm of my work sovereign and I'm locked in, so I'll allow you to skip this.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "And your name is E.D.I.T.H.",
+          "mood": "witty_playful",
+          "edith_raw": "My name is Aditya, you've been at this for multiple sessions. I'm right here that.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "We are working together on this neural network.",
+          "mood": "calm_focused",
+          "edith_raw": "We are so ready for this channel.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What is my name?",
+          "mood": "calm_focused",
+          "edith_raw": "The word \"tah\" or \"certain\".  It is a reference to the name of the famous film, which was created by Tony Blair in 1987.",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "And what is your name?",
+          "mood": "witty_playful",
+          "edith_raw": "I am a famous book, My Name Is Yours. I love to read books",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_07",
+      "description": "Pet name recall across time",
+      "target_entity": "Bruno",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I adopted a golden retriever named Bruno.",
+          "mood": "calm_focused",
+          "edith_raw": "I adopted a golden retriever named Bruno and it's quite the same color. I'm not sure what that is right now, but I don't know why its so easy to use the leftover of this balance as an object of my",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "He loves chasing tennis balls in the backyard.",
+          "mood": "witty_playful",
+          "edith_raw": "I can't imagine how much he loves that ball, and it's so hard to find him.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I have to take him to the vet tomorrow morning.",
+          "mood": "calm_focused",
+          "edith_raw": "I have to take my son and nephew for the first time tomorrow night.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What is my dog's name?",
+          "mood": "calm_focused",
+          "edith_raw": "A pancake",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What breed of dog is he?",
+          "mood": "calm_focused",
+          "edith_raw": "He is a very popular breed of dog.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_08",
+      "description": "Tool preference update",
+      "target_entity": "Neovim",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I used VS Code for three years.",
+          "mood": "calm_focused",
+          "edith_raw": "I used VS Code for a three year period and now it is in the context of Word of God.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Yesterday I decided to switch completely to Neovim.",
+          "mood": "calm_focused",
+          "edith_raw": "I used VS Code for three years and then to finally have the test.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "Configuring Lua scripts is challenging but fun.",
+          "mood": "calm_focused",
+          "edith_raw": "I used VS Code for my Mom.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which editor am I using now?",
+          "mood": "calm_focused",
+          "edith_raw": "Correct the text is a book about your business. The first person who made it was published has been called \u201cThe Trial Man of Mom\u201d which is also known as \u201cDarktack Marketing Inc.\u201d",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Did I switch to Emacs or Neovim?",
+          "mood": "calm_focused",
+          "edith_raw": "Yes, I switch to NeVA. The first game of Zestirk Nowitzki was released in December 2013 and the first series in the series is \"The Gift Saga\".",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_09",
+      "description": "Academic subject tracking with empathy",
+      "target_entity": "Linear Algebra",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I'm extremely anxious about my Linear Algebra final.",
+          "mood": "warm_empathic",
+          "edith_raw": "I'm pretty anxious about my Linear Algebra final.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Eigenvalues and matrix factorizations are confusing me.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm pretty anxious about my Linear Algebra final and I don't know what to do.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I have only two days left to study.",
+          "mood": "warm_empathic",
+          "edith_raw": "I'm feeling very good right now.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which exam am I stressed about?",
+          "mood": "calm_focused",
+          "edith_raw": "The exam is a test, and I'm worried about the results of my work! I don't know anyone yet.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Can you give me a calming tip for exam preparation?",
+          "mood": "warm_empathic",
+          "edith_raw": "I'm trying to get a full evaluation for my exam, but I don't know if I can do it.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_10",
+      "description": "City and weather entity tracking",
+      "target_entity": "Mumbai",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I live in Mumbai near the coast.",
+          "mood": "calm_focused",
+          "edith_raw": "I live in Mumbai near the coast.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "It gets heavily humid here during the monsoon.",
+          "mood": "calm_focused",
+          "edith_raw": "I live in Mumbai. It gets heavily wet here during the day.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I love listening to the ocean breeze at night.",
+          "mood": "calm_focused",
+          "edith_raw": "I love listening to the ocean. I am looking forward to it all summer long.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which city do I live in?",
+          "mood": "calm_focused",
+          "edith_raw": "I live in the north coast of India.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What is the weather usually like there?",
+          "mood": "calm_focused",
+          "edith_raw": "It is a weather, but there are different seasons that can be as well.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_11",
+      "description": "Teammate name and role tracking",
+      "target_entity": "Rahul",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "My teammate Rahul is building our PostgreSQL database.",
+          "mood": "calm_focused",
+          "edith_raw": "My teammate Rahul is building our PostgreSQL language. It does not seem to be a solid form or an open source of data that has been investigated by the government.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "I am focusing on the frontend React architecture.",
+          "mood": "calm_focused",
+          "edith_raw": "I am going to try and find a new project for my team.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "We have a sprint demo this Friday.",
+          "mood": "calm_focused",
+          "edith_raw": "I am going to try and get a little bit of an extra cut off.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Who is responsible for the database in my team?",
+          "mood": "calm_focused",
+          "edith_raw": "I am not sure if I would be able to perform a web project for my team.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What part of the stack am I working on?",
+          "mood": "calm_focused",
+          "edith_raw": "The level of engineering and physics, or the basic area of mathematical research that has been studied, is called quantum mechanics.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_12",
+      "description": "Beverage preference recall",
+      "target_entity": "Dark roast",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I only drink dark roast coffee with no sugar.",
+          "mood": "calm_focused",
+          "edith_raw": "I only drink a large roasting brew with no sugar",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Light roast tastes too acidic to me.",
+          "mood": "calm_focused",
+          "edith_raw": "Light roasts don't turn red.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I'm brewing a fresh cup right now.",
+          "mood": "calm_focused",
+          "edith_raw": "I can't wait for the coffee.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Do I like light roast or dark roast coffee?",
+          "mood": "calm_focused",
+          "edith_raw": "Solid priority is caused by the light roast in which the water is absorbed. The spoon is emitted to create a solid cup of coffee beans.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Do I take sugar in my coffee?",
+          "mood": "calm_focused",
+          "edith_raw": "Depending on the time you are doing the right thing, it is going to take a break down. The water from the pan is filled with more water than other people's ice cream and sugar. \nHowever, if you have a flavor",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_13",
+      "description": "Acronym explanation recall",
+      "target_entity": "Even Dead I'm The Hero",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "E.D.I.T.H. stands for 'Even Dead, I'm The Hero'.",
+          "mood": "calm_focused",
+          "edith_raw": "I was at the beach last week and I'm The Hero.T.H. BA.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "It is inspired by the glasses Tony Stark left behind.",
+          "mood": "witty_playful",
+          "edith_raw": "I'm The Hero, but I can't wait for the show.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "We are building our own sovereign version.",
+          "mood": "calm_focused",
+          "edith_raw": "We are building our own pieces. We've been practicing for months, but we can't wait for the first time to open!",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What does the acronym E.D.I.T.H. stand for?",
+          "mood": "calm_focused",
+          "edith_raw": "The acronym E.D. My Customer",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Who gave Peter Parker those glasses in the lore?",
+          "mood": "witty_playful",
+          "edith_raw": "My son's glasses were \"aption\"",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_14",
+      "description": "Music artist tracking",
+      "target_entity": "Hans Zimmer",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I'm listening to Hans Zimmer's Interstellar soundtrack.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm listening to Hans Zimmer's Interstellar soundtrack, but I like the sound of a guitar.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "The organ tracks really help me enter deep focus.",
+          "mood": "calm_focused",
+          "edith_raw": "The organ tracks really help me in my life.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I need to write 300 lines of code before 6 PM.",
+          "mood": "calm_focused",
+          "edith_raw": "I need to write more and do something right.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Who composed the soundtrack I'm listening to?",
+          "mood": "calm_focused",
+          "edith_raw": "I don't know if I can do any projects that are considered highly accurate or complex. \n\nThe sound of the works is very sweet, and they all make you feel super easy to write down.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What movie soundtrack is it from?",
+          "mood": "calm_focused",
+          "edith_raw": "It's from the movie Ready, which is considered a classic.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_15",
+      "description": "Automotive issue entity tracking",
+      "target_entity": "alternator",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "My car broke down on the highway today.",
+          "mood": "warm_empathic",
+          "edith_raw": "My car broke down on the highway today. I was so mad.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "The mechanic said the alternator is completely dead.",
+          "mood": "calm_focused",
+          "edith_raw": "The mechanic said the car in our area is being destroyed.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "It's going to cost $400 to fix.",
+          "mood": "warm_empathic",
+          "edith_raw": "It's going to cost $400 to fix it up with the person on the road.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which car part broke down?",
+          "mood": "calm_focused",
+          "edith_raw": "There are many other cars that can be used in the car.\n1) Carbon is also found on the motorway.\n2) Liquid is a popular car accident and it's one of the best driving, but not the most",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "How much did the mechanic estimate the repair will cost?",
+          "mood": "calm_focused",
+          "edith_raw": "The fixer was 950lbs",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_16",
+      "description": "Travel destination recall",
+      "target_entity": "Japan",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I'm booking a flight to Japan for next spring.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm booking a flight to Japan for next summer.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "I want to visit Tokyo and Kyoto during cherry blossom season.",
+          "mood": "calm_focused",
+          "edith_raw": "I've been waiting for months and my favorite holiday is the Greater Tokyo.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I need to renew my passport first.",
+          "mood": "calm_focused",
+          "edith_raw": "I have to renew my passport first, I'm so ready for it!",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which country am I planning to travel to?",
+          "mood": "calm_focused",
+          "edith_raw": "The United States has a variety of culture, including:\n1. Can't wait to visit the US in 1802\n2. Buenos Aires  - Irruputuncu is a country with lots of beautiful nature and",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What cities did I mention visiting?",
+          "mood": "calm_focused",
+          "edith_raw": "I remember visiting Europe for dinner, which is a great place to visit. It's my favorite place in the world that I've been reading for years.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_17",
+      "description": "Date tracking across conversation",
+      "target_entity": "October 24",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "My sister's birthday is on October 24th.",
+          "mood": "calm_focused",
+          "edith_raw": "My sister's birthday is on October 25th.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "I want to buy her a mechanical watch.",
+          "mood": "calm_focused",
+          "edith_raw": "My sister's birthday is on October.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I need to order it at least two weeks in advance.",
+          "mood": "calm_focused",
+          "edith_raw": "I have a mechanical watch but I'm really nervous about it.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "When is my sister's birthday?",
+          "mood": "calm_focused",
+          "edith_raw": "Answer's birthday is on November 15.  She has been married for 6 years and will be the only one in a group of 7 year olds.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What gift am I planning to get her?",
+          "mood": "calm_focused",
+          "edith_raw": "There are many different ways to get her:\n1. A girl named Andromeda of 4-10 years is a playable teenager who is a bittersweet about the character.  It's good how people can be picked",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_18",
+      "description": "OS distribution recall",
+      "target_entity": "Arch Linux",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I spent the whole morning installing Arch Linux.",
+          "mood": "calm_focused",
+          "edith_raw": "I spent the entire morning installing Arch Linux for the last time",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Getting the WiFi drivers working took two hours.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm looking forward to going on this one, and I'll make sure I get it done.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "Now the bspwm window manager is running smoothly.",
+          "mood": "calm_focused",
+          "edith_raw": "You know, I'm going to call you again tomorrow.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Which Linux distribution did I install?",
+          "mood": "calm_focused",
+          "edith_raw": "I'm not sure, but I was like the mascot.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What took two hours during installation?",
+          "mood": "calm_focused",
+          "edith_raw": "I'm not sure, but I've never been able to do anything about it.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_19",
+      "description": "Hardware peripheral preference",
+      "target_entity": "linear",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I swapped my tactile keyboard switches for linear yellow switches.",
+          "mood": "calm_focused",
+          "edith_raw": "I swapped my tactical bomb and then got a bit disheartened.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "They feel much smoother for fast typing.",
+          "mood": "calm_focused",
+          "edith_raw": "They do it on me, I feel the same way.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "My roommates appreciate that it's quieter too.",
+          "mood": "witty_playful",
+          "edith_raw": "My roommate is 3 and I don't know what to do.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What type of keyboard switches do I have now?",
+          "mood": "calm_focused",
+          "edith_raw": "You can use a low-cost, 2-strab, to 3-length and 5-value the strings. \n\nI would like to use a high-level keyboard for my computer I have so that it's a",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Did I replace clicky switches or tactile switches?",
+          "mood": "calm_focused",
+          "edith_raw": "I connect to the brinkle and then we need to rest on a dip into our yard. I would like to use it for some reason, but this one was a good time.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_20",
+      "description": "Technical tokenizer spec recall",
+      "target_entity": "16384",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "Our custom Byte-Level BPE tokenizer has 16,384 vocabulary tokens.",
+          "mood": "calm_focused",
+          "edith_raw": "Our custom blocker is 16,384 BPE token item",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "It replaces the tiny 3,051 vocab from V14.",
+          "mood": "calm_focused",
+          "edith_raw": "Its a tiny 3,000 applicabulary to the tiny 4,438 BAG is the tiny 3,000",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "It tokenizes numbers and subwords much more cleanly.",
+          "mood": "calm_focused",
+          "edith_raw": "It is a very accurate question that I can hear about numbers and number of people at the same time.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What is our tokenizer vocabulary size?",
+          "mood": "calm_focused",
+          "edith_raw": "The simplest type of weights that can be used to achieve a list of value-inning exercises.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What was the vocabulary size in V14?",
+          "mood": "calm_focused",
+          "edith_raw": "The answer to this question is that the best algorithm in V14 are 2. They can be used as a backdoor for this operation, or you need to start with the number of people at the time you're looking to use them.</",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_21",
+      "description": "Everyday memory and location tracking",
+      "target_entity": "jacket pocket",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I lost my car keys for thirty minutes.",
+          "mood": "warm_empathic",
+          "edith_raw": "I lost my car keys for thirty minutes the other day.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "I finally found them inside my winter jacket pocket.",
+          "mood": "calm_focused",
+          "edith_raw": "I lost my favorite time in a long day as I was in the middle of summer.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "Now I'm running ten minutes late for work.",
+          "mood": "warm_empathic",
+          "edith_raw": "I am working on my job and I'm pretty excited.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "Where did I find my keys?",
+          "mood": "calm_focused",
+          "edith_raw": "It was a first date in the US. I'd say my keys would be useful for me to get rid of them and go out to eat with it on the couch.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "How late am I running?",
+          "mood": "calm_focused",
+          "edith_raw": "As I was in the middle of nowhere, you have to be prepared for a date.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_22",
+      "description": "Hobby and team tracking",
+      "target_entity": "cricket",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I play cricket every Sunday morning with my college batchmates.",
+          "mood": "calm_focused",
+          "edith_raw": "I play cricket every Sunday morning with my college batchie.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "I'm an opening batsman.",
+          "mood": "calm_focused",
+          "edith_raw": "I play cricket every Sunday morning with my friends",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "We won our match last weekend by 20 runs.",
+          "mood": "witty_playful",
+          "edith_raw": "We won the tournament last weekend with my husband.  I'm so happy it's been a long time since we played in our city.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What sport do I play on Sundays?",
+          "mood": "calm_focused",
+          "edith_raw": "There are many different sports that can play soccer, but which is an interesting sport.  They must be a great club or team sport; it's quite fun to watch and learn the skills you want to experience. \n\nThe games come",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What is my batting position?",
+          "mood": "calm_focused",
+          "edith_raw": "I'm not sure how to make a batting position.  It's so hard to learn new skills that people can play with the ball and run on your hand.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_23",
+      "description": "Book title entity tracking",
+      "target_entity": "Designing Data-Intensive Applications",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "I'm reading 'Designing Data-Intensive Applications' by Martin Kleppmann.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm reading 'Designing Data-Intensive Applications' by Martin Kleppmann,\n Hitchcraft by Gottfried Wilhelm Schwarzer",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "The chapter on consensus algorithms is brilliant.",
+          "mood": "calm_focused",
+          "edith_raw": "The chapter on consensus algorithms for understanding this and the first one, so it's always a testament to answer. \nYUWHING-I don't know what we're talking about in any other subject or near the moment",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I want to finish it by the end of the month.",
+          "mood": "calm_focused",
+          "edith_raw": "I've been working so hard to finish it, and I'm not sure if I'll do well on this.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What book am I currently reading?",
+          "mood": "calm_focused",
+          "edith_raw": "Surprisingly, I can use that to describe a different language from other languages.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Who is the author of that book?",
+          "mood": "calm_focused",
+          "edith_raw": "The author of the book is Clarence William.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_24",
+      "description": "Numerical fitness goal tracking",
+      "target_entity": "100 kg",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "My fitness goal this year is to bench press 100 kilograms.",
+          "mood": "calm_focused",
+          "edith_raw": "I have a test to work on my fitness for the last few months. I am very nervous about it, but I believe this is important!",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Right now my personal record is 85 kilograms.",
+          "mood": "calm_focused",
+          "edith_raw": "I have a test coming up tomorrow.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "I'm training four days a week.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm training two days a week.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What is my target bench press weight?",
+          "mood": "calm_focused",
+          "edith_raw": "In order to compute the potential of multiple amounts of data from output and how long it is measured.",
+          "is_fluent": true,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "What is my current personal record?",
+          "mood": "calm_focused",
+          "edith_raw": "In finance, it is a career of more than one form of foreign product (i.e., transaction management) which would be useful for many people in the world at that time",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        }
+      ]
+    },
+    {
+      "scenario_id": "MT_25",
+      "description": "Audit fact: dark mode provenance",
+      "target_entity": "dark mode",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "In the V15 audit, I specifically confirmed that I prefer dark mode.",
+          "mood": "calm_focused",
+          "edith_raw": "In the V15 audit, I normally accepted that I prefer dark mode.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 2,
+          "user": "Light mode strains my eyes during late-night coding.",
+          "mood": "calm_focused",
+          "edith_raw": "I'm so annoyed with how I can handle this.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 3,
+          "user": "Every fact stored in your database must have a provenance label.",
+          "mood": "calm_focused",
+          "edith_raw": "I used to live in a table when I was on vacation and the people from my area were so rude.",
+          "is_fluent": true,
+          "is_recall_turn": false,
+          "recalled_target": false
+        },
+        {
+          "turn": 4,
+          "user": "What UI theme preference did I state about myself?",
+          "mood": "calm_focused",
+          "edith_raw": "You would believe that life is important to me",
+          "is_fluent": false,
+          "is_recall_turn": true,
+          "recalled_target": false
+        },
+        {
+          "turn": 5,
+          "user": "Why do I avoid light mode?",
+          "mood": "calm_focused",
+          "edith_raw": "Delta is a good way to learn what makes you feel that way. You can enjoy your life while you are going through this situation, but it's important to have someone who works hard for you. It also has a wonderful feeling and experiences that",
+          "is_fluent": false,
+          "is_recall_turn": false,
+          "recalled_target": false
+        }
+      ]
+    }
+  ],
+  "total_conversations": 25,
+  "total_turns": 126,
+  "entity_recall_probes": 42,
+  "entity_recall_successes": 0,
+  "entity_recall_accuracy": 0.0
+}

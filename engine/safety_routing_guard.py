@@ -20,6 +20,13 @@ class ActionSafetyAndCompatibilityGuard:
         # Emotional states and personal struggles
         r"\b(?:friend\s+is\s+(?:very\s+)?sad|he\'?s\s+(?:very\s+)?sad|she\'?s\s+(?:very\s+)?sad|they\'?re\s+sad|feeling\s+(?:down|depressed|sad|lonely)|heartbroken|struggling|exhausted)\b",
         r"\b(?:upset|very\s+upset|he\'?s\s+(?:very\s+)?upset|she\'?s\s+(?:very\s+)?upset|what\s+should\s+i\s+do|how\s+to\s+help\s+him)\b",
+        r"\b(?:feel\s+like\s+giving\s+up|feel\s+worthless|nothing\s+is\s+working|tired\s+of\s+everything|want\s+to\s+give\s+up|hate\s+my\s+life|burnout|burnt\s+out)\b",
+        # Hinglish distress, venting, and emotional sharing
+        r"\b(?:bohot\s+bekar|bekar\s+din|daant\s+diya|dimag\s+kharab|pareshan|dukhi|bina\s+baat\s+ke|kuch\s+samajh\s+nahi\s+aa\s+raha)\b",
+        # Conversational banter & identity questions
+        r"\b(?:tu\s+mere\s+se\s+zyada\s+smart|smart\s+hai\s+kya|are\s+you\s+even\s+an\s+ai|bunch\s+of\s+if-else|just\s+if-else|just\s+a\s+bot)\b",
+        # Ambiguous colloquial pleas
+        r"\b(?:kar\s+do\s+na\s+please|kuch\s+toh\s+open\s+karo|kuch\s+bhi\s+chalao)\b",
         # Social introductions
         r"\b(?:i\s+have\s+a\s+friend\s+named|my\s+friend\s+(?:named|is)|meet\s+my\s+friend)\b",
         # Humor and jokes

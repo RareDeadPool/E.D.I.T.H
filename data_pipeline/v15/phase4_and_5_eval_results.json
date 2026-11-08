@@ -1,0 +1,141 @@
+{
+  "phase4": [
+    {
+      "domain": "General language",
+      "prompt": "Explain why people sometimes disagree even when they have access to the same information.",
+      "output": "Yes, there is no way to know which the same way to keep and not understand the world's world. The answer is that the world's first time is to make the best experience. The name of the world is the best place to start in the world. The first place is why the world",
+      "word_validity": 1.0,
+      "trigram_score": -6.822270373704847,
+      "is_fluent": false,
+      "reason": "Repeated 3-gram detected"
+    },
+    {
+      "domain": "Conversation",
+      "prompt": "Hey Edith, how are you?",
+      "output": "You're Aditya, keeping memory slots organized, and waiting for your next command. What are we tackling?</edith>",
+      "word_validity": 1.0,
+      "trigram_score": -7.187942615058746,
+      "is_fluent": false,
+      "reason": "Unfinished sentence or dangling conjunction"
+    },
+    {
+      "domain": "Humour",
+      "prompt": "Tell me a genuinely funny programming joke.",
+      "output": "There are many ways to be a number of reasons. Some people can be used to learn a few different ways to help you can do. Some people can be a different way to look up in a variety of different things you can do with a few different ways. You can take the most important way",
+      "word_validity": 1.0,
+      "trigram_score": -7.193600867758279,
+      "is_fluent": false,
+      "reason": "Repeated 3-gram detected"
+    },
+    {
+      "domain": "Common sense",
+      "prompt": "Why would someone carry an umbrella when the sky is dark and cloudy?",
+      "output": "It's really good to be the air in the weather. It is a great place to live and will not be very good. A good idea is to be a good way to look up in the morning. It is hard to think that the sun is more important. The most important thing is that",
+      "word_validity": 1.0,
+      "trigram_score": -6.891676711951879,
+      "is_fluent": false,
+      "reason": "Unfinished sentence or dangling conjunction"
+    },
+    {
+      "domain": "Explanation",
+      "prompt": "Explain recursion to someone who is learning programming for the first time.",
+      "output": "The first part of the United States is the best sport to be the best player of the world. The first thing is to be an individual. The best way to make the best experience the world is the most successful sport. The best way to play the weather is good and it is a great way",
+      "word_validity": 1.0,
+      "trigram_score": -6.802209171545023,
+      "is_fluent": false,
+      "reason": "Repeated 3-gram detected"
+    },
+    {
+      "domain": "Reasoning",
+      "prompt": "A student has three assignments due tomorrow, but only enough time to complete two properly. How should they decide what to prioritize?",
+      "output": "The following are three days for the day and the day of the day: -The following is a few people of the world - A% of the time is to make the best experience. - the next day is to be a good option. - the day is good for it - the day and",
+      "word_validity": 1.0,
+      "trigram_score": -6.596659210311406,
+      "is_fluent": false,
+      "reason": "Repeated 3-gram detected"
+    },
+    {
+      "domain": "Indian English",
+      "prompt": "Explain why somebody might feel frustrated after trying to find a job for several years.",
+      "output": "Yes, there is no way to spend time for a week. For example, if you want to spend time, you should also be a great way to get a good way to get a good place. This will keep it a big option for you, but also you are looking for a new day",
+      "word_validity": 1.0,
+      "trigram_score": -7.198703563746394,
+      "is_fluent": false,
+      "reason": "Repeated 3-gram detected"
+    },
+    {
+      "domain": "Follow-up (Multi-turn)",
+      "prompt": "T1: 'I had a difficult day today.' -> T2: 'Mostly because of college.'",
+      "output": "T1: Yes, there is a number of people in the world. It's a very popular city that is very popular. It has also an average year. The best thing is to learn what is. It | T2: It is very popular. The most famous sport is great to watch and it's very easy to learn about. It is a great place to buy on what you can make. It's a great place to visit the world. It is the best way",
+      "word_validity": 1.0,
+      "trigram_score": -7.084943648067972,
+      "is_fluent": false,
+      "reason": "Repeated 3-gram detected"
+    }
+  ],
+  "phase5": [
+    {
+      "config": "Greedy (temp=0.0)",
+      "output": "The answer is that the answer is to the answer. The answer is that the answer is the answer is the answer. The answer is the answer is the answer is the answer. The answer is the answer is the answer. The answer is the answer",
+      "word_validity": 1.0,
+      "trigram_score": -6.553214475498588,
+      "is_fluent": false
+    },
+    {
+      "config": "Low Temp (temp=0.3, top_k=40)",
+      "output": "The answer is that the question is the most important way to get the best way to get the best way to keep the best way to get to the time. The answer is to the world's time is to say the best way to the world in",
+      "word_validity": 1.0,
+      "trigram_score": -6.773178239017076,
+      "is_fluent": false
+    },
+    {
+      "config": "Balanced (temp=0.7, top_k=40)",
+      "output": "Yes, there is no question that people do not want to understand the world when they are not a way to be able to make an individual. The language is to make the best experience the world's experience and the world is that it is also in",
+      "word_validity": 1.0,
+      "trigram_score": -6.991406956814962,
+      "is_fluent": false
+    },
+    {
+      "config": "High Temp (temp=1.0, top_k=40)",
+      "output": "Yes, there is no question that there is a question to understand the world when those who do not need to be an understanding in an average year. While there is no number of people like the Earth is an email for humans and its atmosphere. For",
+      "word_validity": 1.0,
+      "trigram_score": -7.059473506448553,
+      "is_fluent": false
+    },
+    {
+      "config": "Nucleus (temp=0.7, top_p=0.85)",
+      "output": "Yes, there is no question that people do not want to write the best way to learn what is the same thing. It also has a few times to become a good way to look up in the world. It is a good place to start in",
+      "word_validity": 1.0,
+      "trigram_score": -7.009725685083612,
+      "is_fluent": false
+    },
+    {
+      "config": "Repetition Penalty 1.15",
+      "output": "Yes, there is no question that people do not want to understand the world when they are not a way to be able to make an individual. The language of music is important to the world that will take off the world as much as the person in",
+      "word_validity": 1.0,
+      "trigram_score": -7.08825096135301,
+      "is_fluent": false
+    },
+    {
+      "config": "Repetition Penalty 1.30",
+      "output": "Yes, there is no question that people do not want to understand the world when they are talking about their person. This has also an individual history of time, but they will take off its energy and your experience will cause it as well.</edith>",
+      "word_validity": 1.0,
+      "trigram_score": -7.076336471320169,
+      "is_fluent": false
+    },
+    {
+      "config": "Seed 101 Variation",
+      "output": "In general, some people who see the answer depends on how to buy the word. In general, I will only say I should not have a lot of time in the world. For example, I would not say \"I think it would have been",
+      "word_validity": 1.0,
+      "trigram_score": -7.284893600777022,
+      "is_fluent": false
+    },
+    {
+      "config": "Seed 777 Variation",
+      "output": "Yes, they have a real-fike is to make a question that is not required to get a good way to help a new person and make the way to get a good way for a week. For example, this is a good way to",
+      "word_validity": 1.0,
+      "trigram_score": -7.118193461763071,
+      "is_fluent": false
+    }
+  ]
+}

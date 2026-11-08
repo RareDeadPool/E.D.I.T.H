@@ -57,6 +57,7 @@ class EdithByteBPETokenizer:
         self.decoder: Dict[int, str] = {}
         self.merges: List[Tuple[str, str]] = []
         self.bpe_ranks: Dict[Tuple[str, str], int] = {}
+        self.cache: Dict[Tuple[str, ...], List[str]] = {}
 
         self._init_base_vocab()
 
@@ -255,8 +256,12 @@ class EdithByteBPETokenizer:
 
 
     def _bpe(self, token_bytes: Tuple[str, ...]) -> List[str]:
+        if token_bytes in self.cache:
+            return self.cache[token_bytes]
+
         word = list(token_bytes)
         if len(word) <= 1:
+            self.cache[token_bytes] = word
             return word
 
         while len(word) > 1:
@@ -285,6 +290,7 @@ class EdithByteBPETokenizer:
                     i += 1
             word = new_word
 
+        self.cache[token_bytes] = word
         return word
 
     def encode(self, text: str, add_bos: bool = False, add_eos: bool = False) -> List[int]:
@@ -386,6 +392,7 @@ class EdithByteBPETokenizer:
 
         self.merges = []
         self.bpe_ranks = {}
+        self.cache = {}
         for idx, merge_str in enumerate(data.get("merges", [])):
             parts = merge_str.split(" ", 1)
             if len(parts) == 2:

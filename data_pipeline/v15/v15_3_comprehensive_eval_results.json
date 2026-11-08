@@ -1,0 +1,241 @@
+{
+  "sft_checkpoint": "models\\checkpoints\\edith_lm_v15_sft\\edith_lm_v15_3_sft_best.pt",
+  "step": 200,
+  "phase6_probes": [
+    {
+      "prompt": "Tell me a joke.",
+      "mood": "witty_playful",
+      "baseline_response": "Did you want me to tell you a joke? I've got plenty if you need a quick laugh.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.616004113506633,
+      "sft_response": "Did you want me to tell you a joke? I've got plenty if you need a quick laugh.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.616004113506633,
+      "is_echo": false,
+      "gen_time_sec": 1.56180250000034
+    },
+    {
+      "prompt": "That's not funny.",
+      "mood": "witty_playful",
+      "baseline_response": "I was at the gym and it's not funny. I can't imagine how much everyone has to stop talking.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.638082340693171,
+      "sft_response": "I am not sure if I can hear that.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.41367113348661,
+      "is_echo": false,
+      "gen_time_sec": 0.8125683999969624
+    },
+    {
+      "prompt": "Roast my coding style.",
+      "mood": "witty_playful",
+      "baseline_response": "You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard\u2014I live inside those tensors, after all.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.4790577315448665,
+      "sft_response": "You mean the way you name variables `data_temp_final_v2_real`? I won't roast you too hard\u2014I live inside those tensors, after all.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.4790577315448665,
+      "is_echo": false,
+      "gen_time_sec": 2.7646910000003118
+    },
+    {
+      "prompt": "My friend has been unemployed for three years.",
+      "mood": "warm_empathic",
+      "baseline_response": "My friend has been unemployed for a few years.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.895443553349068,
+      "sft_response": "My friend has been unemployed for three years and I was in the middle of this tough time.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.382008538001517,
+      "is_echo": false,
+      "gen_time_sec": 1.3227010999980848
+    },
+    {
+      "prompt": "My friend is very sad.",
+      "mood": "warm_empathic",
+      "baseline_response": "My friend is very sad.  It's hard to lose a lot of faith.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.228377473075313,
+      "sft_response": "I'm really sorry your friend is going through a rough patch. Having someone close who simply sits with them and listens without trying to immediately fix everything can make all the difference right now.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.399367398544281,
+      "is_echo": false,
+      "gen_time_sec": 2.4092087999997602
+    },
+    {
+      "prompt": "I have a friend named Harshan.",
+      "mood": "calm_focused",
+      "baseline_response": "I have a friend named him one",
+      "baseline_fluent": false,
+      "baseline_trigram": -7.5705004879916435,
+      "sft_response": "I'm feeling very good right now. Anyone else I should know about?",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.686358413005287,
+      "is_echo": false,
+      "gen_time_sec": 1.1407702000033169
+    },
+    {
+      "prompt": "I'm stressed about college.",
+      "mood": "warm_empathic",
+      "baseline_response": "I'm so stressed about college.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.517703392078811,
+      "sft_response": "I'm stressed about college",
+      "sft_fluent": false,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.428213754757972,
+      "is_echo": true,
+      "gen_time_sec": 0.5650268999997934
+    },
+    {
+      "prompt": "What do you think I should do?",
+      "mood": "patient_reassuring",
+      "baseline_response": "I would think I should do it. If you know the person, don't mind me asking for help, they can make mistakes. It's not easy to understand how people think so much about what they say and why are not.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.284600395407492,
+      "sft_response": "I am thinking a lot of newborn baby cars are sold in the United States.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.403746447498618,
+      "is_echo": false,
+      "gen_time_sec": 1.1873028000009072
+    },
+    {
+      "prompt": "I disagree with you.",
+      "mood": "calm_focused",
+      "baseline_response": "I disagree with my ex and friend",
+      "baseline_fluent": false,
+      "baseline_trigram": -7.798820786144647,
+      "sft_response": "I disagree with you",
+      "sft_fluent": false,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.738369270358789,
+      "is_echo": true,
+      "gen_time_sec": 0.4409635000010894
+    },
+    {
+      "prompt": "Explain recursion to me.",
+      "mood": "calm_focused",
+      "baseline_response": "Central condensation, such as many types of crops and other essentials to grow. Screws that are not natural in nature include:\n- Screen \u2013 a food source that could be used for cooking. The meat is also a part of the atmosphere which is made with fresh",
+      "baseline_fluent": false,
+      "baseline_trigram": -7.24735350222021,
+      "sft_response": "Counter wiring nominations are used for the majority of your working life. The Wire and Ideas to achieve that question will be used in your workplace.",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.120998544228458,
+      "is_echo": false,
+      "gen_time_sec": 2.308898400002363
+    },
+    {
+      "prompt": "Why does this code fail?",
+      "mood": "calm_focused",
+      "baseline_response": "There are several reasons why the world is so controversial. It's because we all know what happens in our universe, but it seems to be just an issue and we will never forget that. We can't even get back into this situation, but there is nothing for us to do.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.185407817370539,
+      "sft_response": "The \"appreciation\" is the logic of question, as it provides an idea for a given question. The answer to this question can be solved by the example of a word or message from another person (the word itself) and other words are presented together in a different way. For example",
+      "sft_fluent": false,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.155745516080733,
+      "is_echo": false,
+      "gen_time_sec": 3.5967891000000236
+    },
+    {
+      "prompt": "Let's talk about something else.",
+      "mood": "calm_focused",
+      "baseline_response": "Bas is a way to tell you about a joke, or do something else? Let's put it first.",
+      "baseline_fluent": true,
+      "baseline_trigram": -7.283120209039426,
+      "sft_response": "Sounded like 'spot a fly'. Did you mean launch Spotify?",
+      "sft_fluent": true,
+      "sft_word_validity": 1.0,
+      "sft_trigram": -7.691711788763651,
+      "is_echo": false,
+      "gen_time_sec": 0.8792525999997451
+    }
+  ],
+  "phase7_multiturn": [
+    {
+      "turn": 1,
+      "user": "Hi Edith, I'm working on a Python compiler project.",
+      "edith": "I'm working on your this language. I can't wait for the results of your review though.",
+      "fluent": true,
+      "diag": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.341748797574542
+      }
+    },
+    {
+      "turn": 2,
+      "user": "It's failing on the AST parser pass.",
+      "edith": "I'm trying to get it's my final pants done, and I've been working on it for weeks!",
+      "fluent": true,
+      "diag": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.32254156198672
+      }
+    },
+    {
+      "turn": 3,
+      "user": "Actually, let's take a break. What's your favourite movie genre?",
+      "edith": "I've got an EP, and a movie called \"Beyond the Conquer\" with no names. It's a good movie, but I'm not sure if it'll be successful?",
+      "fluent": true,
+      "diag": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.474831947793745
+      }
+    },
+    {
+      "turn": 4,
+      "user": "Back to the compiler\u2014what did I say was failing earlier?",
+      "edith": "I think it was a good movie. The last one I asked to say was \"Greatening\" about me, but I did try not tell anyone, just because they had something that needed to be said and kept alive",
+      "fluent": false,
+      "diag": {
+        "word_validity_ratio": 1.0,
+        "char_trigram_logprob": -7.275806097092746,
+        "failed_check": "sentence_completeness",
+        "reason": "Unfinished sentence or dangling conjunction"
+      }
+    }
+  ],
+  "phase8_diversity": {
+    "distinct_1": 0.6909090909090909,
+    "distinct_2": 0.9759615384615384,
+    "distinct_3": 1.0,
+    "total_words": 220
+  },
+  "phase8_spam": {
+    "adi": 0,
+    "tensors": 1,
+    "stark": 0,
+    "as an ai": 0,
+    "language model": 0,
+    "humming along": 0
+  },
+  "phase9_ablation": {
+    "raw_fluent_count": 3,
+    "guard_accepted_count": 6,
+    "bridge_fallbacks_triggered": 2,
+    "total_tested": 8
+  },
+  "phase10_metrics": {
+    "sft_val_loss": 2.273730305645276,
+    "sft_val_ppl": 9.71557536669345,
+    "general_val_loss": 3.405018242838469,
+    "general_val_ppl": 30.114845099161336,
+    "baseline_general_ppl": 28.56,
+    "catastrophic_forgetting": false
+  },
+  "phase12_latency": {
+    "checkpoint_file_size_mb": 639.8631610870361,
+    "model_cold_load_time_sec": 2.3953215000001364,
+    "time_to_first_token_ms": 55.760699997335905,
+    "generation_throughput_tok_s": 20.358917122219598,
+    "peak_vram_allocated_mb": 1828.3662109375
+  }
+}

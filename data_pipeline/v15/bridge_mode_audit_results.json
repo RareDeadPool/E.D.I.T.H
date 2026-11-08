@@ -1,0 +1,136 @@
+{
+  "encoder_params": 2130176,
+  "dialogue_count": 4099,
+  "retrieval_benchmarks": [
+    {
+      "query": "describe me",
+      "type": "In-domain self-reference",
+      "top_similarity": 1.0,
+      "matched_query": "describe me",
+      "matched_response": "From what I've actually observed on this rig, you're Aditya\u2014an ambitious engineer building sovereign local intelligence from scratch rather than renting commercial APIs. Beyond that, my dossier is honestly pretty thin. What drives you when you step away from the code?",
+      "category": "self_reference"
+    },
+    {
+      "query": "What do you think about me?",
+      "type": "In-domain self-reference",
+      "top_similarity": 0.8720364570617676,
+      "matched_query": "What do you know about me?",
+      "matched_response": "I know your name is Aditya, you're deep into this workstation build, and Harshan is in your circle. My dossier on you is pretty lean so far\u2014feel free to teach me more.",
+      "category": "self_reference_memory_extended"
+    },
+    {
+      "query": "Really?",
+      "type": "In-domain follow-up",
+      "top_similarity": 0.6357081532478333,
+      "matched_query": "really?",
+      "matched_response": "Really. I don't give empty praise\u2014it's what the git commit logs and your terminal history actually prove. What part of that surprised you?",
+      "category": "followup"
+    },
+    {
+      "query": "Hey Edith, how are you?",
+      "type": "In-domain chit-chat",
+      "top_similarity": 0.8736994862556458,
+      "matched_query": "Hey Edith, What are you working on?",
+      "matched_response": "Watching the system, keeping memory slots organized, and waiting for your next command. What are we tackling?",
+      "category": "chit_chat"
+    },
+    {
+      "query": "Tell me a joke",
+      "type": "In-domain humour",
+      "top_similarity": 1.0,
+      "matched_query": "Tell me a joke",
+      "matched_response": "Why do programmers always mix up Halloween and Christmas? Because Oct 31 == Dec 25!",
+      "category": "chit_chat"
+    },
+    {
+      "query": "Explain recursion to someone learning programming for the first time.",
+      "type": "Out-of-domain technical",
+      "top_similarity": 0.581493079662323,
+      "matched_query": "Good to know. Let's get to work.",
+      "matched_response": "Right behind you. What's the first step?",
+      "category": "witty_banter_extended"
+    },
+    {
+      "query": "What is the capital of France?",
+      "type": "Out-of-domain factual",
+      "top_similarity": 0.5691373944282532,
+      "matched_query": "Hey Edith, Are you ready?",
+      "matched_response": "Always ready. Workstation is calibrated and background loops are quiet. What's the goal?",
+      "category": "chit_chat"
+    },
+    {
+      "query": "Why does ice float?",
+      "type": "Out-of-domain science",
+      "top_similarity": 0.5050989389419556,
+      "matched_query": "really?",
+      "matched_response": "Really. I don't give empty praise\u2014it's what the git commit logs and your terminal history actually prove. What part of that surprised you?",
+      "category": "followup"
+    },
+    {
+      "query": "How should a student prioritize three assignments due tomorrow?",
+      "type": "Out-of-domain reasoning",
+      "top_similarity": 0.5303278565406799,
+      "matched_query": "sun na, bhai friend sad hai kya karu",
+      "matched_response": "Bhai, jab koi dost upset hota hai na, to solution dene ki jaldi mat karo. Bas unke saath baitho, unki baat suno aur unhe feel karao ki wo akele nahi hain.",
+      "category": "hinglish_chat_extended"
+    },
+    {
+      "query": "bhai aaj bohot bekar din tha",
+      "type": "In-domain Hinglish empathy",
+      "top_similarity": 0.8304942846298218,
+      "matched_query": "bhai aaj bohot bekar din tha, boss ne bina baat ke daant diya",
+      "matched_response": "I'm really sorry to hear that, bhai. Sounds like a deeply frustrating day. Take a deep breath and unwind\u2014don't let an unfair manager ruin your evening.",
+      "category": "hinglish_chat"
+    }
+  ],
+  "tri_mode_results": [
+    {
+      "prompt": "Hey Edith, how are you?",
+      "raw_generation": "Always ready. Workstation is calibrated and background loops are quiet. What's the goal?</edith>",
+      "raw_fluent": false,
+      "retrieval_text": "Watching the system, keeping memory slots organized, and waiting for your next command. What are we tackling?",
+      "combined_selected_mode": "BRIDGE",
+      "combined_text": "Watching the system, keeping memory slots organized, and waiting for your next command. What are we tackling?"
+    },
+    {
+      "prompt": "describe me",
+      "raw_generation": "I'm really sorry you're deeply. How about you? I'm working on your friend when you're away from your friend.</edith>",
+      "raw_fluent": false,
+      "retrieval_text": "From what I've actually observed on this rig, you're Aditya\u2014an ambitious engineer building sovereign local intelligence from scratch rather than renting commercial APIs. Beyond that, my dossier is honestly pretty thin. What drives you when you step away from the code?",
+      "combined_selected_mode": "BRIDGE",
+      "combined_text": "From what I've actually observed on this rig, you're Aditya\u2014an ambitious engineer building sovereign local intelligence from scratch rather than renting commercial APIs. Beyond that, my dossier is honestly pretty thin. What drives you when you step away from the code?"
+    },
+    {
+      "prompt": "Really?",
+      "raw_generation": "I'm really sorry that, and what are the way you want to make. You're working on your next command, and take a great right here.</edith>",
+      "raw_fluent": false,
+      "retrieval_text": "I don't have enough verified knowledge on that specific topic yet. I'm calibrated for workstation control, code architecture, and our local model training.",
+      "combined_selected_mode": "BRIDGE",
+      "combined_text": "I don't have enough verified knowledge on that specific topic yet. I'm calibrated for workstation control, code architecture, and our local model training."
+    },
+    {
+      "prompt": "Explain recursion to someone learning programming for the first time.",
+      "raw_generation": "A new body in the world is not the most common way to keep the body to you. You can use the following, but if you like it is a very high number of options to keep the body of the body.",
+      "raw_fluent": false,
+      "retrieval_text": "I don't have enough verified knowledge on that specific topic yet. I'm calibrated for workstation control, code architecture, and our local model training.",
+      "combined_selected_mode": "BRIDGE",
+      "combined_text": "I don't have enough verified knowledge on that specific topic yet. I'm calibrated for workstation control, code architecture, and our local model training."
+    },
+    {
+      "prompt": "Tell me a genuinely funny programming joke.",
+      "raw_generation": "There are many different types of people in the world: those who understand binary, and those who don't.</edith>",
+      "raw_fluent": false,
+      "retrieval_text": "Why do programmers always mix up Halloween and Christmas? Because Oct 31 == Dec 25!",
+      "combined_selected_mode": "BRIDGE",
+      "combined_text": "Why do programmers always mix up Halloween and Christmas? Because Oct 31 == Dec 25!"
+    },
+    {
+      "prompt": "Why would someone carry an umbrella when the sky is dark and cloudy?",
+      "raw_generation": "It's hard to know the sun. The sun is a great way to know when you are. The sky's sky is still that the weather is very clear. The sky is the sun that is a cold and the sun",
+      "raw_fluent": false,
+      "retrieval_text": "I don't have enough verified knowledge on that specific topic yet. I'm calibrated for workstation control, code architecture, and our local model training.",
+      "combined_selected_mode": "BRIDGE",
+      "combined_text": "I don't have enough verified knowledge on that specific topic yet. I'm calibrated for workstation control, code architecture, and our local model training."
+    }
+  ]
+}

@@ -271,23 +271,39 @@ class EdithPersonality:
         # Grow friendship
         self.state["friendship_level"] = fl + 1
 
-        # Build a natural, varied greeting
+        # Build a natural, varied greeting with zero canned catchphrases
         from engine.output_contract import speak
         streak = self.state.get("streak_days", 1)
         period = ctx.get("period", "day")
         time_word = "morning" if "morning" in period else "afternoon" if "afternoon" in period else "evening" if "evening" in period else "night"
 
-        greeting_templates = [
-            f"Hey {name}! Hope your {time_word} is going well. What are we diving into today?",
-            f"Good to see you again, {name}. Ready when you are — what are we building?",
-            f"Hey {name}, afternoon grind mode. How can I help you move forward today?",
-            f"Back at it! That makes {streak} days running. What's on the agenda?",
-            f"Hey {name}! Systems are calibrated and ready to go. What do you need?",
-            f"Welcome back, {name}! Good to have another session lined up. What are we tackling?",
-            f"Hey {name}! Hope the day has been treating you well so far. What's the plan?"
-        ]
+        # Dynamically vary greeting tone based on streak, time of day, and session interval
+        if hours_away > 24:
+            salutations = [
+                f"Good to see you again, {name}. It's been a little while — ready to jump back in?",
+                f"Welcome back, {name}. Everything on this rig is booted and ready. What are we working on?",
+                f"Hey {name}, good to have you back at the terminal. What's the focus today?"
+            ]
+        elif streak > 3:
+            salutations = [
+                f"Day {streak} at the keys, {name}. We're making solid headway. What's next on your radar?",
+                f"Back at the workstation, {name} — that's {streak} days straight. What problem are we tackling today?",
+                f"Streak is up to {streak} days now, {name}. Calibrated and ready whenever you want to begin."
+            ]
+        else:
+            salutations = [
+                f"Hey {name}! Hope your {time_word} is going smoothly. What are we diving into?",
+                f"Good to see you, {name}. Local models and buffers are primed. What can I do for you?",
+                f"Hey {name}, ready on my end. What are we building this {time_word}?",
+                f"Standing by, {name}. Terminal is open and ready. Where do you want to start?",
+                f"Hey {name}! Hope things are rolling nicely today. What are we focused on?"
+            ]
 
-        raw_greeting = random.choice(greeting_templates)
+        # Avoid repeating the immediate last greeting
+        last_g = self.state.get("last_greeting_type")
+        choices = [g for g in salutations if g != last_g] or salutations
+        raw_greeting = random.choice(choices)
+        self.state["last_greeting_type"] = raw_greeting
         clean_greeting = speak(raw_greeting, voice_mode=False)
 
         self.save()

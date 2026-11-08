@@ -51,6 +51,7 @@ class LocalSentenceEncoder(nn.Module):
 
 class MemoryStore:
     DB_PATH = os.path.join(PROJECT_ROOT, "config", "memory_v13.db")
+    VALID_PROVENANCES = {"user_stated", "observed", "inferred_labeled"}
 
     def __init__(self, db_path: Optional[str] = None):
         self.db_path = db_path or self.DB_PATH
@@ -76,7 +77,7 @@ class MemoryStore:
                     embedding BLOB
                 )
             """)
-            # 2. Semantic facts & relationships
+            # 2. Semantic facts & relationships with strict provenance tracking
             c.execute("""
                 CREATE TABLE IF NOT EXISTS semantic_facts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,9 +85,23 @@ class MemoryStore:
                     predicate TEXT,
                     object_value TEXT,
                     timestamp REAL,
-                    confidence REAL
+                    confidence REAL,
+                    provenance TEXT,
+                    evidence TEXT,
+                    session_id TEXT
                 )
             """)
+            conn.commit()
+
+            # Automatic schema migration for existing databases
+            c.execute("PRAGMA table_info(semantic_facts)")
+            existing_cols = {row[1] for row in c.fetchall()}
+            if "provenance" not in existing_cols:
+                c.execute("ALTER TABLE semantic_facts ADD COLUMN provenance TEXT")
+            if "evidence" not in existing_cols:
+                c.execute("ALTER TABLE semantic_facts ADD COLUMN evidence TEXT")
+            if "session_id" not in existing_cols:
+                c.execute("ALTER TABLE semantic_facts ADD COLUMN session_id TEXT")
             conn.commit()
 
     def get_embedding(self, text: str) -> List[float]:
@@ -111,8 +126,20 @@ class MemoryStore:
             )
             conn.commit()
 
-    def add_fact(self, subject: str, predicate: str, object_value: str, confidence: float = 1.0):
-        """Stores a persistent semantic fact (e.g. Harshan is a friend)."""
+    def add_fact(
+        self,
+        subject: str,
+        predicate: str,
+        object_value: str,
+        confidence: float = 1.0,
+        provenance: str = "user_stated",
+        evidence: Optional[str] = None,
+        session_id: Optional[str] = None
+    ):
+        """Stores a persistent semantic fact with strict provenance validation."""
+        if provenance not in self.VALID_PROVENANCES:
+            raise ValueError(f"Invalid provenance '{provenance}'. Must be one of {self.VALID_PROVENANCES}")
+
         with sqlite3.connect(self.db_path) as conn:
             c = conn.cursor()
             # Upsert
@@ -121,31 +148,58 @@ class MemoryStore:
                 (subject.strip(), predicate.strip()),
             )
             c.execute(
-                "INSERT INTO semantic_facts (subject, predicate, object_value, timestamp, confidence) VALUES (?, ?, ?, ?, ?)",
-                (subject.strip(), predicate.strip(), object_value.strip(), time.time(), confidence),
+                """INSERT INTO semantic_facts 
+                   (subject, predicate, object_value, timestamp, confidence, provenance, evidence, session_id) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (subject.strip(), predicate.strip(), object_value.strip(), time.time(), confidence, provenance, evidence or "", session_id or ""),
             )
             conn.commit()
 
-    def search_facts(self, query: str) -> List[Dict[str, str]]:
-        """Retrieves semantic facts relevant to a query."""
+    def search_facts(self, query: str) -> List[Dict[str, Any]]:
+        """Retrieves semantic facts relevant to a query, strictly filtered by valid provenance."""
         q_lower = query.lower()
         results = []
         with sqlite3.connect(self.db_path) as conn:
             c = conn.cursor()
-            c.execute("SELECT subject, predicate, object_value FROM semantic_facts")
-            for subj, pred, obj in c.fetchall():
+            c.execute("""
+                SELECT subject, predicate, object_value, provenance, evidence, confidence, timestamp 
+                FROM semantic_facts 
+                WHERE provenance IN ('user_stated', 'observed', 'inferred_labeled')
+            """)
+            for subj, pred, obj, prov, evid, conf, ts in c.fetchall():
                 if subj.lower() in q_lower or obj.lower() in q_lower or pred.lower() in q_lower:
-                    results.append({"subject": subj, "predicate": pred, "object": obj})
+                    results.append({
+                        "subject": subj,
+                        "predicate": pred,
+                        "object": obj,
+                        "provenance": prov,
+                        "evidence": evid,
+                        "confidence": conf,
+                        "timestamp": ts
+                    })
         return results
 
-    def get_all_facts(self) -> List[Dict[str, str]]:
-        """Lists all known user facts (for transparency: 'what do you know about me')."""
+    def get_all_facts(self) -> List[Dict[str, Any]]:
+        """Lists all known user facts strictly filtered by valid provenance."""
         results = []
         with sqlite3.connect(self.db_path) as conn:
             c = conn.cursor()
-            c.execute("SELECT subject, predicate, object_value FROM semantic_facts ORDER BY timestamp DESC")
-            for subj, pred, obj in c.fetchall():
-                results.append({"subject": subj, "predicate": pred, "object": obj})
+            c.execute("""
+                SELECT subject, predicate, object_value, provenance, evidence, confidence, timestamp 
+                FROM semantic_facts 
+                WHERE provenance IN ('user_stated', 'observed', 'inferred_labeled')
+                ORDER BY timestamp DESC
+            """)
+            for subj, pred, obj, prov, evid, conf, ts in c.fetchall():
+                results.append({
+                    "subject": subj,
+                    "predicate": pred,
+                    "object": obj,
+                    "provenance": prov,
+                    "evidence": evid,
+                    "confidence": conf,
+                    "timestamp": ts
+                })
         return results
 
     def forget_fact(self, subject_or_keyword: str) -> int:
