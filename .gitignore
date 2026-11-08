@@ -87,5 +87,27 @@ data_pipeline/v15/*.jsonl
 # Local SQLite databases
 *.db
 
+# Runtime Cognitive Memory, Personal User Data & Psychological Profiles
+config/cognitive_memory/
+config/cognitive_state_snapshot.json
+config/affect_state_v13.json
+config/personality_state.json
+config/dpo_preference_pairs.jsonl
+config/self_learning_audit.json
+config/self_learning_replay.jsonl
+config/experience_data/
+
+# Personal User Contact & Communication Config
+data/contacts.json
+data/whatsapp_config.json
+
+# Internal Evaluation Keys & Human Eval Secrets
+**/human_eval_key*.json
+data_pipeline/v15/audit_outputs/human_eval_key.json
+
+# Diagnostics feedback
+logs/diagnostic_feedback.json
+
+
 
 

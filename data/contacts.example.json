@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Test Recipient",
+    "phone": "+910000000000",
+    "email": "test@example.com",
+    "role": "testing",
+    "is_group": false,
+    "aliases": ["test", "bot"],
+    "platform": "whatsapp"
+  },
+  {
+    "name": "Sakshi",
+    "phone": null,
+    "email": "sakshi@example.com",
+    "role": "friend",
+    "is_group": false,
+    "aliases": ["saksh"],
+    "platform": "whatsapp"
+  }
+]

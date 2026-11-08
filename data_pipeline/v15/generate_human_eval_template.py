@@ -50,7 +50,8 @@ SELECTED_PROMPTS = [
     ("Let's talk about something else.", "Conversational topic switching")
 ]
 
-random.seed(1337)  # Fixed reproducible seed for blinding
+# Generate a newly randomized blinded key stored strictly outside the Git repository
+random.seed(424242)  # Re-randomized seed for genuine blinded evaluation
 blinded_records = []
 decryption_key = {}
 
@@ -85,10 +86,13 @@ for idx, (prompt, category_desc) in enumerate(SELECTED_PROMPTS, 1):
         "model_beta_response": beta_resp
     })
 
-# Export decryption key separately
-key_path = os.path.join(PROJECT_ROOT, "data_pipeline", "v15", "audit_outputs", "human_eval_key.json")
+# Store decryption key strictly outside git repository to preserve double-blind integrity
+external_secrets_dir = os.path.abspath(r"C:\Users\Aditya Sawant\Desktop\EDITH_LOCAL_SECRETS_V15_3_2")
+os.makedirs(external_secrets_dir, exist_ok=True)
+key_path = os.path.join(external_secrets_dir, "human_eval_key_v15_3_2.json")
 with open(key_path, "w", encoding="utf-8") as f:
     json.dump(decryption_key, f, indent=2)
+print(f"Decryption key safely stored outside Git repository at: {key_path}")
 
 # Export Blinded CSV Sheet
 csv_path = os.path.join(PROJECT_ROOT, "data_pipeline", "v15", "audit_outputs", "blinded_human_evaluation_sheet.csv")
